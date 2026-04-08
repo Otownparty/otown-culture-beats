@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import CountdownTimer from "@/components/CountdownTimer";
 import ScrollReveal from "@/components/ScrollReveal";
 import heroBg from "@/assets/hero-bg.jpg";
-import logo from "@/assets/logo-nobg.png";
+import logo from "@/assets/logo-final.png";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
@@ -35,7 +35,10 @@ const Index = () => (
         <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto space-y-8">
-          <img src={logo} alt="Otown Party Logo" className="mx-auto h-28 sm:h-36 w-auto glow-gold" />
+          <img src={logo} alt="Otown Party Logo" className="mx-auto h-28 sm:h-36 w-auto" />
+          <p className="font-serif text-lg sm:text-2xl italic tracking-[0.3em] text-primary/90" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            LET'S RAVE
+          </p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
             Otown Party – <span className="text-gradient-brand">Let's Rave</span>
           </h1>
