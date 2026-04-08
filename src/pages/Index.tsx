@@ -35,7 +35,7 @@ const Index = () => (
         <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto space-y-8">
-          <img src={logo} alt="Otown Party Logo" className="mx-auto h-28 sm:h-36 w-auto" />
+          <img src={logo} alt="Otown Party Logo" className="mx-auto h-40 sm:h-52 lg:h-64 w-auto" />
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
             Otown Party – <span className="text-gradient-brand">Let's Rave</span>
           </h1>
