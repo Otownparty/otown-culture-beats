@@ -36,9 +36,6 @@ const Index = () => (
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto space-y-8">
           <img src={logo} alt="Otown Party Logo" className="mx-auto h-28 sm:h-36 w-auto" />
-          <p className="font-serif text-lg sm:text-2xl italic tracking-[0.3em] text-primary/90" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            LET'S RAVE
-          </p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
             Otown Party – <span className="text-gradient-brand">Let's Rave</span>
           </h1>
