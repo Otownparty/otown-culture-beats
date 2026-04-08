@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Instagram, Twitter, Youtube } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-nobg.png";
 
 const Footer = () => (
   <footer className="bg-muted/30 border-t border-border">
