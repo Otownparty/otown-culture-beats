@@ -8,7 +8,7 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Brand */}
         <div className="space-y-4">
-          <img src={logo} alt="Otown Party" className="h-12 w-auto" />
+          <img src={logo} alt="Otown Party" className="h-16 w-auto" />
           <p className="text-muted-foreground text-sm leading-relaxed">
             Africa's premium rave movement. Where culture meets the dancefloor.
           </p>
