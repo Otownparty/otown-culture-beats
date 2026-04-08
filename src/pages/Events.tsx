@@ -4,22 +4,28 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import spotlightImg from "@/assets/event-spotlight.jpg";
-import gallery1 from "@/assets/gallery-1.jpg";
-import gallery2 from "@/assets/gallery-2.jpg";
-import gallery3 from "@/assets/gallery-3.jpg";
-import gallery4 from "@/assets/gallery-4.jpg";
+import edition1 from "@/assets/edition-1.jpg";
+import edition2 from "@/assets/edition-2.jpg";
+import edition3 from "@/assets/edition-3.jpg";
+import edition4 from "@/assets/edition-4.jpg";
+import edition5 from "@/assets/edition-5.jpg";
+import edition6 from "@/assets/edition-6.jpg";
+import edition7 from "@/assets/edition-7.jpg";
+import edition8 from "@/assets/edition-8.jpg";
+import edition9 from "@/assets/edition-9.jpg";
+import edition10 from "@/assets/edition-10.jpg";
 
 const editions = [
-  { num: 1, year: "2015", title: "The Genesis", desc: "Where it all began — the first heartbeat of a movement.", img: gallery1 },
-  { num: 2, year: "2016", title: "Rising Energy", desc: "The crowd doubled, the energy tripled.", img: gallery2 },
-  { num: 3, year: "2017", title: "The Culture Drop", desc: "Fashion met music on the dancefloor.", img: gallery3 },
-  { num: 4, year: "2017", title: "Midnight Fire", desc: "An all-night celebration that broke records.", img: gallery4 },
-  { num: 5, year: "2018", title: "Continental Sound", desc: "The most diverse lineup in Otown history.", img: gallery1 },
-  { num: 6, year: "2019", title: "The Revolution", desc: "Breaking boundaries, rewriting rules.", img: gallery2 },
-  { num: 7, year: "2020", title: "Resilience", desc: "Against all odds, the movement persevered.", img: gallery3 },
-  { num: 8, year: "2021", title: "Rebirth", desc: "The world opened back up — and we were ready.", img: gallery4 },
-  { num: 9, year: "2022", title: "Golden Era", desc: "The most photographed edition ever.", img: gallery1 },
-  { num: 10, year: "2024", title: "A Decade of Raving", desc: "Celebrating a milestone — 10 years of culture.", img: gallery2 },
+  { num: 1, date: "Sat 27th April 2024", title: "The Genesis", desc: "Where it all began — music, games, dance, drink, and connect at LaBamba Resort.", img: edition1 },
+  { num: 2, date: "Sat 22nd June 2024", title: "Frenzy Edition", desc: "The energy tripled — the Frenzy Edition took LaBamba Resort by storm.", img: edition2 },
+  { num: 3, date: "Sat 14th Sept 2024", title: "Y2K Edition", desc: "A retro-futuristic throwback — the flyest wave hit LaBamba Resort.", img: edition3 },
+  { num: 4, date: "Sat 26th Oct 2024", title: "Halloween: Terror By Night", desc: "A spine-chilling Halloween celebration at LaBamba Resort.", img: edition4 },
+  { num: 5, date: "Sat 21st Dec 2024", title: "Party of the Year", desc: "The ultimate year-ender — Party of the Year at LaBamba Resort, Oyo.", img: edition5 },
+  { num: 6, date: "Sat 15th Feb 2025", title: "XOXO Edition", desc: "Love was in the air — the Valentine's XOXO Edition at LaBamba Resort.", img: edition6 },
+  { num: 7, date: "Sat 31st May 2025", title: "Owanbe Edition", desc: "1 Year Anniversary — the Owanbe Edition celebrated African culture at LaBamba Hotel & Resort.", img: edition7 },
+  { num: 8, date: "Sat 25th Oct 2025", title: "Haunted Groove Halloween", desc: "The scariest night of the year — Haunted Groove at LaBamba Hotel & Resort.", img: edition8 },
+  { num: 9, date: "Tue 30th Dec 2025", title: "POTY", desc: "Party of the Year returned — closing out 2025 at LaBamba Resort, Oyo.", img: edition9 },
+  { num: 10, date: "Sat 21st March 2026", title: "Denim After Dark", desc: "A Decade of Raving — the 10th edition at Oyo Durbar Stadium, Oyo State.", img: edition10 },
 ];
 
 const Events = () => (
@@ -66,11 +72,11 @@ const Events = () => (
           {editions.map((ed) => (
             <ScrollReveal key={ed.num}>
               <div className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/40 transition-all">
-                <div className="aspect-video overflow-hidden">
-                  <img src={ed.img} alt={`Edition ${ed.num}: ${ed.title}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 brightness-75 group-hover:brightness-100" loading="lazy" />
+                <div className="aspect-[4/5] overflow-hidden">
+                  <img src={ed.img} alt={`Edition ${ed.num}: ${ed.title}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 </div>
                 <div className="p-5">
-                  <span className="text-xs text-primary font-semibold uppercase tracking-wider">Edition {ed.num} · {ed.year}</span>
+                  <span className="text-xs text-primary font-semibold uppercase tracking-wider">Edition {ed.num} · {ed.date}</span>
                   <h3 className="font-display font-bold text-lg text-foreground mt-1 mb-2">{ed.title}</h3>
                   <p className="text-sm text-muted-foreground mb-3">{ed.desc}</p>
                   <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
