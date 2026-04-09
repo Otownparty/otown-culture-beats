@@ -23,6 +23,15 @@ import g17 from "@/assets/gallery-17.jpg";
 import g18 from "@/assets/gallery-18.jpg";
 import g19 from "@/assets/gallery-19.jpg";
 import g20 from "@/assets/gallery-20.jpg";
+import g21 from "@/assets/gallery-21.jpg";
+import g22 from "@/assets/gallery-22.jpg";
+import g23 from "@/assets/gallery-23.jpg";
+import g24 from "@/assets/gallery-24.jpg";
+import g25 from "@/assets/gallery-25.jpg";
+import g26 from "@/assets/gallery-26.jpg";
+import g27 from "@/assets/gallery-27.jpg";
+import g28 from "@/assets/gallery-28.jpg";
+import g29 from "@/assets/gallery-29.jpg";
 
 type Photo = { src: string; alt: string; era: string };
 
@@ -47,6 +56,15 @@ const photos: Photo[] = [
   { src: g18, alt: "Couple feeling the music", era: "early" },
   { src: g19, alt: "Sea of ravers under spotlight", era: "recent" },
   { src: g20, alt: "Shades and vibes", era: "rise" },
+  { src: g21, alt: "DJs on the POTY stage", era: "recent" },
+  { src: g22, alt: "Dancing queens on stage", era: "early" },
+  { src: g23, alt: "Haunted Groove edition style", era: "rise" },
+  { src: g24, alt: "Crowd view from backstage", era: "recent" },
+  { src: g25, alt: "Smooth moves on the dance floor", era: "recent" },
+  { src: g26, alt: "Styled up on stage", era: "rise" },
+  { src: g27, alt: "Aerial view of the rave", era: "rise" },
+  { src: g28, alt: "Leopard print at the pyramid", era: "recent" },
+  { src: g29, alt: "Drip duo at the light-up sign", era: "early" },
 ];
 
 const filters = [
