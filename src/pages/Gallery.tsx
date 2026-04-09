@@ -32,6 +32,15 @@ import g26 from "@/assets/gallery-26.jpg";
 import g27 from "@/assets/gallery-27.jpg";
 import g28 from "@/assets/gallery-28.jpg";
 import g29 from "@/assets/gallery-29.jpg";
+import g30 from "@/assets/gallery-30.jpg";
+import g31 from "@/assets/gallery-31.jpg";
+import g32 from "@/assets/gallery-32.jpg";
+import g33 from "@/assets/gallery-33.jpg";
+import g34 from "@/assets/gallery-34.jpg";
+import g35 from "@/assets/gallery-35.jpg";
+import g36 from "@/assets/gallery-36.jpg";
+import g37 from "@/assets/gallery-37.jpg";
+import g38 from "@/assets/gallery-38.jpg";
 
 type Photo = { src: string; alt: string; era: string };
 
@@ -65,6 +74,15 @@ const photos: Photo[] = [
   { src: g27, alt: "Aerial view of the rave", era: "rise" },
   { src: g28, alt: "Leopard print at the pyramid", era: "recent" },
   { src: g29, alt: "Drip duo at the light-up sign", era: "early" },
+  { src: g30, alt: "Black and white crowd panorama", era: "early" },
+  { src: g31, alt: "Red carpet at the Haunted Groove", era: "rise" },
+  { src: g32, alt: "Red beret fashion moment", era: "recent" },
+  { src: g33, alt: "Stage performance under coloured lights", era: "recent" },
+  { src: g34, alt: "Percussionist on stage", era: "recent" },
+  { src: g35, alt: "Crowd under blue lights", era: "rise" },
+  { src: g36, alt: "Squad goals at the sign", era: "early" },
+  { src: g37, alt: "Female DJ in the zone", era: "early" },
+  { src: g38, alt: "MC commanding the crowd", era: "rise" },
 ];
 
 const filters = [
