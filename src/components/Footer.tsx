@@ -34,16 +34,16 @@ const Footer = () => {
             <h4 className="font-display font-bold text-sm uppercase tracking-wider mb-4 text-foreground">Past Editions</h4>
             <ul className="space-y-2">
               {[
-                "The Genesis · 2024",
-                "Frenzy Edition · 2024",
-                "Y2K Edition · 2024",
-                "Halloween: Terror By Night · 2024",
-                "Party of the Year · 2024",
-                "XOXO Edition · 2025",
-                "Owambe Edition · 2025",
-                "Haunted Groove Halloween · 2025",
-                "POTY · 2025",
-                "Denim After Dark · 2026",
+                "The Genesis · April 2024",
+                "Frenzy Edition · June 2024",
+                "Y2K Edition · Sept 2024",
+                "Halloween: Terror By Night · Oct 2024",
+                "Party of the Year · Dec 2024",
+                "XOXO Edition · Feb 2025",
+                "Owambe Edition · May 2025",
+                "Haunted Groove Halloween · Oct 2025",
+                "POTY · Dec 2025",
+                "Denim After Dark · March 2026",
               ].map((e) => (
                 <li key={e}>
                   <Link to="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">{e}</Link>
