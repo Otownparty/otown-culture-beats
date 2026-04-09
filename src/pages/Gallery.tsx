@@ -7,34 +7,33 @@ import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
 import g4 from "@/assets/gallery-4.jpg";
-import hero from "@/assets/hero-bg.jpg";
-import about from "@/assets/about-party.jpg";
-import spot from "@/assets/event-spotlight.jpg";
+import g5 from "@/assets/gallery-5.jpg";
+import g6 from "@/assets/gallery-6.jpg";
+import g7 from "@/assets/gallery-7.jpg";
+import g8 from "@/assets/gallery-8.jpg";
+import g9 from "@/assets/gallery-9.jpg";
+import g10 from "@/assets/gallery-10.jpg";
 
 type Photo = { src: string; alt: string; era: string };
 
 const photos: Photo[] = [
-  { src: g1, alt: "Crowd dancing under amber lights", era: "early" },
-  { src: g2, alt: "Hands raised at the concert", era: "early" },
-  { src: g3, alt: "Friends celebrating together", era: "rise" },
-  { src: g4, alt: "Stage production with golden lights", era: "rise" },
-  { src: hero, alt: "Panoramic concert view", era: "recent" },
-  { src: about, alt: "Atmospheric party moment", era: "recent" },
-  { src: spot, alt: "DJ performing live", era: "early" },
-  { src: g1, alt: "Festival energy captured", era: "rise" },
-  { src: g3, alt: "Community and culture", era: "recent" },
-  { src: g4, alt: "Light show on stage", era: "early" },
-  { src: hero, alt: "Crowd panorama at night", era: "rise" },
-  { src: g2, alt: "Silhouettes in golden light", era: "recent" },
-  { src: about, alt: "Rave atmosphere", era: "early" },
-  { src: spot, alt: "Behind the decks", era: "recent" },
+  { src: g1, alt: "Flag waving in the crowd", era: "recent" },
+  { src: g2, alt: "Friends vibing in traditional attire", era: "recent" },
+  { src: g3, alt: "Smiles under the lights", era: "recent" },
+  { src: g4, alt: "DJ behind the decks", era: "early" },
+  { src: g5, alt: "Crowd energy from the stage", era: "recent" },
+  { src: g6, alt: "Night panorama under the palms", era: "rise" },
+  { src: g7, alt: "Fashion moment at the rave", era: "rise" },
+  { src: g8, alt: "Team members in the crowd", era: "recent" },
+  { src: g9, alt: "Dancing under red lights", era: "early" },
+  { src: g10, alt: "Lost in the music", era: "rise" },
 ];
 
 const filters = [
   { label: "All Editions", value: "all" },
-  { label: "Early Years (2015–2017)", value: "early" },
-  { label: "The Rise (2018–2020)", value: "rise" },
-  { label: "Recent (2021–2024)", value: "recent" },
+  { label: "Early Years", value: "early" },
+  { label: "The Rise", value: "rise" },
+  { label: "Recent", value: "recent" },
 ];
 
 const Gallery = () => {
