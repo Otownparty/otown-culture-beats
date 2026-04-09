@@ -13,6 +13,16 @@ import g7 from "@/assets/gallery-7.jpg";
 import g8 from "@/assets/gallery-8.jpg";
 import g9 from "@/assets/gallery-9.jpg";
 import g10 from "@/assets/gallery-10.jpg";
+import g11 from "@/assets/gallery-11.jpg";
+import g12 from "@/assets/gallery-12.jpg";
+import g13 from "@/assets/gallery-13.jpg";
+import g14 from "@/assets/gallery-14.jpg";
+import g15 from "@/assets/gallery-15.jpg";
+import g16 from "@/assets/gallery-16.jpg";
+import g17 from "@/assets/gallery-17.jpg";
+import g18 from "@/assets/gallery-18.jpg";
+import g19 from "@/assets/gallery-19.jpg";
+import g20 from "@/assets/gallery-20.jpg";
 
 type Photo = { src: string; alt: string; era: string };
 
@@ -27,6 +37,16 @@ const photos: Photo[] = [
   { src: g8, alt: "Team members in the crowd", era: "recent" },
   { src: g9, alt: "Dancing under red lights", era: "early" },
   { src: g10, alt: "Lost in the music", era: "rise" },
+  { src: g11, alt: "Tie-dye fashion under the lights", era: "early" },
+  { src: g12, alt: "Massive crowd under amber glow", era: "recent" },
+  { src: g13, alt: "Cool vibes in black and white", era: "rise" },
+  { src: g14, alt: "Pure rave energy", era: "rise" },
+  { src: g15, alt: "Smiling at the LED pyramid", era: "recent" },
+  { src: g16, alt: "Bold fashion statements", era: "recent" },
+  { src: g17, alt: "Otown Party neon sign", era: "rise" },
+  { src: g18, alt: "Couple feeling the music", era: "early" },
+  { src: g19, alt: "Sea of ravers under spotlight", era: "recent" },
+  { src: g20, alt: "Shades and vibes", era: "rise" },
 ];
 
 const filters = [
