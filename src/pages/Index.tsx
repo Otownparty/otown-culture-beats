@@ -1,5 +1,5 @@
- import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Users, Music, Flame, Shield, UserCheck, Lock, AlertTriangle, Heart, Ambulance, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Calendar, Users, Music, Flame } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CountdownTimer from "@/components/CountdownTimer";
@@ -20,15 +20,8 @@ const stats = [
 
 const teaserCards = [
   { icon: Calendar, title: "Our Editions", desc: "From the Genesis to A Decade of Raving — explore every chapter.", link: "/events" },
-  { icon: Flame, title: "The Movement", desc: "More than a party — a cultural statement rooted in African urban life.", link: "/about" },
+  { icon: Flame, title: "The Movement", desc: "O'town Party is an outdoor party set to promote entertainment in Oyo town, foster friendship, unity and peace amongst the youth, showcase talents, fashion, art, creativity and create a platform that connects and promotes building lucrative networks among people.", link: "/about" },
   { icon: Music, title: "Gallery", desc: "Captured moments of energy, colour, and community.", link: "/gallery" },
-  { icon: Shield, title: "Security", desc: "At O'town Party, your safety is just as important as your experience. We are committed to creating a fun, secure, and well-controlled environment for everyone.", link: "/about" },
-  { icon: UserCheck, title: "Trained Security Personnel", desc: "Professional security teams will be present at all entry points and within the venue to ensure order and safety throughout the event.", link: "/about" },
-  { icon: Lock, title: "Access Control", desc: "Strict ticket verification and controlled entry systems will be enforced. No valid ticket, no entry.", link: "/tickets" },
-  { icon: AlertTriangle, title: "Zero Tolerance Policy", desc: "We maintain zero tolerance for violence, harassment, theft, or any disruptive behavior. Offenders will be immediately removed.", link: "/about" },
-  { icon: Heart, title: "Personal Responsibility", desc: "Guests are advised to stay aware of their surroundings, keep personal belongings secure, and drink responsibly.", link: "/about" },
-  { icon: Ambulance, title: "Emergency Response", desc: "First aid support and emergency response measures will be available on-site at all times.", link: "/about" },
-  { icon: Star, title: "Safe Space for All", desc: "O'town Party promotes respect, inclusivity, and positive vibes. Everyone deserves to feel safe and enjoy the moment.", link: "/about" },
 ];
 
 const Index = () => {
