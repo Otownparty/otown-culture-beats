@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Music, Flame } from "lucide-react";
+import { ArrowRight, Calendar, Images, Flame } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CountdownTimer from "@/components/CountdownTimer";
@@ -32,7 +32,7 @@ const teaserCards = [
     link: "/about",
   },
   {
-    icon: Music,
+    icon: Images,
     title: "Gallery",
     desc: "Captured moments of energy, colour, and community.",
     link: "/gallery",
