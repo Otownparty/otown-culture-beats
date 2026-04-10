@@ -87,9 +87,8 @@ const photos: Photo[] = [
 
 const filters = [
   { label: "All Editions", value: "all" },
-  { label: "Early Years", value: "early" },
-  { label: "The Rise", value: "rise" },
-  { label: "Recent", value: "recent" },
+  { label: "POTY", value: "rise" },
+  { label: "Denim After Dark", value: "recent" },
 ];
 
 const Gallery = () => {
