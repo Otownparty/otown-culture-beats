@@ -45,51 +45,57 @@ import g38 from "@/assets/gallery-38.jpg";
 type Photo = { src: string; alt: string; era: string };
 
 const photos: Photo[] = [
-  { src: g1, alt: "Flag waving in the crowd", era: "recent" },
-  { src: g2, alt: "Friends vibing in traditional attire", era: "recent" },
-  { src: g3, alt: "Smiles under the lights", era: "recent" },
-  { src: g4, alt: "DJ behind the decks", era: "early" },
-  { src: g5, alt: "Crowd energy from the stage", era: "recent" },
-  { src: g6, alt: "Night panorama under the palms", era: "rise" },
-  { src: g7, alt: "Fashion moment at the rave", era: "rise" },
-  { src: g8, alt: "Team members in the crowd", era: "recent" },
-  { src: g9, alt: "Dancing under red lights", era: "early" },
-  { src: g10, alt: "Lost in the music", era: "rise" },
-  { src: g11, alt: "Tie-dye fashion under the lights", era: "early" },
-  { src: g12, alt: "Massive crowd under amber glow", era: "recent" },
-  { src: g13, alt: "Cool vibes in black and white", era: "rise" },
-  { src: g14, alt: "Pure rave energy", era: "rise" },
-  { src: g15, alt: "Smiling at the LED pyramid", era: "recent" },
-  { src: g16, alt: "Bold fashion statements", era: "recent" },
-  { src: g17, alt: "Otown Party neon sign", era: "rise" },
-  { src: g18, alt: "Couple feeling the music", era: "early" },
-  { src: g19, alt: "Sea of ravers under spotlight", era: "recent" },
-  { src: g20, alt: "Shades and vibes", era: "rise" },
-  { src: g21, alt: "DJs on the POTY stage", era: "recent" },
-  { src: g22, alt: "Dancing queens on stage", era: "early" },
-  { src: g23, alt: "Haunted Groove edition style", era: "rise" },
-  { src: g24, alt: "Crowd view from backstage", era: "recent" },
-  { src: g25, alt: "Smooth moves on the dance floor", era: "recent" },
-  { src: g26, alt: "Styled up on stage", era: "rise" },
-  { src: g27, alt: "Aerial view of the rave", era: "rise" },
-  { src: g28, alt: "Leopard print at the pyramid", era: "recent" },
-  { src: g29, alt: "Drip duo at the light-up sign", era: "early" },
-  { src: g30, alt: "Black and white crowd panorama", era: "early" },
-  { src: g31, alt: "Red carpet at the Haunted Groove", era: "rise" },
-  { src: g32, alt: "Red beret fashion moment", era: "recent" },
-  { src: g33, alt: "Stage performance under coloured lights", era: "recent" },
-  { src: g34, alt: "Percussionist on stage", era: "recent" },
-  { src: g35, alt: "Crowd under blue lights", era: "rise" },
-  { src: g36, alt: "Squad goals at the sign", era: "early" },
-  { src: g37, alt: "Female DJ in the zone", era: "early" },
-  { src: g38, alt: "MC commanding the crowd", era: "rise" },
+  { src: g1, alt: "Flag waving in the crowd", era: "denim" },
+  { src: g2, alt: "Friends vibing in traditional attire", era: "denim" },
+  { src: g3, alt: "Smiles under the lights", era: "denim" },
+  { src: g4, alt: "DJ behind the decks", era: "poty" },
+  { src: g5, alt: "Crowd energy from the stage", era: "denim" },
+  { src: g6, alt: "Night panorama under the palms", era: "poty" },
+  { src: g7, alt: "Fashion moment at the rave", era: "poty" },
+  { src: g8, alt: "Team members in the crowd", era: "denim" },
+  { src: g9, alt: "Dancing under red lights", era: "poty" },
+  { src: g10, alt: "Lost in the music", era: "poty" },
+  { src: g11, alt: "Tie-dye fashion under the lights", era: "poty" },
+  { src: g12, alt: "Massive crowd under amber glow", era: "denim" },
+  { src: g13, alt: "Cool vibes in black and white", era: "poty" },
+  { src: g14, alt: "Pure rave energy", era: "poty" },
+  { src: g15, alt: "Smiling at the LED pyramid", era: "denim" },
+  { src: g16, alt: "Bold fashion statements", era: "denim" },
+  { src: g17, alt: "Otown Party neon sign", era: "poty" },
+  { src: g18, alt: "Couple feeling the music", era: "poty" },
+  { src: g19, alt: "Sea of ravers under spotlight", era: "denim" },
+  { src: g20, alt: "Shades and vibes", era: "poty" },
+  { src: g21, alt: "DJs on the POTY stage", era: "denim" },
+  { src: g22, alt: "Dancing queens on stage", era: "poty" },
+  { src: g23, alt: "Haunted Groove edition style", era: "poty" },
+  { src: g24, alt: "Crowd view from backstage", era: "denim" },
+  { src: g25, alt: "Smooth moves on the dance floor", era: "denim" },
+  { src: g26, alt: "Styled up on stage", era: "poty" },
+  { src: g27, alt: "Aerial view of the rave", era: "poty" },
+  { src: g28, alt: "Leopard print at the pyramid", era: "denim" },
+  { src: g29, alt: "Drip duo at the light-up sign", era: "poty" },
+  { src: g30, alt: "Black and white crowd panorama", era: "poty" },
+  { src: g31, alt: "Red carpet at the Haunted Groove", era: "poty" },
+  { src: g32, alt: "Red beret fashion moment", era: "denim" },
+  { src: g33, alt: "Stage performance under coloured lights", era: "denim" },
+  { src: g34, alt: "Percussionist on stage", era: "denim" },
+  { src: g35, alt: "Crowd under blue lights", era: "poty" },
+  { src: g36, alt: "Squad goals at the sign", era: "poty" },
+  { src: g37, alt: "Female DJ in the zone", era: "poty" },
+  { src: g38, alt: "MC commanding the crowd", era: "poty" },
 ];
 
 const filters = [
   { label: "All Editions", value: "all" },
-  { label: "Early Years", value: "early" },
-  { label: "The Rise", value: "rise" },
-  { label: "Recent", value: "recent" },
+  { label: "POTY", value: "poty" },
+  { label: "Denim After Dark", value: "denim" },
+];
+
+const recapVideos = [
+  { src: "/videos/recap-1.mp4", title: "Recap 1" },
+  { src: "/videos/recap-2.mp4", title: "Recap 2" },
+  { src: "/videos/recap-3.mp4", title: "Recap 3" },
+  { src: "/videos/recap-4.mp4", title: "Recap 4" },
 ];
 
 const Gallery = () => {
@@ -156,6 +162,33 @@ const Gallery = () => {
                     loading="lazy"
                   />
                 </button>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+
+        {/* Video Recap Section */}
+        <div className="mt-20">
+          <div className="container mx-auto max-w-6xl px-4 mb-10">
+            <ScrollReveal>
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">Recaps</p>
+              <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-2">Relive the Energy</h2>
+              <p className="text-muted-foreground max-w-2xl">The highlights, the madness, the moments — all in motion.</p>
+            </ScrollReveal>
+          </div>
+
+          <div className="flex flex-col gap-6 px-4 sm:px-6 lg:px-8">
+            {recapVideos.map((video, i) => (
+              <ScrollReveal key={i}>
+                <div className="w-full rounded-xl overflow-hidden border-2 border-primary/40 shadow-lg shadow-primary/5 bg-card">
+                  <video
+                    src={video.src}
+                    controls
+                    preload="metadata"
+                    className="w-full aspect-video object-cover"
+                    playsInline
+                  />
+                </div>
               </ScrollReveal>
             ))}
           </div>
