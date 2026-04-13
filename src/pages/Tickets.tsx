@@ -143,7 +143,7 @@ const Tickets = () => {
               {/* Contact details */}
               <div className="bg-card border border-border rounded-xl p-6 mt-6 space-y-4">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <Mail size={16} className="text-primary" /> hello@otownparty.com
+                  <Mail size={16} className="text-primary" /> pr@otownparty.com
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <MapPin size={16} className="text-primary" /> Africa – Location Announced Per Edition
