@@ -56,7 +56,7 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-bold text-sm uppercase tracking-wider mb-4 text-foreground">Contact</h4>
             <a href="mailto:hello@otownparty.com" className="text-sm text-muted-foreground hover:text-primary transition-colors block mb-4">
-              hello@otownparty.com
+              pr@otownparty.com
             </a>
             <div className="flex gap-4">
 
