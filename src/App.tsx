@@ -8,6 +8,9 @@ import Events from "./pages/Events";
 import About from "./pages/About";
 import Gallery from "./pages/Gallery";
 import Tickets from "./pages/Tickets";
+import Claim from "./pages/Claim";
+import Scan from "./pages/Scan";
+import StaffAuth from "./pages/StaffAuth";
 import NotFound from "./pages/NotFound";
 import Success from "./pages/Success";
 
@@ -25,6 +28,9 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/tickets" element={<Tickets />} />
+          <Route path="/claim" element={<Claim />} />
+          <Route path="/scan" element={<Scan />} />
+          <Route path="/staff" element={<StaffAuth />} />
           <Route path="/success" element={<Success />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

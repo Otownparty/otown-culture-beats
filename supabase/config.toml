@@ -1,1 +1,13 @@
 project_id = "pghjhtxnavptfedrrfut"
+
+[functions.initialize-payment]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
+[functions.claim-tickets]
+verify_jwt = false
+
+[functions.validate-ticket]
+verify_jwt = true
