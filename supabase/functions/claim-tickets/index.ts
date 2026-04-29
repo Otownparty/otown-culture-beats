@@ -152,7 +152,7 @@ Deno.serve(async (req) => {
         </p>
         <p style="margin-top:24px; font-size:12px; color:#999;">If you didn't make this purchase, reply to this email immediately.</p>
       </div>`;
-
+    
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
