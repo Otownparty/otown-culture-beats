@@ -19,7 +19,14 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@OtownParty" />
     <meta name="twitter:image" content="/og-image.png" />
-  </head>
+    
+    <script>
+  var path = new URLSearchParams(window.location.search).get('path');
+  if (path) {
+    window.history.replaceState(null, null, path);
+  }
+</script>
+ </head>
 
   <body>
     <div id="root"></div>
