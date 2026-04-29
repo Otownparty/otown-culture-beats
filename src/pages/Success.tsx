@@ -64,7 +64,7 @@ const Success = () => {
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">
                 Explore the Culture
               </p>
-              
+              <a
                 href="https://otownparty.com"
                 className="text-primary font-semibold text-sm hover:underline"
               >
