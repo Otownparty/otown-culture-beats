@@ -44,18 +44,19 @@ const Success = () => {
               Stay tuned for venue updates and style guides on our official site.
             </p>
 
-            {/* Divider + link */}
-            <div className="border-t border-border pt-6 mb-8">
-              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">
-                Explore the Culture
-              </p>
-              <a
-                href="https://otownparty.com"
-                className="text-primary font-semibold text-sm hover:underline"
-              >
-                otownparty.com
-              </a>
-            </div>
+           {/* Divider + link */}
+<div className="border-t border-border pt-6 mb-8">
+  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">
+    Explore the Culture
+  </p>
+  <a
+    href="https://otownparty.com"
+    className="text-primary font-semibold text-sm hover:underline"
+  >
+    otownparty.com
+  </a>
+</div>
+
 
             {/* Return button */}
             <Link
