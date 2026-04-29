@@ -58,7 +58,7 @@ const Index = () => {
               Let's Rave
             </p>
             <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-muted-foreground">
-              10 Editions Strong &nbsp;|&nbsp; Celebrating African Urban Culture &nbsp;|&nbsp; Next Edition: May 2026
+              Otown Party 11.0 &nbsp;|&nbsp; Glow in the 90s — Chapter II &nbsp;|&nbsp; May 30, 2026 · Oyo Durbar Stadium
             </p>
             <div className="w-full flex justify-center py-4">
               <CountdownTimer />

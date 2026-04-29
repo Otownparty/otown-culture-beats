@@ -46,14 +46,14 @@ const Events = () => {
               <div className="grid md:grid-cols-2">
                 <div className="p-8 p-12 flex flex-col justify-center">
                   <span className="inline-block bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-                    Otown Party XI — May 2026
+                    Otown Party 11.0 — Anniversary Edition
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">The most monumental edition yet. Bigger stage, Bigger lineup</h2>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">The most monumental edition yet. Bigger stage, bigger lineup.</p>
+                  <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Glow in the 90s — Chapter II</h2>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">The Anniversary Edition returns — bigger stage, bigger lineup. A neon-soaked throwback to the era that started it all.</p>
                   <div className="flex flex-wrap gap-4 mb-8 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> May 2026</span>
-                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Location TBA</span>
-                    <span className="bg-muted px-3 py-0.5 rounded-full">Theme TBA</span>
+                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> Sat 30th May 2026 · 6PM – 4AM</span>
+                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Oyo Durbar Stadium</span>
+                    <span className="bg-muted px-3 py-0.5 rounded-full">Glow in the 90s</span>
                   </div>
                   <Link to="/tickets" className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
                     Get Tickets Now
