@@ -160,7 +160,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Otown Party <onboarding@resend.dev>",
+        from: "Otown Party <tickets@otownparty.com>",
         to: [cleanEmail],
         subject: `Your Otown Party 11.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
         html: emailHtml,
