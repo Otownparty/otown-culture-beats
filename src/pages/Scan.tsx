@@ -35,20 +35,38 @@ const Scan = () => {
   }, [navigate]);
 
   const startScanner = async () => {
-    if (!videoRef.current) return;
-    try {
-      const scanner = new QrScanner(
-        videoRef.current,
-        (res) => handleScan(res.data),
-        { highlightScanRegion: true, highlightCodeOutline: true, maxScansPerSecond: 4 }
-      );
-      scannerRef.current = scanner;
-      await scanner.start();
-      setScanning(true);
-    } catch (err) {
-      toast.error("Camera access denied or unavailable");
-      console.error(err);
-    }
+    setScanning(true);
+    setTimeout(async () => {
+      if (!videoRef.current) {
+        toast.error("Camera could not be initialized. Please refresh and try again.");
+        setScanning(false);
+        return;
+      }
+      try {
+        const hasCamera = await QrScanner.hasCamera();
+        if (!hasCamera) {
+          toast.error("No camera found on this device.");
+          setScanning(false);
+          return;
+        }
+        const scanner = new QrScanner(
+          videoRef.current,
+          (res) => handleScan(res.data),
+          {
+            highlightScanRegion: true,
+            highlightCodeOutline: true,
+            maxScansPerSecond: 4,
+            preferredCamera: "environment",
+          }
+        );
+        scannerRef.current = scanner;
+        await scanner.start();
+      } catch (err) {
+        console.error(err);
+        toast.error("Camera access denied. Please allow camera access in your browser settings.");
+        setScanning(false);
+      }
+    }, 150);
   };
 
   const stopScanner = () => {
@@ -77,12 +95,23 @@ const Scan = () => {
     } finally { setValidating(false); }
   };
 
-  const reset = () => { setResult(null); lockRef.current = false; startScanner(); };
+  const reset = () => {
+    setResult(null);
+    lockRef.current = false;
+    startScanner();
+  };
 
-  const signOut = async () => { await supabase.auth.signOut(); navigate("/staff"); };
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/staff");
+  };
 
   if (!authChecked) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" /></div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" />
+      </div>
+    );
   }
 
   return (
@@ -90,7 +119,10 @@ const Scan = () => {
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-display font-bold text-xl text-foreground">Gate Scanner</h1>
-          <button onClick={signOut} className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1">
+          <button
+            onClick={signOut}
+            className="text-xs text-muted-foreground hover:text-primary inline-flex items-center gap-1"
+          >
             <LogOut size={12} /> Sign out
           </button>
         </div>
@@ -98,8 +130,13 @@ const Scan = () => {
         {!scanning && !result && (
           <div className="bg-card border border-border rounded-xl p-8 text-center">
             <Camera className="mx-auto text-primary mb-4" size={40} />
-            <p className="text-sm text-muted-foreground mb-6">Tap below to start scanning tickets at the gate.</p>
-            <button onClick={startScanner} className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
+            <p className="text-sm text-muted-foreground mb-6">
+              Tap below to start scanning tickets at the gate.
+            </p>
+            <button
+              onClick={startScanner}
+              className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition"
+            >
               Start Camera
             </button>
           </div>
@@ -108,15 +145,28 @@ const Scan = () => {
         {scanning && (
           <div className="bg-card border border-border rounded-xl p-4">
             <div className="aspect-square w-full overflow-hidden rounded-lg bg-black relative">
-              <video ref={videoRef} className="w-full h-full object-cover" />
+              <video
+                ref={videoRef}
+                className="w-full h-full object-cover"
+                playsInline
+                muted
+                autoPlay
+              />
               {validating && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                   <Loader2 className="animate-spin text-primary" size={32} />
                 </div>
               )}
             </div>
-            <p className="text-xs text-center text-muted-foreground mt-3">Point camera at the QR code on the ticket email</p>
-            <button onClick={stopScanner} className="mt-3 w-full py-2 text-xs text-muted-foreground hover:text-foreground">Cancel</button>
+            <p className="text-xs text-center text-muted-foreground mt-3">
+              Point camera at the QR code on the ticket email
+            </p>
+            <button
+              onClick={stopScanner}
+              className="mt-3 w-full py-2 text-xs text-muted-foreground hover:text-foreground"
+            >
+              Cancel
+            </button>
           </div>
         )}
 
@@ -156,7 +206,10 @@ const Scan = () => {
                 <TicketDetails t={result.ticket!} />
               </div>
             )}
-            <button onClick={reset} className="mt-6 w-full py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
+            <button
+              onClick={reset}
+              className="mt-6 w-full py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm"
+            >
               Scan Next Ticket
             </button>
           </div>
@@ -176,6 +229,7 @@ const TicketDetails = ({ t }: { t: NonNullable<ScanResult["ticket"]> }) => (
     <Row label="Edition" value={t.edition} />
   </dl>
 );
+
 const Row = ({ label, value }: { label: string; value: string }) => (
   <div className="flex justify-between gap-3">
     <dt className="text-muted-foreground">{label}</dt>
