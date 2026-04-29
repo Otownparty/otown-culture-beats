@@ -14,16 +14,138 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      payment_intents: {
+        Row: {
+          buyer_email: string | null
+          buyer_name: string | null
+          claimed_at: string | null
+          created_at: string
+          id: string
+          quantity: number
+          reference: string
+          status: string
+          ticket_type: string
+          total_amount: number
+          unit_price: number
+          verified_at: string | null
+        }
+        Insert: {
+          buyer_email?: string | null
+          buyer_name?: string | null
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          quantity: number
+          reference: string
+          status?: string
+          ticket_type: string
+          total_amount: number
+          unit_price: number
+          verified_at?: string | null
+        }
+        Update: {
+          buyer_email?: string | null
+          buyer_name?: string | null
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          quantity?: number
+          reference?: string
+          status?: string
+          ticket_type?: string
+          total_amount?: number
+          unit_price?: number
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          amount_paid: number
+          buyer_email: string
+          buyer_name: string
+          created_at: string
+          edition: string
+          id: string
+          payment_reference: string
+          qr_signature: string
+          quantity: number
+          ticket_index: number
+          ticket_type: string
+          used: boolean
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          amount_paid: number
+          buyer_email: string
+          buyer_name: string
+          created_at?: string
+          edition?: string
+          id?: string
+          payment_reference: string
+          qr_signature: string
+          quantity?: number
+          ticket_index?: number
+          ticket_type: string
+          used?: boolean
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          buyer_email?: string
+          buyer_name?: string
+          created_at?: string
+          edition?: string
+          id?: string
+          payment_reference?: string
+          qr_signature?: string
+          quantity?: number
+          ticket_index?: number
+          ticket_type?: string
+          used?: boolean
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "scanner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +272,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "scanner"],
+    },
   },
 } as const
