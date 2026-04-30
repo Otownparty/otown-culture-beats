@@ -110,21 +110,71 @@ const Claim = () => {
             </div>
           )}
 
-          {stage === "done" && (
-            <div className="bg-card border border-border rounded-xl p-10 text-center">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <Check className="text-primary" size={32} />
+          {stage === "done" && (() => {
+            const firstName = name.trim().split(/\s+/)[0] || "Raver";
+            return (
+              <div className="relative bg-card border border-primary/30 rounded-2xl p-8 sm:p-10 overflow-hidden">
+                <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mb-5">
+                    <Check className="text-primary" size={26} />
+                  </div>
+
+                  <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-center">
+                    Access Granted
+                  </p>
+                  <h1 className="font-display font-bold text-2xl sm:text-3xl text-foreground text-center leading-tight mb-6">
+                    You're in, {firstName}. <span className="text-primary">⚡️</span>
+                  </h1>
+                  <p className="text-sm text-muted-foreground text-center italic mb-8">
+                    Let the countdown to the next Otown movement begin now.
+                  </p>
+
+                  <div className="mb-6">
+                    <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.2em] mb-2">The Experience</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Buckle up {firstName}. You've officially locked into the <span className="text-foreground font-semibold">Otown movement</span> — a space where the music blends with culture and art to dictate the reality. Your unique entry key and digital pass have been sent to <span className="text-primary font-semibold break-all">{email}</span>. From this moment onward, you are part of the movement. Secure your credentials; the vibe is already waiting for you.
+                    </p>
+                  </div>
+
+                  <div className="mb-8">
+                    <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.2em] mb-3">What Next?</p>
+                    <ul className="space-y-2.5 text-sm text-muted-foreground leading-relaxed">
+                      <li className="flex gap-2.5">
+                        <span className="text-primary mt-1.5 w-1 h-1 rounded-full bg-primary shrink-0" />
+                        <span><span className="text-foreground font-semibold">Secure the pass:</span> Check your email inbox or spam immediately. Your QR code is your only way past the gates.</span>
+                      </li>
+                      <li className="flex gap-2.5">
+                        <span className="text-primary mt-1.5 w-1 h-1 rounded-full bg-primary shrink-0" />
+                        <span><span className="text-foreground font-semibold">Prepare the vibe:</span> Clear your schedule. The movement waits for no one.</span>
+                      </li>
+                      <li className="flex gap-2.5">
+                        <span className="text-primary mt-1.5 w-1 h-1 rounded-full bg-primary shrink-0" />
+                        <span><span className="text-foreground font-semibold">Stay locked:</span> Follow our socials for secret location reveals and set times.</span>
+                      </li>
+                      <li className="flex gap-2.5">
+                        <span className="text-primary mt-1.5 w-1 h-1 rounded-full bg-primary shrink-0" />
+                        <span><span className="text-foreground font-semibold">Come prepared:</span> You just signed up for the best experience of unfiltered vibes, so come with unfiltered energy.</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <p className="text-sm text-foreground font-semibold text-center mb-1">Welcome to the inner circle.</p>
+                  <p className="text-xs text-muted-foreground text-center mb-6">— The Otown Party Crew 🛸</p>
+
+                  <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5 justify-center w-full mb-6">
+                    <Mail size={12} /> Don't see the email? Check your spam folder.
+                  </p>
+
+                  <Link to="/" className="block w-full py-3.5 rounded-lg bg-primary text-primary-foreground text-center font-display font-semibold text-sm hover:brightness-110 transition">
+                    Back to home
+                  </Link>
+                </div>
               </div>
-              <h1 className="font-display font-bold text-2xl text-foreground mb-2">You're in! 🎉</h1>
-              <p className="text-sm text-muted-foreground mb-2">
-                Your ticket{info && info.quantity > 1 ? "s have" : " has"} been emailed to <strong className="text-foreground">{email}</strong>.
-              </p>
-              <p className="text-xs text-muted-foreground mb-6 inline-flex items-center gap-1.5">
-                <Mail size={12} /> Don't see it? Check your spam folder.
-              </p>
-              <Link to="/" className="inline-block px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm">Back to home</Link>
-            </div>
-          )}
+            );
+          })()}
         </div>
       </main>
       <Footer />
