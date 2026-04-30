@@ -153,6 +153,11 @@ Deno.serve(async (req) => {
         <p style="margin-top:24px; font-size:12px; color:#999;">If you didn't make this purchase, reply to this email immediately.</p>
       </div>`;
     
+    // Use RESEND_FROM_EMAIL secret if set (e.g. "Otown Party <tickets@otownparty.com>"),
+    // otherwise fall back to Resend's default test sender.
+    const fromAddress = Deno.env.get("RESEND_FROM_EMAIL") || "Otown Party <onboarding@resend.dev>";
+    console.log("Sending email from:", fromAddress, "to:", cleanEmail);
+
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -160,7 +165,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Otown Party <tickets@otownparty.com>",
+        from: fromAddress,
         to: [cleanEmail],
         subject: `Your Otown Party 11.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
         html: emailHtml,
@@ -169,15 +174,16 @@ Deno.serve(async (req) => {
 
     if (!resendRes.ok) {
       const errText = await resendRes.text();
-      console.error("Resend error:", errText);
-      // Don't fail the whole request — tickets are saved. Tell user we'll retry.
+      console.error("Resend error:", resendRes.status, errText);
+      // Don't fail the whole request — tickets are saved. Surface the real error.
       return new Response(JSON.stringify({
         success: true,
         emailSent: false,
-        emailError: "Email delivery failed. Please contact support with your reference.",
+        emailError: `Email delivery failed (${resendRes.status}): ${errText}`,
         reference,
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+    console.log("Resend OK for:", cleanEmail);
 
     return new Response(JSON.stringify({
       success: true, emailSent: true, reference, quantity,
