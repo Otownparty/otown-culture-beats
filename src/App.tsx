@@ -13,6 +13,7 @@ import Scan from "./pages/Scan";
 import StaffAuth from "./pages/StaffAuth";
 import NotFound from "./pages/NotFound";
 import Success from "./pages/Success";
+import Record from "./pages/Record";
 
 const queryClient = new QueryClient();
 
