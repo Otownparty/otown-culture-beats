@@ -33,6 +33,7 @@ const App = () => (
           <Route path="/scan" element={<Scan />} />
           <Route path="/staff" element={<StaffAuth />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/record" element={<Record />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
