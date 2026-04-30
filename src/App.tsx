@@ -14,6 +14,7 @@ import StaffAuth from "./pages/StaffAuth";
 import NotFound from "./pages/NotFound";
 import Success from "./pages/Success";
 import Record from "./pages/Record";
+import Vendor from "./pages/Vendor";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/staff" element={<StaffAuth />} />
           <Route path="/success" element={<Success />} />
           <Route path="/record" element={<Record />} />
+          <Route path="/vendor" element={<Vendor />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
