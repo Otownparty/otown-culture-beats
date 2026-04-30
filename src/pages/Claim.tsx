@@ -126,7 +126,7 @@ const Claim = () => {
                     Access Granted
                   </p>
                   <h1 className="font-display font-bold text-2xl sm:text-3xl text-foreground text-center leading-tight mb-6">
-                    You're in, {firstName}. <span className="text-primary">⚡️</span>
+                    You're in, <span className="text-primary">{firstName}</span>. <span className="text-primary">⚡️</span>
                   </h1>
                   <p className="text-sm text-muted-foreground text-center italic mb-8">
                     Let the countdown to the next Otown movement begin now.
@@ -135,7 +135,7 @@ const Claim = () => {
                   <div className="mb-6">
                     <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.2em] mb-2">The Experience</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Buckle up {firstName}. You've officially locked into the <span className="text-foreground font-semibold">Otown movement</span> — a space where the music blends with culture and art to dictate the reality. Your unique entry key and digital pass have been sent to <span className="text-primary font-semibold break-all">{email}</span>. From this moment onward, you are part of the movement. Secure your credentials; the vibe is already waiting for you.
+                      Buckle up <span className="text-primary font-semibold">{firstName}</span>. You've officially locked into the <span className="text-foreground font-semibold">Otown movement</span> — a space where the music blends with culture and art to dictate the reality. Your unique entry key and digital pass have been sent to <span className="text-primary font-semibold break-all">{email}</span>. From this moment onward, you are part of the movement. Secure your credentials; the vibe is already waiting for you.
                     </p>
                   </div>
 
