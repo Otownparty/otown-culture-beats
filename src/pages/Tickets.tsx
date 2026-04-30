@@ -52,6 +52,8 @@ const Tickets = () => {
         currency: "NGN",
         ref: data.reference,
         metadata: { ticketType: ticketName, quantity },
+        // Bank transfer first (default), then card, USSD, mobile money, QR, bank
+        channels: ["bank_transfer", "card", "ussd", "mobile_money", "qr", "bank"],
         onClose: () => setLoading(null),
         callback: (response: any) => {
           // Paystack succeeded — redirect to claim page; verification happens there.
