@@ -345,15 +345,10 @@ const Record = () => {
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-8">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
               <TabsTrigger value="overview" className="gap-2">
                 <Ticket size={16} />
-                Overview
-              </TabsTrigger>
-              <TabsTrigger value="tickets" className="gap-2">
-                <Ticket size={16} />
                 Ticket Purchases
-                <span className="ml-1 text-xs text-muted-foreground">({ticketPurchases.length})</span>
               </TabsTrigger>
               <TabsTrigger value="vendors" className="gap-2">
                 <Store size={16} />
