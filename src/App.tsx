@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Success from "./pages/Success";
 import Record from "./pages/Record";
 import Vendor from "./pages/Vendor";
+import VendorSuccess from "./pages/VendorSuccess";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,8 @@ const App = () => (
           <Route path="/success" element={<Success />} />
           <Route path="/record" element={<Record />} />
           <Route path="/vendor" element={<Vendor />} />
+          <Route path="/vendor-success" element={<VendorSuccess />} />
+          <Route path="/records" element={<Record />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
