@@ -59,6 +59,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ticket_purchases: {
+        Row: {
+          amount: number
+          created_at: string
+          email: string
+          id: string
+          name: string
+          paid_at: string | null
+          phone: string | null
+          quantity: number
+          reference: string
+          status: string
+          ticket_type: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          paid_at?: string | null
+          phone?: string | null
+          quantity?: number
+          reference: string
+          status?: string
+          ticket_type: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          paid_at?: string | null
+          phone?: string | null
+          quantity?: number
+          reference?: string
+          status?: string
+          ticket_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tickets: {
         Row: {
           amount_paid: number
@@ -128,6 +173,63 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vendor_applications: {
+        Row: {
+          amount: number
+          brand_description: string | null
+          brand_name: string
+          business_category: string
+          city: string | null
+          created_at: string
+          email: string
+          id: string
+          instagram: string | null
+          paid_at: string | null
+          phone: string
+          previous_vendor: string | null
+          reference: string
+          status: string
+          sub_category: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          brand_description?: string | null
+          brand_name: string
+          business_category: string
+          city?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          instagram?: string | null
+          paid_at?: string | null
+          phone: string
+          previous_vendor?: string | null
+          reference: string
+          status?: string
+          sub_category?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          brand_description?: string | null
+          brand_name?: string
+          business_category?: string
+          city?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          instagram?: string | null
+          paid_at?: string | null
+          phone?: string
+          previous_vendor?: string | null
+          reference?: string
+          status?: string
+          sub_category?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

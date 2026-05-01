@@ -89,7 +89,7 @@ const Record = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
-        navigate("/staff", { replace: true });
+        navigate("/staff?next=/record", { replace: true });
         return;
       }
       setAuthChecked(true);

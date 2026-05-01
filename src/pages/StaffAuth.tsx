@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 
 const StaffAuth = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const next = params.get("next") || "/scan";
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,9 +15,9 @@ const StaffAuth = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/scan", { replace: true });
+      if (data.session) navigate(next, { replace: true });
     });
-  }, [navigate]);
+  }, [navigate, next]);
 
   const handle = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,11 +26,11 @@ const StaffAuth = () => {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/scan");
+        navigate(next);
       } else {
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: `${window.location.origin}/scan` },
+          options: { emailRedirectTo: `${window.location.origin}${next}` },
         });
         if (error) throw error;
         toast.success("Account created. Ask an admin to grant you scanner access.");

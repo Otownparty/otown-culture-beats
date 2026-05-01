@@ -6,11 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { useNavigate } from "react-router-dom";
 
-declare global {
-  interface Window {
-    PaystackPop: any;
-  }
-}
 
 const loadPaystackScript = () =>
   new Promise<void>((resolve, reject) => {
