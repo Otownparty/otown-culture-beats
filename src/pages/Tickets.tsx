@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, Mail, MapPin, Loader2, Minus, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -13,7 +13,7 @@ const tickets = [
   { name: "VIP Experience", price: 15000, features: ["Full stage access", "Premium visibility", "Priority entry", "Access to merch"], accent: "pink" as const, featured: false },
 ];
 
-declare global { interface Window { PaystackPop?: any } }
+
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
@@ -138,6 +138,37 @@ const Tickets = () => {
                   </ScrollReveal>
                 );
               })}
+
+              <ScrollReveal>
+                <Link
+                  to="/vendor"
+                  className="block bg-card border border-sky/40 border-l-4 border-l-sky rounded-xl p-6 transition-all hover:-translate-y-1 hover:border-sky group"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <h3 className="font-display font-bold text-lg text-foreground">Apply as a Vendor</h3>
+                    <span className="bg-sky/10 text-sky text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                      Brands
+                    </span>
+                  </div>
+                  <p className="text-2xl font-display font-bold text-foreground mb-4">
+                    From ₦40,000
+                  </p>
+                  <ul className="space-y-2 mb-5">
+                    <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Check size={14} className="text-sky flex-shrink-0" /> Showcase your brand to thousands
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Check size={14} className="text-sky flex-shrink-0" /> Dedicated vendor space
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Check size={14} className="text-sky flex-shrink-0" /> Direct access to our community
+                    </li>
+                  </ul>
+                  <div className="block w-full py-3 rounded-lg border border-sky text-sky font-semibold text-sm text-center transition group-hover:bg-sky/10">
+                    Apply as a Vendor →
+                  </div>
+                </Link>
+              </ScrollReveal>
             </div>
 
             <ScrollReveal>
