@@ -13,7 +13,7 @@ const tickets = [
   { name: "VIP Experience", price: 15000, features: ["Full stage access", "Premium visibility", "Priority entry", "Access to merch"], accent: "pink" as const, featured: false },
 ];
 
-declare global { interface Window { PaystackPop?: any } }
+
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
