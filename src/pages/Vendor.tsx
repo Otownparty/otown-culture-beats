@@ -139,15 +139,16 @@ const Vendor = () => {
         onClose: () => {
           setLoading(false);
         },
-        callback: async (response: any) => {
-          await supabase
+        callback: (response: any) => {
+          supabase
             .from("vendor_applications")
             .update({ status: "paid", paid_at: new Date().toISOString() })
-            .eq("reference", response.reference);
-
-          navigate(
-            `/vendor-success?name=${encodeURIComponent(form.brandName)}&email=${encodeURIComponent(form.email)}&category=${encodeURIComponent(form.businessCategory)}`
-          );
+            .eq("reference", response.reference)
+            .then(() => {
+              navigate(
+                `/vendor-success?name=${encodeURIComponent(form.brandName)}&email=${encodeURIComponent(form.email)}&category=${encodeURIComponent(form.businessCategory)}`
+              );
+            });
         },
       });
 
