@@ -143,43 +143,35 @@ const Vendor = () => {
     try {
       await loadPaystackScript();
 
-      const reference = `VENDOR-${crypto.randomUUID()}`;
-
-      // Get Paystack public key from Supabase
       const { data: initData, error: initErr } = await supabase.functions.invoke(
-        "initialize-payment",
-        { body: { ticketType: "Early Bird", quantity: 1 } }
+        "initialize-vendor-payment",
+        {
+          body: {
+            brandName: form.brandName,
+            brandDescription: form.brandDescription,
+            instagram: form.instagram,
+            city: form.city,
+            phone: form.phone,
+            email: form.email,
+            previousVendor: form.previousVendor,
+            businessCategory: form.businessCategory,
+            subCategory: selectedOption.label,
+            subCategoryKey: form.subCategoryKey,
+            otherDescription: form.otherDescription,
+          },
+        }
       );
 
-      if (initErr || !initData?.publicKey) {
-        throw new Error("Could not load payment. Please try again.");
+      if (initErr || !initData?.reference || !initData?.publicKey) {
+        throw new Error(initErr?.message || initData?.error || "Could not load payment. Please try again.");
       }
-
-      // Save vendor application
-      const { error: dbErr } = await supabase.from("vendor_applications").insert({
-        reference,
-        brand_name: form.brandName.trim(),
-        brand_description: form.brandDescription.trim(),
-        instagram: form.instagram.trim(),
-        city: form.city.trim(),
-        phone: form.phone.trim(),
-        email: form.email.trim().toLowerCase(),
-        previous_vendor: form.previousVendor,
-        business_category: form.businessCategory,
-        sub_category: selectedOption.label,
-        sub_category_key: form.subCategoryKey,
-        amount: price * 100,
-        status: "pending",
-      });
-
-      if (dbErr) throw dbErr;
 
       const handler = window.PaystackPop.setup({
         key: initData.publicKey,
         email: form.email.trim(),
-        amount: price * 100,
+        amount: initData.amount,
         currency: "NGN",
-        ref: reference,
+        ref: initData.reference,
         metadata: {
           brandName: form.brandName,
           businessCategory: form.businessCategory,
@@ -190,15 +182,23 @@ const Vendor = () => {
           setLoading(false);
           toast.error("Payment cancelled");
         },
-        callback: async (response: any) => {
-          await supabase
+        callback: (response: any) => {
+          supabase
             .from("vendor_applications")
             .update({ status: "paid", paid_at: new Date().toISOString() })
-            .eq("reference", response.reference);
+            .eq("reference", response.reference)
+            .then(({ error }) => {
+              if (error) {
+                console.error("Vendor payment update failed:", error);
+                toast.error("Payment received, but confirmation failed. Please contact support.");
+                setLoading(false);
+                return;
+              }
 
-          navigate(
-            `/vendor-success?name=${encodeURIComponent(form.brandName)}&email=${encodeURIComponent(form.email)}&category=${encodeURIComponent(selectedOption.label)}`
-          );
+              navigate(
+                `/vendor-success?name=${encodeURIComponent(form.brandName)}&email=${encodeURIComponent(form.email)}&category=${encodeURIComponent(selectedOption.label)}`
+              );
+            });
         },
       });
 
