@@ -1,0 +1,2 @@
+ALTER TABLE public.vendor_applications ADD COLUMN IF NOT EXISTS sub_category_key text;
+CREATE INDEX IF NOT EXISTS idx_vendor_applications_sub_category_key ON public.vendor_applications(sub_category_key) WHERE status = 'paid';

@@ -193,6 +193,7 @@ export type Database = {
           reference: string
           status: string
           sub_category: string | null
+          sub_category_key: string | null
           updated_at: string
         }
         Insert: {
@@ -211,6 +212,7 @@ export type Database = {
           reference: string
           status?: string
           sub_category?: string | null
+          sub_category_key?: string | null
           updated_at?: string
         }
         Update: {
@@ -229,6 +231,7 @@ export type Database = {
           reference?: string
           status?: string
           sub_category?: string | null
+          sub_category_key?: string | null
           updated_at?: string
         }
         Relationships: []
