@@ -44,6 +44,9 @@ Deno.serve(async (req) => {
     }
 
     const amount = selectedOption.amount;
+    const subCategoryLabel = selectedOption.label === "Other" && otherDescription
+      ? `Other — ${String(otherDescription).trim()}`
+      : selectedOption.label;
     const reference = `VENDOR-${crypto.randomUUID()}`;
 
     const supabase = createClient(
@@ -61,9 +64,8 @@ Deno.serve(async (req) => {
       email: String(email).trim().toLowerCase(),
       previous_vendor: String(previousVendor),
       business_category: String(businessCategory),
-      sub_category: selectedOption.label,
+      sub_category: subCategoryLabel,
       sub_category_key: String(subCategoryKey),
-      other_description: otherDescription ? String(otherDescription).trim() : null,
       amount,
       status: "pending",
     });
