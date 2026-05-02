@@ -97,7 +97,6 @@ const Vendor = () => {
     try {
       await loadPaystackScript();
 
-      const reference = `VENDOR-${crypto.randomUUID()}`;
       const subCategory =
         form.businessCategory === "Consumable"
           ? form.consumableCategory === "Other"
@@ -107,41 +106,40 @@ const Vendor = () => {
           ? otherNonConsumable
           : form.nonConsumableCategory;
 
-      // Save vendor application to supabase
-      const { error: dbErr } = await supabase.from("vendor_applications").insert({
-        reference,
-        brand_name: form.brandName.trim(),
-        brand_description: form.brandDescription.trim(),
-        instagram: form.instagram.trim(),
-        city: form.city.trim(),
-        phone: form.phone.trim(),
-        email: form.email.trim().toLowerCase(),
-        previous_vendor: form.previousVendor,
-        business_category: form.businessCategory,
-        sub_category: subCategory,
-        amount: price * 100,
-        status: "pending",
+      const { data, error } = await supabase.functions.invoke("initialize-vendor-payment", {
+        body: {
+          brandName: form.brandName.trim(),
+          brandDescription: form.brandDescription.trim(),
+          instagram: form.instagram.trim(),
+          city: form.city.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim().toLowerCase(),
+          previousVendor: form.previousVendor,
+          businessCategory: form.businessCategory,
+          subCategory,
+        },
       });
 
-      if (dbErr) throw dbErr;
+      if (error || !data?.reference) {
+        throw new Error(error?.message || "Failed to start payment");
+      }
 
       const handler = window.PaystackPop.setup({
-        key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+        key: data.publicKey,
         email: form.email.trim(),
-        amount: price * 100,
+        amount: data.amount,
         currency: "NGN",
-        ref: reference,
+        ref: data.reference,
         metadata: {
           brandName: form.brandName,
           businessCategory: form.businessCategory,
           subCategory,
         },
+        channels: ["bank_transfer", "card", "ussd", "mobile_money", "qr", "bank"],
         onClose: () => {
           setLoading(false);
-          toast.error("Payment cancelled");
         },
         callback: async (response: any) => {
-          // Update vendor status to paid
           await supabase
             .from("vendor_applications")
             .update({ status: "paid", paid_at: new Date().toISOString() })
@@ -155,7 +153,8 @@ const Vendor = () => {
 
       handler.openIframe();
     } catch (err) {
-      toast.error((err as Error).message);
+      console.error(err);
+      toast.error((err as Error).message || "Could not start payment");
       setLoading(false);
     }
   };
