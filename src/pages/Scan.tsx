@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/sonner";
 
 type ScanResult = {
   valid: boolean;
+  kind?: "ticket" | "vendor";
   alreadyUsed?: boolean;
   usedJustNow?: boolean;
   reason?: string;
@@ -14,6 +15,11 @@ type ScanResult = {
     id: string; name: string; email: string; ticketType: string;
     amountPaid: number; ticketIndex: number; quantity: number;
     edition: string; usedAt?: string; usedBy?: string;
+  };
+  vendor?: {
+    id: string; brandName: string; email: string; phone: string;
+    category: string; subCategory: string; amountPaid: number;
+    reference: string; scannedAt?: string; scannedBy?: string;
   };
 };
 
