@@ -192,13 +192,23 @@ const Scan = () => {
                   <div className="w-16 h-16 mx-auto rounded-full bg-yellow-500/10 flex items-center justify-center mb-3">
                     <AlertTriangle className="text-yellow-500" size={32} />
                   </div>
-                  <h2 className="font-display font-bold text-lg text-foreground">Already Used</h2>
+                  <h2 className="font-display font-bold text-lg text-foreground">
+                    {result.kind === "vendor" ? "Vendor Already Checked In" : "Already Used"}
+                  </h2>
                   <p className="text-xs text-muted-foreground">
-                    Scanned at {result.ticket?.usedAt ? new Date(result.ticket.usedAt).toLocaleString() : "earlier"}
-                    {result.ticket?.usedBy ? ` by ${result.ticket.usedBy}` : ""}
+                    Scanned at {(() => {
+                      const t = result.kind === "vendor" ? result.vendor?.scannedAt : result.ticket?.usedAt;
+                      return t ? new Date(t).toLocaleString() : "earlier";
+                    })()}
+                    {(() => {
+                      const by = result.kind === "vendor" ? result.vendor?.scannedBy : result.ticket?.usedBy;
+                      return by ? ` by ${by}` : "";
+                    })()}
                   </p>
                 </div>
-                <TicketDetails t={result.ticket!} />
+                {result.kind === "vendor"
+                  ? <VendorDetails v={result.vendor!} />
+                  : <TicketDetails t={result.ticket!} />}
               </div>
             ) : (
               <div>
@@ -206,17 +216,21 @@ const Scan = () => {
                   <div className="w-16 h-16 mx-auto rounded-full bg-green-500/10 flex items-center justify-center mb-3">
                     <Check className="text-green-500" size={32} />
                   </div>
-                  <h2 className="font-display font-bold text-lg text-foreground">Valid — Admit</h2>
+                  <h2 className="font-display font-bold text-lg text-foreground">
+                    {result.kind === "vendor" ? "Vendor — Admit" : "Valid — Admit"}
+                  </h2>
                   <p className="text-xs text-green-500/80">Marked as used</p>
                 </div>
-                <TicketDetails t={result.ticket!} />
+                {result.kind === "vendor"
+                  ? <VendorDetails v={result.vendor!} />
+                  : <TicketDetails t={result.ticket!} />}
               </div>
             )}
             <button
               onClick={reset}
               className="mt-6 w-full py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm"
             >
-              Scan Next Ticket
+              Scan Next
             </button>
           </div>
         )}
