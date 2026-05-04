@@ -195,6 +195,11 @@ const Vendor = () => {
                 return;
               }
 
+              // Fire-and-forget QR email; don't block navigation on failure
+              supabase.functions.invoke("send-vendor-qr", {
+                body: { reference: response.reference },
+              }).catch((e) => console.error("send-vendor-qr failed:", e));
+
               navigate(
                 `/vendor-success?name=${encodeURIComponent(form.brandName)}&email=${encodeURIComponent(form.email)}&category=${encodeURIComponent(selectedOption.label)}`
               );
