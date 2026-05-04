@@ -222,9 +222,56 @@ const Record = () => {
     });
   };
 
+  const copyVendorEmails = () => {
+    const emails = filteredVendors.map((v) => v.email).filter(Boolean).join(", ");
+    if (!emails) return toast.error("No vendor emails to copy");
+    navigator.clipboard.writeText(emails).then(() => {
+      setCopiedVendors(true);
+      toast.success("All vendor emails copied!");
+      setTimeout(() => setCopiedVendors(false), 2500);
+    });
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate("/staff");
+  };
+
+  const clearAll = async (type: "tickets" | "vendors") => {
+    setClearing(true);
+    try {
+      if (type === "tickets") {
+        const { error: e1 } = await supabase
+          .from("tickets")
+          .delete()
+          .not("id", "is", null);
+        if (e1) throw e1;
+        const { error: e2 } = await supabase
+          .from("ticket_purchases")
+          .delete()
+          .not("id", "is", null);
+        if (e2) throw e2;
+        const { error: e3 } = await supabase
+          .from("payment_intents")
+          .delete()
+          .not("id", "is", null);
+        if (e3) throw e3;
+        toast.success("Ticket records cleared");
+      } else {
+        const { error } = await supabase
+          .from("vendor_applications")
+          .delete()
+          .not("id", "is", null);
+        if (error) throw error;
+        toast.success("Vendor records cleared");
+      }
+      await fetchAllData();
+    } catch (err) {
+      toast.error((err as Error).message || "Failed to clear records");
+    } finally {
+      setClearing(false);
+      setConfirmClear(null);
+    }
   };
 
   const exportCSV = (type: "tickets" | "vendors") => {
