@@ -73,6 +73,9 @@ interface VendorRecord {
   status: string;
   paid_at: string | null;
   created_at: string;
+  scanned: boolean;
+  scanned_at: string | null;
+  scanned_by: string | null;
 }
 
 const TICKET_TYPES = ["Early Bird", "Regular", "VIP Experience"];
@@ -86,7 +89,10 @@ const Record = () => {
   const [stats, setStats] = useState<TicketStats[]>([]);
   const [buyers, setBuyers] = useState<BuyerRecord[]>([]);
   const [copied, setCopied] = useState(false);
+  const [copiedVendors, setCopiedVendors] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [confirmClear, setConfirmClear] = useState<null | "tickets" | "vendors">(null);
+  const [clearing, setClearing] = useState(false);
 
   // New tabbed records state
   const [activeTab, setActiveTab] = useState("overview");
