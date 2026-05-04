@@ -63,6 +63,13 @@ const VendorSuccess = () => {
               Your <span className="text-foreground font-semibold">{category}</span> vendor registration has been received and payment confirmed. Your application is now under review.
             </p>
 
+            <div className="bg-primary/5 border border-primary/20 rounded-lg px-4 py-3 mb-4 text-left">
+              <p className="text-xs text-primary font-semibold uppercase tracking-wider mb-1">QR Code Sent</p>
+              <p className="text-sm text-foreground/90">
+                Your unique vendor QR code has been sent to{email ? <> <span className="text-primary font-semibold">{email}</span></> : " your email"}. Please present it at the ticket stand on event day for your access.
+              </p>
+            </div>
+
             {email && (
               <div className="bg-primary/5 border border-primary/20 rounded-lg px-4 py-3 mb-6">
                 <p className="text-xs text-muted-foreground mb-1">Confirmation details sent to</p>
@@ -75,7 +82,7 @@ const VendorSuccess = () => {
             </p>
 
             <a
-              href="https://chat.whatsapp.com/DeMaGothRlN0rnJGwDJujQ?mode=hqctcli"
+              href="https://chat.whatsapp.com/GtXPCiAK3nj0VwRv8KsjHp?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-3 w-full py-4 rounded-lg bg-green-500 text-white font-display font-bold text-sm hover:bg-green-600 transition mb-4"
