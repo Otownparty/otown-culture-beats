@@ -257,4 +257,16 @@ const Row = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
+const VendorDetails = ({ v }: { v: NonNullable<ScanResult["vendor"]> }) => (
+  <dl className="text-sm space-y-2 bg-muted/40 rounded-lg p-4">
+    <Row label="Brand" value={v.brandName} />
+    <Row label="Email" value={v.email} />
+    <Row label="Phone" value={v.phone} />
+    <Row label="Category" value={v.category} />
+    <Row label="Sub-Category" value={v.subCategory || "—"} />
+    <Row label="Amount" value={`₦${(v.amountPaid / 100).toLocaleString()}`} />
+    <Row label="Reference" value={v.reference} />
+  </dl>
+);
+
 export default Scan;
