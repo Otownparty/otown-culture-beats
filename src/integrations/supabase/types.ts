@@ -191,6 +191,9 @@ export type Database = {
           phone: string
           previous_vendor: string | null
           reference: string
+          scanned: boolean
+          scanned_at: string | null
+          scanned_by: string | null
           status: string
           sub_category: string | null
           sub_category_key: string | null
@@ -210,6 +213,9 @@ export type Database = {
           phone: string
           previous_vendor?: string | null
           reference: string
+          scanned?: boolean
+          scanned_at?: string | null
+          scanned_by?: string | null
           status?: string
           sub_category?: string | null
           sub_category_key?: string | null
@@ -229,6 +235,9 @@ export type Database = {
           phone?: string
           previous_vendor?: string | null
           reference?: string
+          scanned?: boolean
+          scanned_at?: string | null
+          scanned_by?: string | null
           status?: string
           sub_category?: string | null
           sub_category_key?: string | null
