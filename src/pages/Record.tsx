@@ -13,10 +13,21 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
+  Trash2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type TicketStats = {
   ticketType: string;
@@ -62,6 +73,9 @@ interface VendorRecord {
   status: string;
   paid_at: string | null;
   created_at: string;
+  scanned: boolean;
+  scanned_at: string | null;
+  scanned_by: string | null;
 }
 
 const TICKET_TYPES = ["Early Bird", "Regular", "VIP Experience"];
@@ -75,7 +89,10 @@ const Record = () => {
   const [stats, setStats] = useState<TicketStats[]>([]);
   const [buyers, setBuyers] = useState<BuyerRecord[]>([]);
   const [copied, setCopied] = useState(false);
+  const [copiedVendors, setCopiedVendors] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [confirmClear, setConfirmClear] = useState<null | "tickets" | "vendors">(null);
+  const [clearing, setClearing] = useState(false);
 
   // New tabbed records state
   const [activeTab, setActiveTab] = useState("overview");
@@ -205,9 +222,56 @@ const Record = () => {
     });
   };
 
+  const copyVendorEmails = () => {
+    const emails = filteredVendors.map((v) => v.email).filter(Boolean).join(", ");
+    if (!emails) return toast.error("No vendor emails to copy");
+    navigator.clipboard.writeText(emails).then(() => {
+      setCopiedVendors(true);
+      toast.success("All vendor emails copied!");
+      setTimeout(() => setCopiedVendors(false), 2500);
+    });
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate("/staff");
+  };
+
+  const clearAll = async (type: "tickets" | "vendors") => {
+    setClearing(true);
+    try {
+      if (type === "tickets") {
+        const { error: e1 } = await supabase
+          .from("tickets")
+          .delete()
+          .not("id", "is", null);
+        if (e1) throw e1;
+        const { error: e2 } = await supabase
+          .from("ticket_purchases")
+          .delete()
+          .not("id", "is", null);
+        if (e2) throw e2;
+        const { error: e3 } = await supabase
+          .from("payment_intents")
+          .delete()
+          .not("id", "is", null);
+        if (e3) throw e3;
+        toast.success("Ticket records cleared");
+      } else {
+        const { error } = await supabase
+          .from("vendor_applications")
+          .delete()
+          .not("id", "is", null);
+        if (error) throw error;
+        toast.success("Vendor records cleared");
+      }
+      await fetchAllData();
+    } catch (err) {
+      toast.error((err as Error).message || "Failed to clear records");
+    } finally {
+      setClearing(false);
+      setConfirmClear(null);
+    }
   };
 
   const exportCSV = (type: "tickets" | "vendors") => {
@@ -501,13 +565,27 @@ const Record = () => {
                       {buyers.length} ticket{buyers.length !== 1 ? "s" : ""} purchased
                     </p>
                   </div>
-                  <button
-                    onClick={copyEmails}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/20 transition"
-                  >
-                    {copied ? <Check size={12} /> : <Copy size={12} />}
-                    {copied ? "Copied!" : "Copy All Emails"}
-                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={copyEmails}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/20 transition"
+                    >
+                      {copied ? <Check size={12} /> : <Copy size={12} />}
+                      {copied ? "Copied!" : "Copy All Emails"}
+                    </button>
+                    <button
+                      onClick={() => exportCSV("tickets")}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:brightness-110 transition"
+                    >
+                      <Download size={12} /> Export
+                    </button>
+                    <button
+                      onClick={() => setConfirmClear("tickets")}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-semibold hover:bg-red-500/20 transition"
+                    >
+                      <Trash2 size={12} /> Clear All
+                    </button>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   {buyers.length === 0 ? (
@@ -579,6 +657,35 @@ const Record = () => {
 
             {/* VENDORS TAB */}
             <TabsContent value="vendors">
+              {/* Vendor Summary Cards */}
+              {(() => {
+                const paidVendors = vendors.filter((v) => v.status === "paid");
+                const totalVendors = paidVendors.length;
+                const scannedVendors = paidVendors.filter((v) => v.scanned).length;
+                const remaining = totalVendors - scannedVendors;
+                const rate = totalVendors > 0 ? Math.round((scannedVendors / totalVendors) * 100) : 0;
+                return (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-card border border-border rounded-xl p-4 text-center">
+                      <p className="text-3xl font-display font-bold text-primary">{totalVendors}</p>
+                      <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Paid Vendors</p>
+                    </div>
+                    <div className="bg-card border border-border rounded-xl p-4 text-center">
+                      <p className="text-3xl font-display font-bold text-green-400">{scannedVendors}</p>
+                      <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Checked In</p>
+                    </div>
+                    <div className="bg-card border border-border rounded-xl p-4 text-center">
+                      <p className="text-3xl font-display font-bold text-foreground">{remaining}</p>
+                      <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Not Yet Scanned</p>
+                    </div>
+                    <div className="bg-card border border-border rounded-xl p-4 text-center">
+                      <p className="text-3xl font-display font-bold text-primary">{rate}%</p>
+                      <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">Check-in Rate</p>
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
@@ -590,7 +697,7 @@ const Record = () => {
                     className="w-full pl-10 pr-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={fetchVendors}
                     className="px-4 py-3 rounded-lg border border-border hover:bg-muted transition"
@@ -598,10 +705,23 @@ const Record = () => {
                     <RefreshCw size={16} className={loadingVendors ? "animate-spin" : ""} />
                   </button>
                   <button
+                    onClick={copyVendorEmails}
+                    className="px-4 py-3 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/20 transition flex items-center gap-2"
+                  >
+                    {copiedVendors ? <Check size={14} /> : <Copy size={14} />}
+                    {copiedVendors ? "Copied!" : "Copy Emails"}
+                  </button>
+                  <button
                     onClick={() => exportCSV("vendors")}
                     className="px-4 py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition flex items-center gap-2"
                   >
                     <Download size={16} /> Export
+                  </button>
+                  <button
+                    onClick={() => setConfirmClear("vendors")}
+                    className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 font-semibold text-xs hover:bg-red-500/20 transition flex items-center gap-2"
+                  >
+                    <Trash2 size={14} /> Clear All
                   </button>
                 </div>
               </div>
@@ -626,7 +746,8 @@ const Record = () => {
                         <th className="text-left px-4 py-3 font-semibold text-foreground">Category</th>
                         <th className="text-left px-4 py-3 font-semibold text-foreground">Sub-Category</th>
                         <th className="text-left px-4 py-3 font-semibold text-foreground">Amount</th>
-                        <th className="text-left px-4 py-3 font-semibold text-foreground">Status</th>
+                        <th className="text-left px-4 py-3 font-semibold text-foreground">Payment</th>
+                        <th className="text-left px-4 py-3 font-semibold text-foreground">Scan Status</th>
                         <th className="text-left px-4 py-3 font-semibold text-foreground">Date</th>
                       </tr>
                     </thead>
@@ -643,6 +764,27 @@ const Record = () => {
                           <td className="px-4 py-3 text-muted-foreground">{v.sub_category}</td>
                           <td className="px-4 py-3 text-foreground font-semibold">₦{(v.amount / 100).toLocaleString()}</td>
                           <td className="px-4 py-3">{getStatusBadge(v.status)}</td>
+                          <td className="px-4 py-3">
+                            {v.scanned ? (
+                              <div>
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-medium">
+                                  <CheckCircle2 size={12} /> Scanned
+                                </span>
+                                {v.scanned_at && (
+                                  <p className="text-[10px] text-muted-foreground mt-1">
+                                    {new Date(v.scanned_at).toLocaleString()}
+                                  </p>
+                                )}
+                                {v.scanned_by && (
+                                  <p className="text-[10px] text-muted-foreground">by {v.scanned_by}</p>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
+                                <Clock size={12} /> Not yet
+                              </span>
+                            )}
+                          </td>
                           <td className="px-4 py-3 text-xs text-muted-foreground">
                             {new Date(v.created_at).toLocaleDateString()}
                           </td>
@@ -663,6 +805,37 @@ const Record = () => {
             </TabsContent>
           </Tabs>
         )}
+
+        {/* Confirm Clear Dialog */}
+        <AlertDialog open={!!confirmClear} onOpenChange={(open) => !open && setConfirmClear(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Clear all {confirmClear === "tickets" ? "ticket" : "vendor"} records?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete{" "}
+                {confirmClear === "tickets"
+                  ? "every ticket purchase, issued ticket, and payment intent"
+                  : "every vendor application"}{" "}
+                from the database. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={clearing}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={clearing}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (confirmClear) clearAll(confirmClear);
+                }}
+                className="bg-red-500 hover:bg-red-600 text-white"
+              >
+                {clearing ? "Clearing..." : "Yes, clear all"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </main>
   );

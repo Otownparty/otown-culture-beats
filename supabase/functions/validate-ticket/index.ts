@@ -83,6 +83,50 @@ Deno.serve(async (req) => {
       });
     }
 
+    // VENDOR QR
+    if (payloadObj.type === "vendor" && payloadObj.vid) {
+      const { data: vendor } = await admin.from("vendor_applications")
+        .select("*").eq("id", payloadObj.vid).single();
+      if (!vendor) {
+        return new Response(JSON.stringify({ valid: false, reason: "Vendor not found in database" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (vendor.status !== "paid") {
+        return new Response(JSON.stringify({ valid: false, reason: "Vendor payment not confirmed" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const alreadyScanned = !!vendor.scanned;
+      let scannedJustNow = false;
+      if (markUsed && !alreadyScanned) {
+        const { error: updErr } = await admin.from("vendor_applications").update({
+          scanned: true,
+          scanned_at: new Date().toISOString(),
+          scanned_by: userData.user.email ?? userData.user.id,
+        }).eq("id", vendor.id).eq("scanned", false);
+        if (!updErr) scannedJustNow = true;
+      }
+      return new Response(JSON.stringify({
+        valid: true,
+        kind: "vendor",
+        alreadyUsed: alreadyScanned,
+        usedJustNow: scannedJustNow,
+        vendor: {
+          id: vendor.id,
+          brandName: vendor.brand_name,
+          email: vendor.email,
+          phone: vendor.phone,
+          category: vendor.business_category,
+          subCategory: vendor.sub_category,
+          amountPaid: vendor.amount,
+          reference: vendor.reference,
+          scannedAt: vendor.scanned_at,
+          scannedBy: vendor.scanned_by,
+        },
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     // Look up the ticket
     const { data: ticket } = await admin.from("tickets")
       .select("*").eq("id", payloadObj.tid).single();
@@ -111,6 +155,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({
       valid: true,
+      kind: "ticket",
       alreadyUsed,
       usedJustNow,
       ticket: {

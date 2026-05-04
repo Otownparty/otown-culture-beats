@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/sonner";
 
 type ScanResult = {
   valid: boolean;
+  kind?: "ticket" | "vendor";
   alreadyUsed?: boolean;
   usedJustNow?: boolean;
   reason?: string;
@@ -14,6 +15,11 @@ type ScanResult = {
     id: string; name: string; email: string; ticketType: string;
     amountPaid: number; ticketIndex: number; quantity: number;
     edition: string; usedAt?: string; usedBy?: string;
+  };
+  vendor?: {
+    id: string; brandName: string; email: string; phone: string;
+    category: string; subCategory: string; amountPaid: number;
+    reference: string; scannedAt?: string; scannedBy?: string;
   };
 };
 
@@ -186,13 +192,23 @@ const Scan = () => {
                   <div className="w-16 h-16 mx-auto rounded-full bg-yellow-500/10 flex items-center justify-center mb-3">
                     <AlertTriangle className="text-yellow-500" size={32} />
                   </div>
-                  <h2 className="font-display font-bold text-lg text-foreground">Already Used</h2>
+                  <h2 className="font-display font-bold text-lg text-foreground">
+                    {result.kind === "vendor" ? "Vendor Already Checked In" : "Already Used"}
+                  </h2>
                   <p className="text-xs text-muted-foreground">
-                    Scanned at {result.ticket?.usedAt ? new Date(result.ticket.usedAt).toLocaleString() : "earlier"}
-                    {result.ticket?.usedBy ? ` by ${result.ticket.usedBy}` : ""}
+                    Scanned at {(() => {
+                      const t = result.kind === "vendor" ? result.vendor?.scannedAt : result.ticket?.usedAt;
+                      return t ? new Date(t).toLocaleString() : "earlier";
+                    })()}
+                    {(() => {
+                      const by = result.kind === "vendor" ? result.vendor?.scannedBy : result.ticket?.usedBy;
+                      return by ? ` by ${by}` : "";
+                    })()}
                   </p>
                 </div>
-                <TicketDetails t={result.ticket!} />
+                {result.kind === "vendor"
+                  ? <VendorDetails v={result.vendor!} />
+                  : <TicketDetails t={result.ticket!} />}
               </div>
             ) : (
               <div>
@@ -200,17 +216,21 @@ const Scan = () => {
                   <div className="w-16 h-16 mx-auto rounded-full bg-green-500/10 flex items-center justify-center mb-3">
                     <Check className="text-green-500" size={32} />
                   </div>
-                  <h2 className="font-display font-bold text-lg text-foreground">Valid — Admit</h2>
+                  <h2 className="font-display font-bold text-lg text-foreground">
+                    {result.kind === "vendor" ? "Vendor — Admit" : "Valid — Admit"}
+                  </h2>
                   <p className="text-xs text-green-500/80">Marked as used</p>
                 </div>
-                <TicketDetails t={result.ticket!} />
+                {result.kind === "vendor"
+                  ? <VendorDetails v={result.vendor!} />
+                  : <TicketDetails t={result.ticket!} />}
               </div>
             )}
             <button
               onClick={reset}
               className="mt-6 w-full py-3 rounded-lg bg-primary text-primary-foreground font-semibold text-sm"
             >
-              Scan Next Ticket
+              Scan Next
             </button>
           </div>
         )}
@@ -235,6 +255,18 @@ const Row = ({ label, value }: { label: string; value: string }) => (
     <dt className="text-muted-foreground">{label}</dt>
     <dd className="text-foreground font-medium text-right">{value}</dd>
   </div>
+);
+
+const VendorDetails = ({ v }: { v: NonNullable<ScanResult["vendor"]> }) => (
+  <dl className="text-sm space-y-2 bg-muted/40 rounded-lg p-4">
+    <Row label="Brand" value={v.brandName} />
+    <Row label="Email" value={v.email} />
+    <Row label="Phone" value={v.phone} />
+    <Row label="Category" value={v.category} />
+    <Row label="Sub-Category" value={v.subCategory || "—"} />
+    <Row label="Amount" value={`₦${(v.amountPaid / 100).toLocaleString()}`} />
+    <Row label="Reference" value={v.reference} />
+  </dl>
 );
 
 export default Scan;
