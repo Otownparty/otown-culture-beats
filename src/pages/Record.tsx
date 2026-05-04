@@ -565,13 +565,27 @@ const Record = () => {
                       {buyers.length} ticket{buyers.length !== 1 ? "s" : ""} purchased
                     </p>
                   </div>
-                  <button
-                    onClick={copyEmails}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/20 transition"
-                  >
-                    {copied ? <Check size={12} /> : <Copy size={12} />}
-                    {copied ? "Copied!" : "Copy All Emails"}
-                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={copyEmails}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-semibold hover:bg-primary/20 transition"
+                    >
+                      {copied ? <Check size={12} /> : <Copy size={12} />}
+                      {copied ? "Copied!" : "Copy All Emails"}
+                    </button>
+                    <button
+                      onClick={() => exportCSV("tickets")}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:brightness-110 transition"
+                    >
+                      <Download size={12} /> Export
+                    </button>
+                    <button
+                      onClick={() => setConfirmClear("tickets")}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-semibold hover:bg-red-500/20 transition"
+                    >
+                      <Trash2 size={12} /> Clear All
+                    </button>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   {buyers.length === 0 ? (
