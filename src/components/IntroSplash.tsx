@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
 const phrases = [
-  { text: "This is Otown Party!!", start: 0, end: 1.5, hero: true },
-  { text: "We are more than an Experience.", start: 1.5, end: 2.8, emphasize: "Experience" },
-  { text: "We are a Wave!", start: 2.8, end: 3.8 },
-  { text: "A Movement.", start: 3.8, end: 4.8 },
-  { text: "A Culture.", start: 4.8, end: 5.8 },
-  { text: "Otown Party Welcomes You.", start: 5.8, end: 7.0, finale: true },
+  { text: "This is Otown Party!!", start: 0.0, end: 3.2, hero: true },
+  { text: "We are more than an Experience.", start: 3.2, end: 6.0, emphasize: "Experience" },
+  { text: "We are a Wave.", start: 6.0, end: 8.4 },
+  { text: "A Movement.", start: 8.4, end: 10.6 },
+  { text: "A Culture.", start: 10.6, end: 12.8 },
+  { text: "Otown Party Welcomes You.", start: 12.8, end: 16.0, finale: true },
 ];
 
-const TOTAL = 7000;
+const TOTAL = 16000;
 const SESSION_KEY = "otown_intro_seen";
 
 const IntroSplash = ({ onDone }: { onDone: () => void }) => {
@@ -29,7 +29,7 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         setTimeout(() => {
           sessionStorage.setItem(SESSION_KEY, "1");
           onDone();
-        }, 900);
+        }, 1200);
         return;
       }
       raf = requestAnimationFrame(tick);
@@ -40,18 +40,15 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
   }, [onDone]);
 
   const tSec = t / 1000;
-  // Final phrase: reduce blur from 5px -> 0
-  const finalPhase = Math.max(0, Math.min(1, (tSec - 5.8) / 1.2));
-  const blurPx = exiting ? 0 : 5 * (1 - finalPhase);
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-black overflow-hidden transition-all duration-[900ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
-        exiting ? "opacity-0 scale-110" : "opacity-100 scale-100"
+      className={`fixed inset-0 z-[9999] bg-black overflow-hidden transition-all duration-[1200ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
+        exiting ? "opacity-0 scale-105" : "opacity-100 scale-100"
       }`}
       style={{ pointerEvents: exiting ? "none" : "auto" }}
     >
-      {/* Background video */}
+      {/* Background video — crisp, no blur */}
       <video
         ref={videoRef}
         src="/intro-bg.mp4"
@@ -60,18 +57,18 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         playsInline
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: `blur(${blurPx}px) saturate(1.05)`, transform: "scale(1.08)" }}
+        style={{ filter: "saturate(1.08) contrast(1.05)", transform: "scale(1.04)" }}
       />
 
-      {/* Dark overlay 60% */}
-      <div className="absolute inset-0 bg-black/60" />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/55" />
 
       {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.95) 100%)",
+            "radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,0.55) 78%, rgba(0,0,0,0.95) 100%)",
         }}
       />
 
@@ -85,69 +82,66 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
       />
 
       {/* Film grain */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.12] mix-blend-overlay film-grain" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.10] mix-blend-overlay film-grain" />
 
       {/* Text — positioned in upper black area above the stage */}
       <div className="absolute inset-x-0 top-0 h-[42vh] flex items-center justify-center px-6">
-        <div className="relative w-full max-w-3xl h-[5.5rem] sm:h-[6.5rem] overflow-hidden">
+        <div className="relative w-full max-w-4xl h-[6rem] sm:h-[7.5rem]">
           {phrases.map((p, i) => {
-            const active = tSec >= p.start && tSec < p.end;
-            const past = tSec >= p.end;
-            const future = tSec < p.start;
             const dur = p.end - p.start;
-            const localT = Math.max(0, Math.min(1, (tSec - p.start) / dur));
+            const localT = (tSec - p.start) / dur;
+            const visible = localT > -0.05 && localT < 1.05;
+            if (!visible) return null;
 
-            // tracking expansion for hero
-            const tracking = p.hero ? 0.04 + localT * 0.12 : 0.18;
-            // scale up final phrase
-            const scale = p.finale ? 1 + localT * 0.08 : 1;
-
-            let translateY = "0%";
+            // Slow, cinematic in/out — 22% in, 26% out, long hold
+            const IN = 0.22;
+            const OUT = 0.74;
             let opacity = 1;
-            let filter = "blur(0px)";
-            if (future) {
-              translateY = "110%";
-              opacity = 0;
-              filter = "blur(12px)";
-            } else if (past) {
-              translateY = "-110%";
-              opacity = 0;
-              filter = "blur(12px)";
-            } else {
-              // active — entering 0..0.18, holding, exiting last 0.18
-              if (localT < 0.18) {
-                const k = localT / 0.18;
-                translateY = `${(1 - k) * 100}%`;
-                opacity = k;
-                filter = `blur(${(1 - k) * 10}px)`;
-              } else if (localT > 0.82) {
-                const k = (localT - 0.82) / 0.18;
-                translateY = `${-k * 100}%`;
-                opacity = 1 - k;
-                filter = `blur(${k * 10}px)`;
-              }
+            let translateY = 0; // px
+            let blurAmt = 0;
+            let scaleExtra = 0;
+
+            if (localT < IN) {
+              const k = Math.max(0, localT) / IN;
+              const eased = 1 - Math.pow(1 - k, 3); // easeOutCubic
+              opacity = eased;
+              translateY = (1 - eased) * 18;
+              blurAmt = (1 - eased) * 6;
+            } else if (localT > OUT) {
+              const k = Math.min(1, (localT - OUT) / (1 - OUT));
+              const eased = k * k; // easeInQuad — slow start, gentle fade
+              opacity = 1 - eased;
+              translateY = -eased * 14;
+              blurAmt = eased * 4;
+              scaleExtra = eased * 0.04;
             }
+
+            const baseScale = p.finale ? 1 + Math.min(1, Math.max(0, localT)) * 0.06 : 1;
+            const tracking = p.hero ? 0.08 + Math.min(1, Math.max(0, localT)) * 0.06 : 0.14;
 
             return (
               <div
                 key={i}
                 className="absolute inset-0 flex items-center justify-center text-center will-change-transform"
                 style={{
-                  transform: `translateY(${translateY}) scale(${scale})`,
+                  transform: `translateY(${translateY}px) scale(${baseScale + scaleExtra})`,
                   opacity,
-                  filter,
-                  transition: "filter 120ms linear",
+                  filter: `blur(${blurAmt}px)`,
+                  transition: "opacity 80ms linear, filter 120ms linear",
                 }}
               >
                 <h1
-                  className="font-display font-bold text-white uppercase whitespace-nowrap"
+                  className="font-bold text-white uppercase whitespace-nowrap"
                   style={{
+                    fontFamily: "'Cormorant Garamond', 'Playfair Display', serif",
+                    fontWeight: 500,
+                    fontStyle: "italic",
                     letterSpacing: `${tracking}em`,
                     fontSize: p.hero
-                      ? "clamp(1.5rem, 5.5vw, 3.25rem)"
-                      : "clamp(1.1rem, 3.8vw, 2.25rem)",
+                      ? "clamp(1.75rem, 6vw, 3.75rem)"
+                      : "clamp(1.25rem, 4.2vw, 2.6rem)",
                     textShadow:
-                      "0 0 28px hsl(20 95% 55% / 0.35), 0 2px 18px rgba(0,0,0,0.6)",
+                      "0 0 28px hsl(20 95% 55% / 0.4), 0 2px 18px rgba(0,0,0,0.65)",
                   }}
                 >
                   {p.emphasize ? (
@@ -156,6 +150,7 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
                       <em
                         className="not-italic"
                         style={{
+                          fontStyle: "italic",
                           background:
                             "linear-gradient(120deg, hsl(36 95% 60%), hsl(15 90% 60%))",
                           WebkitBackgroundClip: "text",
@@ -178,20 +173,6 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
 
       {/* Bottom gradient to deepen black */}
       <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none" />
-
-      {/* Skip */}
-      <button
-        onClick={() => {
-          setExiting(true);
-          setTimeout(() => {
-            sessionStorage.setItem(SESSION_KEY, "1");
-            onDone();
-          }, 600);
-        }}
-        className="absolute bottom-6 right-6 text-[10px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors"
-      >
-        Skip
-      </button>
     </div>
   );
 };
