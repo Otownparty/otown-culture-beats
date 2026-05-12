@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -16,34 +17,41 @@ import Success from "./pages/Success";
 import Record from "./pages/Record";
 import Vendor from "./pages/Vendor";
 import VendorSuccess from "./pages/VendorSuccess";
+import IntroSplash, { shouldShowIntro } from "./components/IntroSplash";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/tickets" element={<Tickets />} />
-          <Route path="/claim" element={<Claim />} />
-          <Route path="/scan" element={<Scan />} />
-          <Route path="/staff" element={<StaffAuth />} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/record" element={<Record />} />
-          <Route path="/vendor" element={<Vendor />} />
-          <Route path="/vendor-success" element={<VendorSuccess />} />
-          <Route path="/records" element={<Record />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const isHome = typeof window !== "undefined" && window.location.pathname === "/";
+  const [showIntro, setShowIntro] = useState(isHome && shouldShowIntro());
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        {showIntro && <IntroSplash onDone={() => setShowIntro(false)} />}
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/tickets" element={<Tickets />} />
+            <Route path="/claim" element={<Claim />} />
+            <Route path="/scan" element={<Scan />} />
+            <Route path="/staff" element={<StaffAuth />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/record" element={<Record />} />
+            <Route path="/vendor" element={<Vendor />} />
+            <Route path="/vendor-success" element={<VendorSuccess />} />
+            <Route path="/records" element={<Record />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
