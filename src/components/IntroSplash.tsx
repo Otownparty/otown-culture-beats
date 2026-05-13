@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
 const phrases = [
-  { text: "This is Otown Party!!", start: 0.0, end: 3.2, hero: true },
-  { text: "We are more than an Experience.", start: 3.2, end: 6.0, emphasize: "Experience" },
-  { text: "We are a Wave.", start: 6.0, end: 8.4 },
-  { text: "A Movement.", start: 8.4, end: 10.6 },
-  { text: "A Culture.", start: 10.6, end: 12.8 },
-  { text: "Otown Party Welcomes You.", start: 12.8, end: 16.0, finale: true },
+  { text: "This is Otown Party!!", start: 0.2, end: 2.9, hero: true },
+  { text: "We are more than an Experience.", start: 2.9, end: 5.3, emphasize: "Experience" },
+  { text: "We are a Wave.", start: 5.3, end: 7.3 },
+  { text: "A Movement.", start: 7.3, end: 9.1 },
+  { text: "A Culture.", start: 9.1, end: 10.9 },
+  { text: "Otown Party Welcomes You.", start: 10.9, end: 13.6, finale: true },
 ];
 
-const TOTAL = 16000;
+const TOTAL = 13800;
 const SESSION_KEY = "otown_intro_seen";
 
 const IntroSplash = ({ onDone }: { onDone: () => void }) => {
@@ -30,14 +30,13 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         setTimeout(() => {
           sessionStorage.setItem(SESSION_KEY, "1");
           onDone();
-        }, 1200);
+        }, 1100);
         return;
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
 
-    // Try playing with sound first; fall back to muted if browser blocks autoplay.
     const v = videoRef.current;
     if (v) {
       v.muted = false;
@@ -64,12 +63,12 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-black overflow-hidden transition-all duration-[1200ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
+      className={`fixed inset-0 z-[9999] bg-background overflow-hidden transition-all duration-[1100ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
         exiting ? "opacity-0 scale-105" : "opacity-100 scale-100"
       }`}
       style={{ pointerEvents: exiting ? "none" : "auto" }}
     >
-      {/* Background video — fully crisp, no filters */}
+      {/* Background video — fully crisp */}
       <video
         ref={videoRef}
         src="/intro-bg.mp4"
@@ -79,31 +78,31 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Subtle dark overlay for text legibility only */}
-      <div className="absolute inset-0 bg-black/35" />
+      {/* Subtle dark overlay for text legibility */}
+      <div className="absolute inset-0 bg-black/30" />
 
       {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.92) 100%)",
+            "radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.45) 80%, rgba(0,0,0,0.92) 100%)",
         }}
       />
 
-      {/* Warm accent glow */}
+      {/* Brand-aligned gold accent glow */}
       <div
-        className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-30"
+        className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-25"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 65%, hsl(20 90% 55% / 0.45), transparent 55%)",
+            "radial-gradient(ellipse at 50% 30%, hsl(var(--gold) / 0.55), transparent 60%)",
         }}
       />
 
       {/* Film grain */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay film-grain" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.07] mix-blend-overlay film-grain" />
 
-      {/* Text — upper area above stage, fully responsive */}
+      {/* Text — upper area, fully responsive */}
       <div className="absolute inset-x-0 top-0 h-[44vh] flex items-center justify-center px-4 sm:px-6">
         <div className="relative w-full max-w-5xl h-[8rem] sm:h-[9rem] md:h-[10rem]">
           {phrases.map((p, i) => {
@@ -124,7 +123,7 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
               const eased = 1 - Math.pow(1 - k, 3);
               opacity = eased;
               translateY = (1 - eased) * 18;
-              blurAmt = (1 - eased) * 6;
+              blurAmt = (1 - eased) * 5;
             } else if (localT > OUT) {
               const k = Math.min(1, (localT - OUT) / (1 - OUT));
               const eased = k * k;
@@ -134,8 +133,8 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
               scaleExtra = eased * 0.04;
             }
 
-            const baseScale = p.finale ? 1 + Math.min(1, Math.max(0, localT)) * 0.06 : 1;
-            const tracking = p.hero || p.finale ? 0.14 : 0.18;
+            const baseScale = p.finale ? 1 + Math.min(1, Math.max(0, localT)) * 0.05 : 1;
+            const tracking = p.hero || p.finale ? 0.12 : 0.16;
 
             return (
               <div
@@ -149,27 +148,24 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
                 }}
               >
                 <h1
-                  className="uppercase text-balance break-words"
+                  className="uppercase text-balance break-words font-display"
                   style={{
-                    fontFamily: p.hero || p.finale
-                      ? "'Cinzel', 'Cormorant Garamond', serif"
-                      : "'Italiana', 'Cormorant Garamond', serif",
-                    fontWeight: p.hero || p.finale ? 700 : 400,
-                    fontStyle: p.hero || p.finale ? "normal" : "italic",
+                    fontFamily: "'Syne', sans-serif",
+                    fontWeight: p.hero || p.finale ? 800 : 600,
                     letterSpacing: `${tracking}em`,
                     lineHeight: 1.1,
                     color: "transparent",
                     backgroundImage:
-                      "linear-gradient(180deg, #fff 0%, #fff 55%, hsl(36 85% 70%) 100%)",
+                      "linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 100%) 50%, hsl(var(--gold)) 100%)",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                     fontSize: p.hero
-                      ? "clamp(1.6rem, 7.5vw, 4rem)"
+                      ? "clamp(1.6rem, 7.2vw, 3.8rem)"
                       : p.finale
-                      ? "clamp(1.4rem, 6.5vw, 3.4rem)"
-                      : "clamp(1.1rem, 5.2vw, 2.6rem)",
+                      ? "clamp(1.4rem, 6.2vw, 3.2rem)"
+                      : "clamp(1.1rem, 5vw, 2.5rem)",
                     textShadow:
-                      "0 0 32px hsl(20 95% 55% / 0.45), 0 2px 22px rgba(0,0,0,0.7)",
+                      "0 0 28px hsl(var(--gold) / 0.5), 0 2px 22px rgba(0,0,0,0.7)",
                     filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.5))",
                     paddingInline: "0.25em",
                   }}
@@ -179,9 +175,8 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
                       {p.text.split(p.emphasize)[0]}
                       <span
                         style={{
-                          fontStyle: "italic",
                           backgroundImage:
-                            "linear-gradient(120deg, hsl(36 95% 62%), hsl(15 90% 60%))",
+                            "linear-gradient(120deg, hsl(var(--gold)), hsl(var(--pink)))",
                           WebkitBackgroundClip: "text",
                           backgroundClip: "text",
                           color: "transparent",
@@ -205,14 +200,14 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
       {muted && !exiting && (
         <button
           onClick={unmute}
-          className="absolute bottom-6 right-6 z-10 text-xs sm:text-sm tracking-[0.25em] uppercase text-white/85 border border-white/30 hover:border-white/70 hover:text-white px-4 py-2 rounded-full backdrop-blur-sm bg-black/30 transition"
+          className="absolute bottom-6 right-6 z-10 text-xs sm:text-sm tracking-[0.25em] uppercase text-foreground/85 border border-foreground/30 hover:border-primary hover:text-primary px-4 py-2 rounded-full backdrop-blur-sm bg-background/40 transition font-display"
           aria-label="Unmute intro sound"
         >
           ♪ Tap for sound
         </button>
       )}
 
-      <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
     </div>
   );
 };
