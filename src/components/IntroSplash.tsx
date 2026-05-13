@@ -15,6 +15,7 @@ const SESSION_KEY = "otown_intro_seen";
 const IntroSplash = ({ onDone }: { onDone: () => void }) => {
   const [t, setT] = useState(0);
   const [exiting, setExiting] = useState(false);
+  const [muted, setMuted] = useState(false);
   const startRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
