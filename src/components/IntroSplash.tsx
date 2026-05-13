@@ -207,7 +207,6 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
   );
 };
 
-export const shouldShowIntro = () =>
-  typeof window !== "undefined" && !sessionStorage.getItem(SESSION_KEY);
+export const shouldShowIntro = () => true;
 
 export default IntroSplash;
