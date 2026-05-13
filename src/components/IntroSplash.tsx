@@ -37,26 +37,32 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
     raf = requestAnimationFrame(tick);
 
     const v = videoRef.current;
+    const tryUnmute = () => {
+      if (!v) return;
+      v.muted = false;
+      v.volume = 1;
+      v.play().catch(() => {});
+    };
     if (v) {
       v.muted = false;
       v.volume = 1;
       v.play().catch(() => {
+        // Browser blocked unmuted autoplay — start muted, then unmute on first interaction.
         v.muted = true;
-        setMuted(true);
         v.play().catch(() => {});
+        const onInteract = () => {
+          tryUnmute();
+          window.removeEventListener("pointerdown", onInteract);
+          window.removeEventListener("keydown", onInteract);
+          window.removeEventListener("touchstart", onInteract);
+        };
+        window.addEventListener("pointerdown", onInteract, { once: true });
+        window.addEventListener("keydown", onInteract, { once: true });
+        window.addEventListener("touchstart", onInteract, { once: true });
       });
     }
     return () => cancelAnimationFrame(raf);
   }, [onDone]);
-
-  const unmute = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = false;
-    v.volume = 1;
-    v.play().catch(() => {});
-    setMuted(false);
-  };
 
   const tSec = t / 1000;
 
