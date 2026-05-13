@@ -201,16 +201,6 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         </div>
       </div>
 
-      {/* Tap-to-unmute hint if browser blocked audio */}
-      {muted && !exiting && (
-        <button
-          onClick={unmute}
-          className="absolute bottom-6 right-6 z-10 text-xs sm:text-sm tracking-[0.25em] uppercase text-foreground/85 border border-foreground/30 hover:border-primary hover:text-primary px-4 py-2 rounded-full backdrop-blur-sm bg-background/40 transition font-display"
-          aria-label="Unmute intro sound"
-        >
-          ♪ Tap for sound
-        </button>
-      )}
 
       <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
     </div>
