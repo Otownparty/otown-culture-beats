@@ -46,10 +46,10 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
       v.muted = false;
       v.volume = 1;
       v.play().catch(() => {});
+      // Reflect actual state on next tick (iOS may keep it muted silently).
+      setTimeout(() => setMuted(!!v.muted), 60);
     };
 
-    // Always register a one-shot interaction listener — iOS may silently keep
-    // the video muted even when play() resolves without rejecting.
     const onInteract = () => {
       tryUnmute();
       window.removeEventListener("pointerdown", onInteract);
@@ -65,10 +65,13 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
     if (v) {
       v.muted = false;
       v.volume = 1;
-      v.play().catch(() => {
-        v.muted = true;
-        v.play().catch(() => {});
-      });
+      v.play()
+        .then(() => setTimeout(() => setMuted(!!v.muted), 80))
+        .catch(() => {
+          v.muted = true;
+          setMuted(true);
+          v.play().catch(() => {});
+        });
     }
 
     return () => {
