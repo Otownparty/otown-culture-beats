@@ -15,7 +15,6 @@ const SESSION_KEY = "otown_intro_seen";
 const IntroSplash = ({ onDone }: { onDone: () => void }) => {
   const [t, setT] = useState(0);
   const [exiting, setExiting] = useState(false);
-  const [muted, setMuted] = useState(false);
   const startRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -38,26 +37,32 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
     raf = requestAnimationFrame(tick);
 
     const v = videoRef.current;
+    const tryUnmute = () => {
+      if (!v) return;
+      v.muted = false;
+      v.volume = 1;
+      v.play().catch(() => {});
+    };
     if (v) {
       v.muted = false;
       v.volume = 1;
       v.play().catch(() => {
+        // Browser blocked unmuted autoplay — start muted, then unmute on first interaction.
         v.muted = true;
-        setMuted(true);
         v.play().catch(() => {});
+        const onInteract = () => {
+          tryUnmute();
+          window.removeEventListener("pointerdown", onInteract);
+          window.removeEventListener("keydown", onInteract);
+          window.removeEventListener("touchstart", onInteract);
+        };
+        window.addEventListener("pointerdown", onInteract, { once: true });
+        window.addEventListener("keydown", onInteract, { once: true });
+        window.addEventListener("touchstart", onInteract, { once: true });
       });
     }
     return () => cancelAnimationFrame(raf);
   }, [onDone]);
-
-  const unmute = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = false;
-    v.volume = 1;
-    v.play().catch(() => {});
-    setMuted(false);
-  };
 
   const tSec = t / 1000;
 
@@ -196,16 +201,6 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         </div>
       </div>
 
-      {/* Tap-to-unmute hint if browser blocked audio */}
-      {muted && !exiting && (
-        <button
-          onClick={unmute}
-          className="absolute bottom-6 right-6 z-10 text-xs sm:text-sm tracking-[0.25em] uppercase text-foreground/85 border border-foreground/30 hover:border-primary hover:text-primary px-4 py-2 rounded-full backdrop-blur-sm bg-background/40 transition font-display"
-          aria-label="Unmute intro sound"
-        >
-          ♪ Tap for sound
-        </button>
-      )}
 
       <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
     </div>
