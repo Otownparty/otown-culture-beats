@@ -36,6 +36,9 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
     };
     raf = requestAnimationFrame(tick);
 
+    // Clear any legacy "seen" flag so the intro always re-plays on refresh.
+    try { sessionStorage.removeItem(SESSION_KEY); } catch {}
+
     const v = videoRef.current;
     const tryUnmute = () => {
       if (!v) return;
@@ -43,25 +46,37 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
       v.volume = 1;
       v.play().catch(() => {});
     };
+
+    // Always register a one-shot interaction listener — iOS may silently keep
+    // the video muted even when play() resolves without rejecting.
+    const onInteract = () => {
+      tryUnmute();
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+      window.removeEventListener("keydown", onInteract);
+      window.removeEventListener("click", onInteract);
+    };
+    window.addEventListener("pointerdown", onInteract);
+    window.addEventListener("touchstart", onInteract);
+    window.addEventListener("keydown", onInteract);
+    window.addEventListener("click", onInteract);
+
     if (v) {
       v.muted = false;
       v.volume = 1;
       v.play().catch(() => {
-        // Browser blocked unmuted autoplay — start muted, then unmute on first interaction.
         v.muted = true;
         v.play().catch(() => {});
-        const onInteract = () => {
-          tryUnmute();
-          window.removeEventListener("pointerdown", onInteract);
-          window.removeEventListener("keydown", onInteract);
-          window.removeEventListener("touchstart", onInteract);
-        };
-        window.addEventListener("pointerdown", onInteract, { once: true });
-        window.addEventListener("keydown", onInteract, { once: true });
-        window.addEventListener("touchstart", onInteract, { once: true });
       });
     }
-    return () => cancelAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+      window.removeEventListener("keydown", onInteract);
+      window.removeEventListener("click", onInteract);
+    };
   }, [onDone]);
 
   const tSec = t / 1000;
