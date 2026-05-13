@@ -15,6 +15,7 @@ const SESSION_KEY = "otown_intro_seen";
 const IntroSplash = ({ onDone }: { onDone: () => void }) => {
   const [t, setT] = useState(0);
   const [exiting, setExiting] = useState(false);
+  const [muted, setMuted] = useState(false);
   const startRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -45,10 +46,10 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
       v.muted = false;
       v.volume = 1;
       v.play().catch(() => {});
+      // Reflect actual state on next tick (iOS may keep it muted silently).
+      setTimeout(() => setMuted(!!v.muted), 60);
     };
 
-    // Always register a one-shot interaction listener — iOS may silently keep
-    // the video muted even when play() resolves without rejecting.
     const onInteract = () => {
       tryUnmute();
       window.removeEventListener("pointerdown", onInteract);
@@ -64,10 +65,13 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
     if (v) {
       v.muted = false;
       v.volume = 1;
-      v.play().catch(() => {
-        v.muted = true;
-        v.play().catch(() => {});
-      });
+      v.play()
+        .then(() => setTimeout(() => setMuted(!!v.muted), 80))
+        .catch(() => {
+          v.muted = true;
+          setMuted(true);
+          v.play().catch(() => {});
+        });
     }
 
     return () => {
@@ -216,6 +220,53 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
         </div>
       </div>
 
+      {/* Premium "Tap for sound" pill — appears only when audio is muted */}
+      {muted && !exiting && (
+        <button
+          onClick={() => {
+            const v = videoRef.current;
+            if (!v) return;
+            v.muted = false;
+            v.volume = 1;
+            v.play().catch(() => {});
+            setTimeout(() => setMuted(!!v.muted), 60);
+          }}
+          aria-label="Tap to enable sound"
+          className="group absolute left-1/2 bottom-8 sm:bottom-10 -translate-x-1/2 z-20 animate-fade-in"
+        >
+          <span
+            className="relative flex items-center gap-2.5 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full font-display text-[0.7rem] sm:text-xs uppercase tracking-[0.32em] text-foreground/95 backdrop-blur-xl bg-background/30 border border-foreground/15 shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 hover:border-[hsl(var(--gold))] hover:text-[hsl(var(--gold))] hover:shadow-[0_0_28px_hsl(var(--gold)/0.35)]"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, hsl(var(--gold) / 0.08), hsl(var(--pink) / 0.05))",
+            }}
+          >
+            {/* pulsing dot */}
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--gold))] opacity-70 animate-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--gold))]" />
+            </span>
+            {/* speaker icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="opacity-90"
+            >
+              <path d="M11 5 6 9H2v6h4l5 4z" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+            <span>Tap for sound</span>
+          </span>
+        </button>
+      )}
 
       <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
     </div>
