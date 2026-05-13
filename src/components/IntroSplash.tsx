@@ -27,7 +27,7 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
       if (elapsed >= TOTAL) {
         setExiting(true);
         setTimeout(() => {
-          sessionStorage.setItem(SESSION_KEY, "1");
+          
           onDone();
         }, 1100);
         return;
@@ -207,7 +207,6 @@ const IntroSplash = ({ onDone }: { onDone: () => void }) => {
   );
 };
 
-export const shouldShowIntro = () =>
-  typeof window !== "undefined" && !sessionStorage.getItem(SESSION_KEY);
+export const shouldShowIntro = () => true;
 
 export default IntroSplash;
