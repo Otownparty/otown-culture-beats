@@ -161,7 +161,7 @@ const Tickets = () => {
                         </div>
                       </div>
 
-                      <button onClick={() => handleBuy(t.name)} disabled={isLoading}
+                      <button onClick={() => openDetails(t.name, t.price)} disabled={isLoading}
                         className={`block w-full py-3 rounded-lg font-semibold text-sm transition text-center disabled:opacity-60 ${
                           t.featured ? "bg-primary text-primary-foreground hover:brightness-110"
                           : t.accent === "pink" ? "border border-pink-400 text-pink-400 hover:bg-pink-400/10"
