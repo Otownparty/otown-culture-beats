@@ -29,7 +29,39 @@ const Claim = () => {
           return;
         }
         setInfo({ ticketType: data.ticketType, quantity: data.quantity, amount: data.amount });
-        setStage("form");
+
+        // Prefill from details captured before Paystack
+        let prefName = "";
+        let prefEmail = "";
+        try {
+          const stash = localStorage.getItem(`otp_buyer_${reference}`);
+          if (stash) {
+            const b = JSON.parse(stash);
+            prefName = b?.name || "";
+            prefEmail = b?.email || "";
+            if (prefName) setName(prefName);
+            if (prefEmail) setEmail(prefEmail);
+          }
+        } catch {}
+
+        // If we already have name + email, auto-claim — no second form needed
+        if (prefName.trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(prefEmail.trim())) {
+          setStage("submitting");
+          try {
+            const res = await supabase.functions.invoke("claim-tickets", {
+              body: { reference, name: prefName.trim(), email: prefEmail.trim() },
+            });
+            if (res.error || !res.data?.success) throw new Error(res.error?.message || res.data?.error || "Failed to issue tickets");
+            try { localStorage.removeItem(`otp_buyer_${reference}`); } catch {}
+            setStage("done");
+            if (!res.data.emailSent) toast.error("Tickets created but email failed. Save your reference: " + reference);
+          } catch (err) {
+            setStage("form");
+            toast.error((err as Error).message);
+          }
+        } else {
+          setStage("form");
+        }
       } catch (err) {
         setStage("error");
         setErrorMsg((err as Error).message);
