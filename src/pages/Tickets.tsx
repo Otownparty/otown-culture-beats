@@ -256,6 +256,92 @@ const Tickets = () => {
           </div>
         </div>
       </main>
+
+      {/* Personal Details Modal — collected before Paystack */}
+      <Dialog open={detailsOpen} onOpenChange={(o) => { if (!loading) setDetailsOpen(o); }}>
+        <DialogContent className="bg-card border border-border max-w-md p-0 overflow-hidden">
+          <div className="relative">
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-br from-primary/20 via-pink-400/10 to-transparent pointer-events-none" />
+            <div className="relative p-6 sm:p-7">
+              <DialogHeader className="space-y-2 mb-5">
+                <p className="text-primary text-[10px] font-bold uppercase tracking-[0.25em]">Step 1 of 2 — Your Details</p>
+                <DialogTitle className="font-display font-bold text-2xl text-foreground leading-tight">
+                  Lock in your spot{activeTicket ? `, ${activeTicket.quantity}× ${activeTicket.name}` : ""}
+                </DialogTitle>
+                <DialogDescription className="text-sm text-muted-foreground">
+                  We'll send your QR code{activeTicket && activeTicket.quantity > 1 ? "s" : ""} to the email below right after payment.
+                </DialogDescription>
+              </DialogHeader>
+
+              <form onSubmit={handleProceedToPayment} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Full Name</label>
+                  <input type="text" required maxLength={100} value={buyerName} onChange={(e) => setBuyerName(e.target.value)}
+                    disabled={!!loading}
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="As you'd like it on the ticket" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Email Address</label>
+                  <input type="email" required maxLength={255} value={buyerEmail} onChange={(e) => setBuyerEmail(e.target.value)}
+                    disabled={!!loading}
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="where to send your QR" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Phone <span className="text-muted-foreground/60 normal-case font-normal">(optional)</span></label>
+                  <input type="tel" maxLength={20} value={buyerPhone} onChange={(e) => setBuyerPhone(e.target.value)}
+                    disabled={!!loading}
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="+234…" />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Is this your first Otown?</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => setAttendeeType("first-timer")} disabled={!!loading}
+                      className={`flex items-center gap-2 px-3 py-3 rounded-lg border text-sm font-semibold transition text-left ${
+                        attendeeType === "first-timer"
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border bg-muted text-foreground hover:border-primary/60"
+                      }`}>
+                      <Sparkles size={16} className="shrink-0" />
+                      <span>First-timer</span>
+                    </button>
+                    <button type="button" onClick={() => setAttendeeType("returning")} disabled={!!loading}
+                      className={`flex items-center gap-2 px-3 py-3 rounded-lg border text-sm font-semibold transition text-left ${
+                        attendeeType === "returning"
+                          ? "border-pink-400 bg-pink-400/10 text-pink-400"
+                          : "border-border bg-muted text-foreground hover:border-pink-400/60"
+                      }`}>
+                      <Repeat size={16} className="shrink-0" />
+                      <span>Returning raver</span>
+                    </button>
+                  </div>
+                </div>
+
+                {activeTicket && (
+                  <div className="flex items-center justify-between pt-2 pb-1 px-1 text-sm">
+                    <span className="text-muted-foreground">Total</span>
+                    <span className="font-display font-bold text-foreground text-lg">
+                      ₦{(activeTicket.price * activeTicket.quantity).toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                <button type="submit" disabled={!!loading}
+                  className="w-full py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition disabled:opacity-60">
+                  {loading ? (
+                    <span className="inline-flex items-center gap-2 justify-center"><Loader2 size={14} className="animate-spin" /> Opening payment…</span>
+                  ) : "Proceed to Payment →"}
+                </button>
+                <p className="text-[11px] text-muted-foreground text-center">Secure checkout powered by Paystack</p>
+              </form>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </>
   );
