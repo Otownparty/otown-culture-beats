@@ -32,12 +32,32 @@ const Tickets = () => {
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
+  // Personal-details modal state (collected before Paystack)
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [activeTicket, setActiveTicket] = useState<{ name: string; quantity: number; price: number } | null>(null);
+  const [buyerName, setBuyerName] = useState("");
+  const [buyerEmail, setBuyerEmail] = useState("");
+  const [buyerPhone, setBuyerPhone] = useState("");
+  const [attendeeType, setAttendeeType] = useState<"first-timer" | "returning" | "">("");
+
   const getQty = (name: string) => quantities[name] ?? 1;
   const setQty = (name: string, qty: number) =>
     setQuantities((q) => ({ ...q, [name]: Math.max(1, Math.min(10, qty)) }));
 
-  const handleBuy = async (ticketName: string) => {
-    const quantity = getQty(ticketName);
+  const openDetails = (ticketName: string, price: number) => {
+    setActiveTicket({ name: ticketName, quantity: getQty(ticketName), price });
+    setDetailsOpen(true);
+  };
+
+  const handleProceedToPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeTicket) return;
+    if (buyerName.trim().length < 2) return toast.error("Please enter your full name");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail.trim())) return toast.error("Please enter a valid email");
+    if (!attendeeType) return toast.error("Tell us — first-timer or returning raver?");
+
+    const ticketName = activeTicket.name;
+    const quantity = activeTicket.quantity;
     setLoading(ticketName);
     try {
       await loadPaystackScript();
@@ -46,21 +66,39 @@ const Tickets = () => {
       });
       if (error || !data?.reference) throw new Error(error?.message || "Failed to start payment");
 
+      // Stash buyer details so /claim can auto-fill after payment
+      try {
+        localStorage.setItem(
+          `otp_buyer_${data.reference}`,
+          JSON.stringify({
+            name: buyerName.trim(),
+            email: buyerEmail.trim(),
+            phone: buyerPhone.trim(),
+            attendeeType,
+          })
+        );
+      } catch {}
+
       const handler = window.PaystackPop.setup({
         key: data.publicKey,
-        email: `guest+${data.reference}@otownparty.com`, // placeholder; collected after payment
+        email: buyerEmail.trim(),
         amount: data.amount,
         currency: "NGN",
         ref: data.reference,
-        metadata: { ticketType: ticketName, quantity },
-        // Bank transfer first (default), then card, USSD, mobile money, QR, bank
+        metadata: {
+          ticketType: ticketName,
+          quantity,
+          buyer_name: buyerName.trim(),
+          buyer_phone: buyerPhone.trim(),
+          attendee_type: attendeeType,
+        },
         channels: ["bank_transfer", "card", "ussd", "mobile_money", "qr", "bank"],
         onClose: () => setLoading(null),
         callback: (response: any) => {
-          // Paystack succeeded — redirect to claim page; verification happens there.
           navigate(`/claim?reference=${encodeURIComponent(response.reference)}`);
         },
       });
+      setDetailsOpen(false);
       handler.openIframe();
     } catch (err) {
       console.error(err);
