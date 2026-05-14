@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Check, Mail, MapPin, Loader2, Minus, Plus } from "lucide-react";
+import { Check, Mail, MapPin, Loader2, Minus, Plus, Sparkles, Repeat, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const tickets = [
   { name: "Early Bird", badge: "Best Value", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true },
