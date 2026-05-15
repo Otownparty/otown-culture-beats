@@ -47,15 +47,17 @@ Deno.serve(async (req) => {
 
     const signingSecret = Deno.env.get("QR_SIGNING_SECRET");
     const resendKey = Deno.env.get("RESEND_API_KEY");
+    const paystackSecret = Deno.env.get("PAYSTACK_SECRET_KEY");
     if (!signingSecret) throw new Error("QR_SIGNING_SECRET not configured");
     if (!resendKey) throw new Error("RESEND_API_KEY not configured");
+    if (!paystackSecret) throw new Error("PAYSTACK_SECRET_KEY not configured");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Load and validate intent
+    // Load intent
     const { data: intent, error: intentErr } = await supabase
       .from("payment_intents").select("*").eq("reference", reference).single();
     if (intentErr || !intent) {
@@ -63,15 +65,42 @@ Deno.serve(async (req) => {
         status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    if (intent.status === "pending") {
-      return new Response(JSON.stringify({ error: "Payment not yet verified" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+
+    // Already claimed — return success so user sees congratulatory page
     if (intent.status === "claimed") {
-      return new Response(JSON.stringify({ error: "Tickets already claimed for this payment" }), {
-        status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({
+        success: true,
+        emailSent: false,
+        alreadyClaimed: true,
+        error: "Tickets already claimed for this payment",
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // *** KEY FIX: if still pending, verify with Paystack directly ***
+    if (intent.status === "pending") {
+      console.log("Status is pending — verifying with Paystack:", reference);
+      const psRes = await fetch(
+        `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+        { headers: { Authorization: `Bearer ${paystackSecret}` } }
+      );
+      const psData = await psRes.json();
+      console.log("Paystack response status:", psData?.data?.status);
+
+      if (!psRes.ok || !psData.status || psData.data?.status !== "success") {
+        return new Response(JSON.stringify({
+          error: "Payment not confirmed by Paystack. If you just paid, wait a moment and try again.",
+          paystackStatus: psData?.data?.status,
+        }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Mark verified so future calls skip this step
+      await supabase.from("payment_intents")
+        .update({ status: "verified", verified_at: new Date().toISOString() })
+        .eq("reference", reference);
+
+      console.log("Payment verified, proceeding to issue tickets");
     }
 
     const cleanName = name.trim();
@@ -92,7 +121,7 @@ Deno.serve(async (req) => {
         n: cleanName,
         e: cleanEmail,
         t: ticketType,
-        a: unitPrice, // amount per ticket (kobo)
+        a: unitPrice,
         q: quantity,
         i: i,
         ed: edition,
@@ -126,8 +155,7 @@ Deno.serve(async (req) => {
       claimed_at: new Date().toISOString(),
     }).eq("reference", reference);
 
-    // Build email with QR images (use external QR-as-PNG generator for inline images)
-    // Use api.qrserver.com — free, no key required, returns PNG
+    // Build email with QR codes
     const ticketHtml = qrPayloads.map(({ payload, ticketIndex }) => {
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(payload)}`;
       return `
@@ -152,9 +180,7 @@ Deno.serve(async (req) => {
         </p>
         <p style="margin-top:24px; font-size:12px; color:#999;">If you didn't make this purchase, reply to this email immediately.</p>
       </div>`;
-    
-    // Use RESEND_FROM_EMAIL secret if set (e.g. "Otown Party <tickets@otownparty.com>"),
-    // otherwise fall back to Resend's default test sender.
+
     const fromAddress = Deno.env.get("RESEND_FROM_EMAIL") || "Otown Party <onboarding@resend.dev>";
     console.log("Sending email from:", fromAddress, "to:", cleanEmail);
 
@@ -175,7 +201,6 @@ Deno.serve(async (req) => {
     if (!resendRes.ok) {
       const errText = await resendRes.text();
       console.error("Resend error:", resendRes.status, errText);
-      // Don't fail the whole request — tickets are saved. Surface the real error.
       return new Response(JSON.stringify({
         success: true,
         emailSent: false,
@@ -188,6 +213,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({
       success: true, emailSent: true, reference, quantity,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   } catch (err) {
     console.error("claim-tickets error:", err);
     return new Response(JSON.stringify({ error: (err as Error).message }), {
