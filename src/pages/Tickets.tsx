@@ -9,7 +9,7 @@ import { toast } from "@/components/ui/sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const tickets = [
-  { name: "Early Bird", badge: "Best Value", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true },
+  { name: "Early Bird", badge: "Sold Out", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true, soldOut: true, soldCount: 25, totalCount: 25 },
   { name: "Regular", price: 5000, features: ["Full event access"], accent: "foreground" as const, featured: false },
   { name: "VIP Experience", price: 15000, features: ["Full stage access", "Premium visibility", "Priority entry", "Access to merch"], accent: "pink" as const, featured: false },
 ];
@@ -126,48 +126,82 @@ const Tickets = () => {
                 const qty = getQty(t.name);
                 const total = t.price * qty;
                 const isLoading = loading === t.name;
+                const isSoldOut = t.soldOut ?? false;
+                
                 return (
                   <ScrollReveal key={t.name}>
-                    <div className={`bg-card border rounded-xl p-6 transition-all hover:-translate-y-1 ${
+                    <div className={`bg-card border rounded-xl p-6 transition-all ${
+                      isSoldOut 
+                        ? "opacity-60 cursor-not-allowed" 
+                        : "hover:-translate-y-1"
+                    } ${
                       t.featured ? "border-primary border-l-4" : t.accent === "pink" ? "border-pink-400/40" : "border-border"
                     }`}>
                       <div className="flex items-center gap-3 mb-3">
-                        <h3 className="font-display font-bold text-lg text-foreground">{t.name}</h3>
+                        <h3 className={`font-display font-bold text-lg ${isSoldOut ? "text-muted-foreground" : "text-foreground"}`}>
+                          {t.name}
+                        </h3>
                         {t.badge && (
-                          <span className="bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">{t.badge}</span>
+                          <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                            isSoldOut 
+                              ? "bg-muted text-muted-foreground" 
+                              : "bg-primary/10 text-primary"
+                          }`}>
+                            {t.badge}
+                          </span>
                         )}
                       </div>
-                      <p className="text-2xl font-display font-bold text-foreground mb-4">₦{t.price.toLocaleString()}</p>
+                      
+                      <p className={`text-2xl font-display font-bold mb-4 ${isSoldOut ? "text-muted-foreground line-through" : "text-foreground"}`}>
+                        ₦{t.price.toLocaleString()}
+                      </p>
+                      
+                      {isSoldOut && t.soldCount !== undefined && t.totalCount !== undefined && (
+                        <div className="mb-4 text-sm text-muted-foreground">
+                          <span className="font-semibold">{t.soldCount}/{t.totalCount}</span> tickets sold
+                        </div>
+                      )}
+                      
                       <ul className="space-y-2 mb-5">
                         {t.features.map((f) => (
-                          <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Check size={14} className="text-primary flex-shrink-0" /> {f}
+                          <li key={f} className={`flex items-center gap-2 text-sm ${isSoldOut ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
+                            <Check size={14} className={`flex-shrink-0 ${isSoldOut ? "text-muted-foreground/60" : "text-primary"}`} /> {f}
                           </li>
                         ))}
                       </ul>
 
-                      <div className="flex items-center justify-between mb-4 bg-muted/40 rounded-lg p-2">
-                        <span className="text-sm text-muted-foreground pl-2">Quantity</span>
-                        <div className="flex items-center gap-2">
-                          <button type="button" onClick={() => setQty(t.name, qty - 1)} disabled={qty <= 1 || isLoading}
-                            className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center text-foreground hover:border-primary disabled:opacity-40">
-                            <Minus size={14} />
-                          </button>
-                          <span className="w-6 text-center font-semibold text-foreground">{qty}</span>
-                          <button type="button" onClick={() => setQty(t.name, qty + 1)} disabled={qty >= 10 || isLoading}
-                            className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center text-foreground hover:border-primary disabled:opacity-40">
-                            <Plus size={14} />
-                          </button>
+                      {!isSoldOut && (
+                        <div className="flex items-center justify-between mb-4 bg-muted/40 rounded-lg p-2">
+                          <span className="text-sm text-muted-foreground pl-2">Quantity</span>
+                          <div className="flex items-center gap-2">
+                            <button type="button" onClick={() => setQty(t.name, qty - 1)} disabled={qty <= 1 || isLoading}
+                              className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center text-foreground hover:border-primary disabled:opacity-40">
+                              <Minus size={14} />
+                            </button>
+                            <span className="w-6 text-center font-semibold text-foreground">{qty}</span>
+                            <button type="button" onClick={() => setQty(t.name, qty + 1)} disabled={qty >= 10 || isLoading}
+                              className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center text-foreground hover:border-primary disabled:opacity-40">
+                              <Plus size={14} />
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      )}
 
-                      <button onClick={() => openDetails(t.name, t.price)} disabled={isLoading}
-                        className={`block w-full py-3 rounded-lg font-semibold text-sm transition text-center disabled:opacity-60 ${
-                          t.featured ? "bg-primary text-primary-foreground hover:brightness-110"
-                          : t.accent === "pink" ? "border border-pink-400 text-pink-400 hover:bg-pink-400/10"
-                          : "border border-foreground/30 text-foreground hover:border-primary hover:text-primary"
+                      <button 
+                        onClick={() => !isSoldOut && openDetails(t.name, t.price)} 
+                        disabled={isLoading || isSoldOut}
+                        className={`block w-full py-3 rounded-lg font-semibold text-sm transition text-center ${
+                          isSoldOut 
+                            ? "bg-muted border border-border text-muted-foreground cursor-not-allowed" 
+                            : t.featured 
+                              ? "bg-primary text-primary-foreground hover:brightness-110 disabled:opacity-60"
+                              : t.accent === "pink" 
+                                ? "border border-pink-400 text-pink-400 hover:bg-pink-400/10 disabled:opacity-60"
+                                : "border border-foreground/30 text-foreground hover:border-primary hover:text-primary disabled:opacity-60"
                         }`}>
-                        {isLoading ? (
+                        {isSoldOut ? (
+                          "Sold Out"
+                        ) : isLoading ? (
                           <span className="inline-flex items-center gap-2"><Loader2 size={14} className="animate-spin" /> Opening payment…</span>
                         ) : (
                           <>Get {t.name} — Pay ₦{total.toLocaleString()}</>
