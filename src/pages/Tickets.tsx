@@ -156,12 +156,6 @@ const Tickets = () => {
                         ₦{t.price.toLocaleString()}
                       </p>
                       
-                      {isSoldOut && t.soldCount !== undefined && t.totalCount !== undefined && (
-                        <div className="mb-4 text-sm text-muted-foreground">
-                          <span className="font-semibold">{t.soldCount}/{t.totalCount}</span> tickets sold
-                        </div>
-                      )}
-                      
                       <ul className="space-y-2 mb-5">
                         {t.features.map((f) => (
                           <li key={f} className={`flex items-center gap-2 text-sm ${isSoldOut ? "text-muted-foreground/60" : "text-muted-foreground"}`}>
