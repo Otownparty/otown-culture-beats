@@ -1,4 +1,4 @@
-   // After payment verified, accept buyer name+email, create N tickets with signed QR codes,
+// After payment verified, accept buyer name+email, create N tickets with signed QR codes,
 // generate QR images and email them via Resend.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
