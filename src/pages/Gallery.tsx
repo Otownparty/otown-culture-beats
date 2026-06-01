@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -199,6 +199,14 @@ const filters = [
 const Gallery = () => {
   const [filter, setFilter] = useState("all");
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showControls = useCallback(() => {
+    setControlsVisible(true);
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2500);
+  }, []);
 
   const filtered =
     filter === "all" ? photos : photos.filter((p) => p.era === filter);
@@ -215,14 +223,37 @@ const Gallery = () => {
 
   useEffect(() => {
     if (lightbox === null) return;
+    showControls();
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") { showControls(); prev(); }
+      if (e.key === "ArrowRight") { showControls(); next(); }
     };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [lightbox, close, prev, next]);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, [lightbox, close, prev, next, showControls]);
+
+  const handleDownload = useCallback(async (src: string, alt: string) => {
+    try {
+      const res = await fetch(src, { mode: "cors" });
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const ext = (blob.type.split("/")[1] || "jpg").split("+")[0];
+      const safeName = alt.replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 50) || "otown-photo";
+      a.href = url;
+      a.download = `${safeName}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      window.open(src, "_blank");
+    }
+  }, []);
 
   return (
     <>
@@ -278,34 +309,48 @@ const Gallery = () => {
         <div
           className="fixed inset-0 z-[100] bg-background/95 flex items-center justify-center"
           onClick={close}
+          onMouseMove={showControls}
+          onTouchStart={showControls}
         >
           <button
-            onClick={close}
-            className="absolute top-6 right-6 text-foreground hover:text-primary transition-colors"
+            onClick={(e) => { e.stopPropagation(); close(); }}
+            className={`absolute top-6 right-6 z-10 text-foreground hover:text-primary transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             aria-label="Close"
           >
             <X size={28} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-4 text-foreground hover:text-primary transition-colors"
+            onClick={(e) => { e.stopPropagation(); showControls(); prev(); }}
+            className={`absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-background/60 backdrop-blur-sm text-foreground hover:text-primary transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             aria-label="Previous"
           >
-            <ChevronLeft size={36} />
+            <ChevronLeft size={32} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-4 text-foreground hover:text-primary transition-colors"
+            onClick={(e) => { e.stopPropagation(); showControls(); next(); }}
+            className={`absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-background/60 backdrop-blur-sm text-foreground hover:text-primary transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             aria-label="Next"
           >
-            <ChevronRight size={36} />
+            <ChevronRight size={32} />
           </button>
           <img
             src={filtered[lightbox].src}
             alt={filtered[lightbox].alt}
-            className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
-            onClick={(e) => e.stopPropagation()}
+            className="max-w-[94vw] max-h-[78vh] object-contain rounded-lg"
+            onClick={(e) => { e.stopPropagation(); showControls(); }}
           />
+          <div
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[min(92vw,420px)] px-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => handleDownload(filtered[lightbox].src, filtered[lightbox].alt)}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg"
+            >
+              <Download size={18} />
+              Download
+            </button>
+          </div>
         </div>
       )}
 
