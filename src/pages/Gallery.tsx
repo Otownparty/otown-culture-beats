@@ -223,14 +223,37 @@ const Gallery = () => {
 
   useEffect(() => {
     if (lightbox === null) return;
+    showControls();
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") { showControls(); prev(); }
+      if (e.key === "ArrowRight") { showControls(); next(); }
     };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [lightbox, close, prev, next]);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, [lightbox, close, prev, next, showControls]);
+
+  const handleDownload = useCallback(async (src: string, alt: string) => {
+    try {
+      const res = await fetch(src, { mode: "cors" });
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const ext = (blob.type.split("/")[1] || "jpg").split("+")[0];
+      const safeName = alt.replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 50) || "otown-photo";
+      a.href = url;
+      a.download = `${safeName}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      window.open(src, "_blank");
+    }
+  }, []);
 
   return (
     <>
