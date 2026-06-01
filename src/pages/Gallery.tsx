@@ -187,6 +187,8 @@ const photos: Photo[] = [
   { src: img5411, alt: "MC performing under purple stage lights", era: "last" },
   { src: img5465, alt: "MC performing with towel raised over crowd", era: "last" },
   { src: img5488, alt: "MC leaning into mic over a packed crowd", era: "last" },
+  // ── Cloudinary-hosted Last Edition photos ──────────────────────────────────
+  ...lastEditionPhotos.map((p) => ({ ...p, era: "last" })),
 ];
 
 const filters = [
