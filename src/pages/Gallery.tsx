@@ -199,6 +199,14 @@ const filters = [
 const Gallery = () => {
   const [filter, setFilter] = useState("all");
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showControls = useCallback(() => {
+    setControlsVisible(true);
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2500);
+  }, []);
 
   const filtered =
     filter === "all" ? photos : photos.filter((p) => p.era === filter);
