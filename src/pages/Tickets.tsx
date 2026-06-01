@@ -95,7 +95,31 @@ const Tickets = () => {
         channels: ["bank_transfer", "card", "ussd", "mobile_money", "qr", "bank"],
         onClose: () => setLoading(null),
         callback: (response: any) => {
-          navigate(`/claim?reference=${encodeURIComponent(response.reference)}`);
+          const ref = response.reference;
+          const finalName = buyerName.trim();
+          const finalEmail = buyerEmail.trim();
+          const goSuccess = () => {
+            try { localStorage.removeItem(`otp_buyer_${ref}`); } catch {}
+            navigate(
+              `/success?fullname=${encodeURIComponent(finalName)}&email=${encodeURIComponent(finalEmail)}`
+            );
+          };
+          // Fire claim in background, but always show congratulatory page.
+          supabase.functions
+            .invoke("claim-tickets", { body: { reference: ref, name: finalName, email: finalEmail } })
+            .then(({ data, error }) => {
+              if (error || (!data?.success && !data?.alreadyClaimed)) {
+                toast.error(
+                  "Payment received. If your email doesn't arrive in a few minutes, contact pr@otownparty.com with ref: " + ref
+                );
+              } else if (data?.success && data?.emailSent === false) {
+                toast.error("Tickets saved but email failed. Contact pr@otownparty.com with ref: " + ref);
+              }
+            })
+            .catch(() => {
+              toast.error("Payment received. If your email doesn't arrive shortly, contact pr@otownparty.com with ref: " + ref);
+            });
+          goSuccess();
         },
       });
       setDetailsOpen(false);
