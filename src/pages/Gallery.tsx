@@ -3,6 +3,7 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import { lastEditionPhotos } from "@/data/lastEditionPhotos";
 
 // ── Archive photos (gallery-1.jpg … gallery-38.jpg) ──────────────────────────
 import g1 from "@/assets/gallery-1.jpg";
@@ -186,6 +187,8 @@ const photos: Photo[] = [
   { src: img5411, alt: "MC performing under purple stage lights", era: "last" },
   { src: img5465, alt: "MC performing with towel raised over crowd", era: "last" },
   { src: img5488, alt: "MC leaning into mic over a packed crowd", era: "last" },
+  // ── Cloudinary-hosted Last Edition photos ──────────────────────────────────
+  ...lastEditionPhotos.map((p) => ({ ...p, era: "last" })),
 ];
 
 const filters = [
