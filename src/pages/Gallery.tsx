@@ -309,34 +309,48 @@ const Gallery = () => {
         <div
           className="fixed inset-0 z-[100] bg-background/95 flex items-center justify-center"
           onClick={close}
+          onMouseMove={showControls}
+          onTouchStart={showControls}
         >
           <button
-            onClick={close}
-            className="absolute top-6 right-6 text-foreground hover:text-primary transition-colors"
+            onClick={(e) => { e.stopPropagation(); close(); }}
+            className={`absolute top-6 right-6 z-10 text-foreground hover:text-primary transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             aria-label="Close"
           >
             <X size={28} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-4 text-foreground hover:text-primary transition-colors"
+            onClick={(e) => { e.stopPropagation(); showControls(); prev(); }}
+            className={`absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-background/60 backdrop-blur-sm text-foreground hover:text-primary transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             aria-label="Previous"
           >
-            <ChevronLeft size={36} />
+            <ChevronLeft size={32} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-4 text-foreground hover:text-primary transition-colors"
+            onClick={(e) => { e.stopPropagation(); showControls(); next(); }}
+            className={`absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-background/60 backdrop-blur-sm text-foreground hover:text-primary transition-opacity duration-500 ${controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             aria-label="Next"
           >
-            <ChevronRight size={36} />
+            <ChevronRight size={32} />
           </button>
           <img
             src={filtered[lightbox].src}
             alt={filtered[lightbox].alt}
-            className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
-            onClick={(e) => e.stopPropagation()}
+            className="max-w-[94vw] max-h-[78vh] object-contain rounded-lg"
+            onClick={(e) => { e.stopPropagation(); showControls(); }}
           />
+          <div
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[min(92vw,420px)] px-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => handleDownload(filtered[lightbox].src, filtered[lightbox].alt)}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg"
+            >
+              <Download size={18} />
+              Download
+            </button>
+          </div>
         </div>
       )}
 
