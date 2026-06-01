@@ -3,6 +3,7 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import { lastEditionPhotos } from "@/data/lastEditionPhotos";
 
 // ── Archive photos (gallery-1.jpg … gallery-38.jpg) ──────────────────────────
 import g1 from "@/assets/gallery-1.jpg";
