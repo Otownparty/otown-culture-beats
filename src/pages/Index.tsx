@@ -12,7 +12,7 @@ import gallery3 from "@/assets/gallery-3.jpg";
 import gallery4 from "@/assets/gallery-4.jpg";
 
 const stats = [
-  { value: "10", label: "Editions Hosted" },
+  { value: "11", label: "Editions Hosted" },
   { value: "5K+", label: "Ravers Per Edition" },
   { value: "50+", label: "Artists Featured" },
   { value: "1", label: "Movement" },
@@ -80,7 +80,7 @@ const Index = () => {
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">The Movement</p>
               <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Africa's Premier Rave Experience</h2>
               <p className="text-muted-foreground max-w-2xl mb-12 leading-relaxed">
-                What started as a bold vision has grown into 10 iconic editions — each one more electrifying than the last. Otown Party is more than an event. It's a movement.
+                What started as a bold vision has grown into 11 iconic editions — each one more electrifying than the last. Otown Party is more than an event. It's a movement.
               </p>
             </ScrollReveal>
 

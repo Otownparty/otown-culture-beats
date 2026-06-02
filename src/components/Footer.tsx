@@ -44,6 +44,7 @@ const Footer = () => {
                 "Haunted Groove Halloween · Oct 2025",
                 "POTY · Dec 2025",
                 "Denim After Dark · March 2026",
+                "Glow in the 90s Chapter II · May 2026",
               ].map((e) => (
                 <li key={e}>
                   <Link to="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">{e}</Link>
