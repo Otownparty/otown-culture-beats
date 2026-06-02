@@ -45,55 +45,6 @@ import g36 from "@/assets/gallery-36.jpg";
 import g37 from "@/assets/gallery-37.jpg";
 import g38 from "@/assets/gallery-38.jpg";
 
-// ── Last Edition photos (keep original filenames in src/assets/) ──────────────
-import img4340 from "@/assets/IMG_4340.jpg";
-import img4351 from "@/assets/IMG_4351.jpg";
-import img4365 from "@/assets/IMG_4365.jpg";
-import img4445 from "@/assets/IMG_4445.jpg";
-import img4631 from "@/assets/IMG_4631.jpg";
-import img4767 from "@/assets/IMG_4767.jpg";
-import img4779 from "@/assets/IMG_4779.jpg";
-import img4791 from "@/assets/IMG_4791.jpg";
-import img4917 from "@/assets/IMG_4917.jpg";
-import img4920 from "@/assets/IMG_4920.jpg";
-import img4929 from "@/assets/IMG_4929.jpg";
-import img4978 from "@/assets/IMG_4978.jpg";
-import img4982 from "@/assets/IMG_4982.jpg";
-import img4985 from "@/assets/IMG_4985.jpg";
-import img5004 from "@/assets/IMG_5004.jpg";
-import img5007 from "@/assets/IMG_5007.jpg";
-import img5020 from "@/assets/IMG_5020.jpg";
-import img5030 from "@/assets/IMG_5030.jpg";
-import img5034 from "@/assets/IMG_5034.jpg";
-import img5041 from "@/assets/IMG_5041.jpg";
-import img5050 from "@/assets/IMG_5050.jpg";
-import img5071 from "@/assets/IMG_5071.jpg";
-import img5099 from "@/assets/IMG_5099.jpg";
-import img5132 from "@/assets/IMG_5132.jpg";
-import img5149 from "@/assets/IMG_5149.jpg";
-import img5153 from "@/assets/IMG_5153.jpg";
-import img5163 from "@/assets/IMG_5163.jpg";
-import img5200 from "@/assets/IMG_5200.jpg";
-import img5219 from "@/assets/IMG_5219.jpg";
-import img5222 from "@/assets/IMG_5222.jpg";
-import img5239 from "@/assets/IMG_5239.jpg";
-import img5245 from "@/assets/IMG_5245.jpg";
-import img5257 from "@/assets/IMG_5257.jpg";
-import img5266 from "@/assets/IMG_5266.jpg";
-import img5288 from "@/assets/IMG_5288.jpg";
-import img5303 from "@/assets/IMG_5303.jpg";
-import img5329 from "@/assets/IMG_5329.jpg";
-import img5370 from "@/assets/IMG_5370.jpg";
-import img5377 from "@/assets/IMG_5377.jpg";
-import img5390 from "@/assets/IMG_5390.jpg";
-import img5393 from "@/assets/IMG_5393.jpg";
-import img5403 from "@/assets/IMG_5403.jpg";
-import img5405 from "@/assets/IMG_5405.jpg";
-import img5406 from "@/assets/IMG_5406.jpg";
-import img5408 from "@/assets/IMG_5408.jpg";
-import img5411 from "@/assets/IMG_5411.jpg";
-import img5465 from "@/assets/IMG_5465.jpg";
-import img5488 from "@/assets/IMG_5488.jpg";
 
 type Photo = { src: string; alt: string; era: string };
 
@@ -138,56 +89,7 @@ const photos: Photo[] = [
   { src: g37, alt: "Female DJ in the zone", era: "archive" },
   { src: g38, alt: "MC commanding the crowd", era: "archive" },
 
-  // ── Last Edition (shows in both All Editions and Last Edition) ──────────────
-  { src: img4340, alt: "DJs on stage under red lights", era: "last" },
-  { src: img4351, alt: "DJ crew at the decks bathed in red", era: "last" },
-  { src: img4365, alt: "Silhouette under golden spotlight", era: "last" },
-  { src: img4445, alt: "Full stage panorama under pink lights", era: "last" },
-  { src: img4631, alt: "Flag waving over the crowd", era: "last" },
-  { src: img4767, alt: "Crowd and stage under purple wash", era: "last" },
-  { src: img4779, alt: "Stage energy under teal and yellow beams", era: "last" },
-  { src: img4791, alt: "LED screen and performers on stage", era: "last" },
-  { src: img4917, alt: "DJ pointing to the crowd from the booth", era: "last" },
-  { src: img4920, alt: "Excited performer facing the crowd", era: "last" },
-  { src: img4929, alt: "MC in white shirt commanding the crowd", era: "last" },
-  { src: img4978, alt: "Wide stage shot with LED visuals", era: "last" },
-  { src: img4982, alt: "MC performing under green light beams", era: "last" },
-  { src: img4985, alt: "Purple-lit stage with crowd below", era: "last" },
-  { src: img5004, alt: "Full stage view under blue night sky", era: "last" },
-  { src: img5007, alt: "MC and hype men performing under blue lights", era: "last" },
-  { src: img5020, alt: "DJ crew at Pioneer decks under white beams", era: "last" },
-  { src: img5030, alt: "DJ booth energy — crew vibing together", era: "last" },
-  { src: img5034, alt: "DJs lost in the mix at the Pioneer booth", era: "last" },
-  { src: img5041, alt: "Saxophonist and crew on a blue-lit stage", era: "last" },
-  { src: img5050, alt: "DJ crew waving flags under warm lights", era: "last" },
-  { src: img5071, alt: "Two DJs focused at the Pioneer booth under blue", era: "last" },
-  { src: img5099, alt: "Stage and crowd from behind under purple glow", era: "last" },
-  { src: img5132, alt: "Performers celebrating on the LED stage", era: "last" },
-  { src: img5149, alt: "MC with flag at the decks under blue lights", era: "last" },
-  { src: img5153, alt: "DJ crew at the booth under purple wash", era: "last" },
-  { src: img5163, alt: "DJ leaning into the decks under purple light", era: "last" },
-  { src: img5200, alt: "Performer on stage under yellow beam with crowd", era: "last" },
-  { src: img5219, alt: "Flag raised on stage under deep blue light", era: "last" },
-  { src: img5222, alt: "Otown Party flag waved toward the crowd", era: "last" },
-  { src: img5239, alt: "Aerial view of stage and crowd at night", era: "last" },
-  { src: img5245, alt: "Full stage view with LED screens blazing", era: "last" },
-  { src: img5257, alt: "DJ and MC at the booth under blue and gold", era: "last" },
-  { src: img5266, alt: "DJ raising hand at the decks under yellow light", era: "last" },
-  { src: img5288, alt: "Stage crowd view from behind the DJ booth", era: "last" },
-  { src: img5303, alt: "Entire crew on stage celebrating", era: "last" },
-  { src: img5329, alt: "Crew on stage under full white lighting", era: "last" },
-  { src: img5370, alt: "MC performing to massive crowd from the stage", era: "last" },
-  { src: img5377, alt: "MC leaning toward the crowd with microphone", era: "last" },
-  { src: img5390, alt: "MC in white tracksuit gazing down at the crowd", era: "last" },
-  { src: img5393, alt: "MC standing tall on stage amid the haze", era: "last" },
-  { src: img5403, alt: "MC surveying the crowd from the stage edge", era: "last" },
-  { src: img5405, alt: "MC crouching with mic into the front row", era: "last" },
-  { src: img5406, alt: "MC in white performing under stage lights", era: "last" },
-  { src: img5408, alt: "Drummer and MC captured from the drum kit", era: "last" },
-  { src: img5411, alt: "MC performing under purple stage lights", era: "last" },
-  { src: img5465, alt: "MC performing with towel raised over crowd", era: "last" },
-  { src: img5488, alt: "MC leaning into mic over a packed crowd", era: "last" },
-  // ── Cloudinary-hosted Last Edition photos ──────────────────────────────────
+  // ── Last Edition (Cloudinary-hosted; shows in both All Editions and Last Edition) ──
   ...lastEditionPhotos.map((p) => ({ ...p, era: "last" })),
 ];
 
