@@ -16,6 +16,7 @@ import edition11Asset from "@/assets/edition-11.jpg.asset.json";
 import edition10 from "@/assets/edition-10.jpg";
 
 const editions = [
+  { num: 11, date: "Sat 30th May 2026", title: "Glow in the 90s — Chapter II", desc: "The Anniversary Edition — a neon-soaked 90s throwback that lit up Oyo Durbar Stadium.", img: edition11Asset.url },
   { num: 10, date: "Sat 21st March 2026", title: "Denim After Dark", desc: "A Decade of Raving — the 10th edition at Oyo Durbar Stadium.", img: edition10 },
   { num: 9, date: "Tue 30th Dec 2025", title: "POTY", desc: "Party of the Year returned — closing out 2025 at LaSamba Resort, Oyo.", img: edition9 },
   { num: 8, date: "Sat 25th Oct 2025", title: "Haunted Groove Halloween", desc: "The scariest night of the year — Haunted Groove at LaSamba Resort celebrates African culture.", img: edition8 },
