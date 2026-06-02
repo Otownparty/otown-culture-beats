@@ -58,15 +58,23 @@ const Index = () => {
               Let's Rave
             </p>
             <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-muted-foreground">
-              Otown Party 11.0 &nbsp;|&nbsp; Glow in the 90s — Chapter II &nbsp;|&nbsp; May 30, 2026 · Oyo Durbar Stadium
+              Otown Party 12.0 &nbsp;|&nbsp; Next Edition Coming Soon &nbsp;|&nbsp; Date & Venue TBA
             </p>
-            <div className="w-full flex justify-center py-4">
-              <CountdownTimer />
+            <div className="w-full flex justify-center py-6">
+              <div className="text-center px-6 py-5 rounded-2xl border border-primary/30 bg-primary/5 backdrop-blur-sm">
+                <p className="text-primary text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] mb-2">Stay Tuned</p>
+                <p className="font-display font-bold text-3xl sm:text-4xl text-foreground">Coming Soon</p>
+                <p className="text-xs text-muted-foreground mt-2">Moment ended, the movement continues 🌀</p>
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-              <Link to="/tickets" className="px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition-all">
-                Get Tickets Now
-              </Link>
+              <button
+                disabled
+                aria-disabled="true"
+                className="px-8 py-3.5 rounded-lg bg-muted border border-border text-muted-foreground font-semibold text-sm cursor-not-allowed opacity-70"
+              >
+                Tickets Coming Soon
+              </button>
               <Link to="/events" className="px-8 py-3.5 rounded-lg border border-foreground/30 text-foreground font-semibold text-sm hover:border-primary hover:text-primary transition-all">
                 Explore Events
               </Link>
