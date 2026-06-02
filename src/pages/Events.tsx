@@ -41,27 +41,35 @@ const Events = () => {
             <p className="text-muted-foreground max-w-2xl mb-16 leading-relaxed">Ten iconic chapters. Each one a statement. Together, they tell the story of a movement.</p>
           </ScrollReveal>
 
-          {/* Spotlight */}
+          {/* Spotlight — Next Edition Coming Soon */}
           <ScrollReveal>
             <div className="bg-card border border-border rounded-2xl overflow-hidden mb-20 border-l-4 border-l-primary">
               <div className="grid md:grid-cols-2">
                 <div className="p-8 p-12 flex flex-col justify-center">
                   <span className="inline-block bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-                    Otown Party 11.0 — Anniversary Edition
+                    Next Edition — Coming Soon
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Glow in the 90s — Chapter II</h2>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">The Anniversary Edition returns — bigger stage, bigger lineup. A neon-soaked throwback to the era that started it all.</p>
+                  <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Otown Party 12.0</h2>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">The next chapter is being written. Stay tuned — the theme, date and venue will be revealed soon. Moment ended, the movement continues.</p>
                   <div className="flex flex-wrap gap-4 mb-8 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> Sat 30th May 2026 · 6PM – 4AM</span>
-                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Oyo Durbar Stadium</span>
-                    <span className="bg-muted px-3 py-0.5 rounded-full">Glow in the 90s</span>
+                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> TBA</span>
+                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> TBA</span>
+                    <span className="bg-muted px-3 py-0.5 rounded-full">Theme TBA</span>
                   </div>
-                  <Link to="/tickets" className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
+                  <button
+                    disabled
+                    aria-disabled="true"
+                    className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-muted border border-border text-muted-foreground font-semibold text-sm cursor-not-allowed opacity-70"
+                  >
                     Get Tickets Now
-                  </Link>
+                  </button>
                 </div>
-                <div className="hidden md:block">
-                  <img src={spotlightImg} alt="Otown Party XI preview" className="w-full h-full object-cover" loading="lazy" width={1024} />
+                <div className="hidden md:flex items-center justify-center bg-gradient-to-br from-primary/10 via-pink-400/5 to-transparent p-12">
+                  <div className="text-center space-y-3">
+                    <p className="text-primary text-xs font-bold uppercase tracking-[0.3em]">Stay Tuned</p>
+                    <p className="font-display font-bold text-5xl text-foreground/80">TBA</p>
+                    <p className="text-sm text-muted-foreground max-w-xs">The next Otown Party is on the way.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -69,7 +77,7 @@ const Events = () => {
 
           {/* Past Editions */}
           <ScrollReveal>
-            <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-8">10 Legendary Editions</h2>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-8">11 Legendary Editions</h2>
           </ScrollReveal>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
