@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, Images, Flame } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CountdownTimer from "@/components/CountdownTimer";
+
 import ScrollReveal from "@/components/ScrollReveal";
 import heroBg from "@/assets/hero-bg.jpg";
 import logo from "@/assets/logo-trans.png";
