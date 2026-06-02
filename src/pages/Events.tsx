@@ -3,7 +3,6 @@ import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import spotlightImg from "@/assets/event-spotlight.jpg";
 import edition1 from "@/assets/edition-1.jpg";
 import edition2 from "@/assets/edition-2.jpg";
 import edition3 from "@/assets/edition-3.jpg";
@@ -13,6 +12,7 @@ import edition6 from "@/assets/edition-6.jpg";
 import edition7 from "@/assets/edition-7.jpg";
 import edition8 from "@/assets/edition-8.jpg";
 import edition9 from "@/assets/edition-9.jpg";
+import edition11Asset from "@/assets/edition-11.jpg.asset.json";
 import edition10 from "@/assets/edition-10.jpg";
 
 const editions = [
