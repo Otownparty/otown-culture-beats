@@ -155,15 +155,14 @@ const Tickets = () => {
                   </div>
                   <div>
                     <p className="text-primary text-[10px] font-bold uppercase tracking-[0.25em] mb-1">
-                      Online Sales Closed
+                      Edition Wrapped
                     </p>
                     <h2 className="font-display font-bold text-xl text-foreground mb-1">
-                      The rave don reach your city. 🔥
+                      Moment ended, Movement Continues. 🌀
                     </h2>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Online ticket sales are closed — but the movement isn't over.{" "}
-                      <span className="text-foreground font-semibold">Walk-in tickets are available at the venue on the day.</span>{" "}
-                      Come early, the gates won't wait.
+                      Glow in the 90s — Chapter II is officially a wrap. Thank you to every raver who showed up and showed out.{" "}
+                      <span className="text-foreground font-semibold">Ticket sales are closed for now</span> — the next chapter is loading. Stay tuned for Otown Party 12.0.
                     </p>
                   </div>
                 </div>
