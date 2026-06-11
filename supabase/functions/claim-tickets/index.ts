@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
-    const edition = "Otown Party 11.0 - Glow in the 90s";
+    const edition = "Otown Party 12.0 - Iseyin Edition";
     const unitPrice = intent.unit_price;
     const ticketType = intent.ticket_type;
     const quantity = intent.quantity;
@@ -169,8 +169,8 @@ Deno.serve(async (req) => {
 
     const emailHtml = `
       <div style="font-family:Arial,sans-serif; max-width:600px; margin:0 auto; padding:24px; color:#0a0a0a;">
-        <h1 style="color:#f5a623; margin:0 0 4px;">Otown Party 11.0</h1>
-        <p style="margin:0 0 24px; color:#666;">Glow in the 90s — May 30, 2026 · Oyo Durbar Stadium</p>
+        <h1 style="color:#f5a623; margin:0 0 4px;">Otown Party 12.0</h1>
+        <p style="margin:0 0 24px; color:#666;">Iseyin Edition — Sat 27th June 2026 · 6PM–4AM · Silver ZB Resort, Beside NYSC Orientation Camp, Iseyin</p>
         <p>Hi ${cleanName.replace(/[<>]/g, "")},</p>
         <p>Your payment has been confirmed. Below ${quantity > 1 ? `are your ${quantity} tickets` : "is your ticket"}. Each QR code is unique — present it at the gate for scanning.</p>
         ${ticketHtml}
@@ -193,7 +193,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: fromAddress,
         to: [cleanEmail],
-        subject: `Your Otown Party 11.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
+        subject: `Your Otown Party 12.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
         html: emailHtml,
       }),
     });
