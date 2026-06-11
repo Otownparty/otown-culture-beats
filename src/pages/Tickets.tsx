@@ -9,13 +9,13 @@ import { toast } from "@/components/ui/sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const tickets = [
-  { name: "Early Bird", badge: "Sold Out", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true, soldOut: true },
-  { name: "Regular", price: 5000, features: ["Full event access"], accent: "foreground" as const, featured: false, soldOut: true },
-  { name: "VIP Experience", price: 15000, features: ["Full stage access", "Premium visibility", "Priority entry", "Access to merch"], accent: "pink" as const, featured: false, soldOut: true },
+  { name: "Early Bird", badge: "Limited", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true, soldOut: false },
+  { name: "Regular", price: 5000, features: ["Full event access"], accent: "foreground" as const, featured: false, soldOut: false },
+  { name: "VIP Experience", price: 15000, features: ["Full stage access", "Premium visibility", "Priority entry", "Access to merch"], accent: "pink" as const, featured: false, soldOut: false },
 ];
 
 // Set this to true to close online sales and show venue-only message
-const ONLINE_SALES_CLOSED = true;
+const ONLINE_SALES_CLOSED = false;
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
@@ -180,40 +180,54 @@ const Tickets = () => {
 
                 return (
                   <ScrollReveal key={t.name}>
-                    <div className={`bg-card border rounded-xl p-6 transition-all opacity-50 cursor-not-allowed ${
+                    <div className={`bg-card border rounded-xl p-6 transition-all ${isDisabled ? "opacity-50 cursor-not-allowed" : "hover:-translate-y-1"} ${
                       t.featured ? "border-primary border-l-4" : t.accent === "pink" ? "border-pink-400/40" : "border-border"
                     }`}>
                       <div className="flex items-center gap-3 mb-3">
-                        <h3 className="font-display font-bold text-lg text-muted-foreground">{t.name}</h3>
+                        <h3 className="font-display font-bold text-lg text-foreground">{t.name}</h3>
                         {t.badge && (
-                          <span className="bg-muted text-muted-foreground text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                          <span className="bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
                             {t.badge}
-                          </span>
-                        )}
-                        {ONLINE_SALES_CLOSED && !t.badge && (
-                          <span className="bg-muted text-muted-foreground text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
-                            Venue Only
                           </span>
                         )}
                       </div>
 
-                      <p className="text-2xl font-display font-bold mb-4 text-muted-foreground">
+                      <p className="text-2xl font-display font-bold mb-4 text-foreground">
                         ₦{t.price.toLocaleString()}
+                        <span className="text-sm text-muted-foreground font-normal"> / ticket</span>
                       </p>
 
                       <ul className="space-y-2 mb-5">
                         {t.features.map((f) => (
-                          <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground/60">
-                            <Check size={14} className="flex-shrink-0 text-muted-foreground/60" /> {f}
+                          <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Check size={14} className="flex-shrink-0 text-primary" /> {f}
                           </li>
                         ))}
                       </ul>
 
+                      {!isDisabled && (
+                        <div className="flex items-center justify-between mb-4 bg-muted/40 rounded-lg p-2">
+                          <span className="text-xs uppercase tracking-wider text-muted-foreground">Quantity</span>
+                          <div className="flex items-center gap-3">
+                            <button type="button" onClick={() => setQty(t.name, qty - 1)} className="w-7 h-7 rounded-md bg-background border border-border flex items-center justify-center hover:border-primary"><Minus size={14} /></button>
+                            <span className="font-semibold text-foreground w-6 text-center">{qty}</span>
+                            <button type="button" onClick={() => setQty(t.name, qty + 1)} className="w-7 h-7 rounded-md bg-background border border-border flex items-center justify-center hover:border-primary"><Plus size={14} /></button>
+                          </div>
+                        </div>
+                      )}
+
                       <button
-                        disabled
-                        className="block w-full py-3 rounded-lg font-semibold text-sm text-center bg-muted border border-border text-muted-foreground cursor-not-allowed"
+                        disabled={isDisabled || isLoading}
+                        onClick={() => openDetails(t.name, t.price)}
+                        className={`block w-full py-3 rounded-lg font-semibold text-sm text-center transition ${
+                          isDisabled
+                            ? "bg-muted border border-border text-muted-foreground cursor-not-allowed"
+                            : t.featured
+                              ? "bg-primary text-primary-foreground hover:brightness-110"
+                              : "bg-foreground/90 text-background hover:brightness-110"
+                        }`}
                       >
-                        {t.soldOut ? "Sold Out" : "Available at Venue"}
+                        {isLoading ? <Loader2 className="animate-spin inline" size={16} /> : `Buy ${qty} for ₦${total.toLocaleString()}`}
                       </button>
                     </div>
                   </ScrollReveal>
