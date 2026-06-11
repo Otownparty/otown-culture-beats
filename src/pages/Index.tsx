@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 import ScrollReveal from "@/components/ScrollReveal";
+import CountdownTimer from "@/components/CountdownTimer";
 import heroBg from "@/assets/hero-bg.jpg";
 import logo from "@/assets/logo-trans.png";
 import gallery1 from "@/assets/gallery-1.jpg";
@@ -58,23 +59,18 @@ const Index = () => {
               Let's Rave
             </p>
             <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-muted-foreground">
-              Otown Party 12.0 &nbsp;|&nbsp; Next Edition Coming Soon &nbsp;|&nbsp; Date & Venue TBA
+              Otown Party 12.0 &nbsp;|&nbsp; Iseyin Edition &nbsp;|&nbsp; Sat 27th June 2026
             </p>
             <div className="w-full flex justify-center py-6">
-              <div className="text-center px-6 py-5 rounded-2xl border border-primary/30 bg-primary/5 backdrop-blur-sm">
-                <p className="text-primary text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] mb-2">Stay Tuned</p>
-                <p className="font-display font-bold text-3xl sm:text-4xl text-foreground">Coming Soon</p>
-                <p className="text-xs text-muted-foreground mt-2">Moment ended, the movement continues 🌀</p>
-              </div>
+              <CountdownTimer />
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-              <button
-                disabled
-                aria-disabled="true"
-                className="px-8 py-3.5 rounded-lg bg-muted border border-border text-muted-foreground font-semibold text-sm cursor-not-allowed opacity-70"
+              <Link
+                to="/tickets"
+                className="px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition-all"
               >
-                Tickets Coming Soon
-              </button>
+                Get Tickets Now
+              </Link>
               <Link to="/events" className="px-8 py-3.5 rounded-lg border border-foreground/30 text-foreground font-semibold text-sm hover:border-primary hover:text-primary transition-all">
                 Explore Events
               </Link>

@@ -1,4 +1,5 @@
 
+import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -13,6 +14,7 @@ import edition7 from "@/assets/edition-7.jpg";
 import edition8 from "@/assets/edition-8.jpg";
 import edition9 from "@/assets/edition-9.jpg";
 import edition11Asset from "@/assets/edition-11.jpg.asset.json";
+import edition12Asset from "@/assets/edition-12.png.asset.json";
 import edition10 from "@/assets/edition-10.jpg";
 
 const editions = [
@@ -41,35 +43,34 @@ const Events = () => {
             <p className="text-muted-foreground max-w-2xl mb-16 leading-relaxed">Ten iconic chapters. Each one a statement. Together, they tell the story of a movement.</p>
           </ScrollReveal>
 
-          {/* Spotlight — Next Edition Coming Soon */}
+          {/* Spotlight — Next Edition */}
           <ScrollReveal>
             <div className="bg-card border border-border rounded-2xl overflow-hidden mb-20 border-l-4 border-l-primary">
               <div className="grid md:grid-cols-2">
-                <div className="p-8 p-12 flex flex-col justify-center">
+                <div className="p-8 md:p-12 flex flex-col justify-center">
                   <span className="inline-block bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-                    Next Edition — Coming Soon
+                    Next Edition — Tickets Live
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Otown Party 12.0</h2>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">The next chapter is being written. Stay tuned — the theme, date and venue will be revealed soon. Moment ended, the movement continues.</p>
+                  <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Otown Party 12.0 — Iseyin Edition</h2>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">The movement moves to Iseyin. One night, 6PM till 4AM — rave, culture, and connection under the stars at Silver ZB Resort.</p>
                   <div className="flex flex-wrap gap-4 mb-8 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> TBA</span>
-                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> TBA</span>
-                    <span className="bg-muted px-3 py-0.5 rounded-full">Theme TBA</span>
+                    <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> Sat 27th June 2026 · 6PM–4AM</span>
+                    <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Silver ZB Resort, Iseyin</span>
+                    <span className="bg-muted px-3 py-0.5 rounded-full">Iseyin Edition</span>
                   </div>
-                  <button
-                    disabled
-                    aria-disabled="true"
-                    className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-muted border border-border text-muted-foreground font-semibold text-sm cursor-not-allowed opacity-70"
+                  <Link
+                    to="/tickets"
+                    className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition-all"
                   >
                     Get Tickets Now
-                  </button>
+                  </Link>
                 </div>
-                <div className="hidden md:flex items-center justify-center bg-gradient-to-br from-primary/10 via-pink-400/5 to-transparent p-12">
-                  <div className="text-center space-y-3">
-                    <p className="text-primary text-xs font-bold uppercase tracking-[0.3em]">Stay Tuned</p>
-                    <p className="font-display font-bold text-5xl text-foreground/80">TBA</p>
-                    <p className="text-sm text-muted-foreground max-w-xs">The next Otown Party is on the way.</p>
-                  </div>
+                <div className="aspect-[4/5] md:aspect-auto overflow-hidden">
+                  <img
+                    src={edition12Asset.url}
+                    alt="Otown Party 12.0 Iseyin Edition flyer"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
