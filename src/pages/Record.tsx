@@ -915,6 +915,69 @@ const Record = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* History Dialog */}
+        <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="font-display">Event History</DialogTitle>
+              <DialogDescription>
+                Tap a past edition to view its ticket and vendor records.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2 mt-2">
+              <button
+                onClick={() => {
+                  setSelectedEdition(CURRENT_EDITION);
+                  setHistoryOpen(false);
+                }}
+                className={`w-full text-left px-4 py-3 rounded-xl border transition ${
+                  selectedEdition === CURRENT_EDITION
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+                  Current
+                </p>
+                <p className="font-display font-bold text-foreground">Otown Party 12.0</p>
+                <p className="text-xs text-muted-foreground">Iseyin Edition · June 2026</p>
+              </button>
+              {PAST_EDITIONS.map((ed) => {
+                const ticketCount = rawTickets.filter(
+                  (t) => (t.edition || CURRENT_EDITION) === ed.value
+                ).length;
+                const vendorCount = vendors.filter(
+                  (v) => (v.edition || CURRENT_EDITION) === ed.value
+                ).length;
+                return (
+                  <button
+                    key={ed.value}
+                    onClick={() => {
+                      setSelectedEdition(ed.value);
+                      setHistoryOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-3 rounded-xl border transition ${
+                      selectedEdition === ed.value
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                      Past Edition
+                    </p>
+                    <p className="font-display font-bold text-foreground">{ed.label}</p>
+                    <p className="text-xs text-muted-foreground">{ed.date}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      {ticketCount} ticket{ticketCount !== 1 ? "s" : ""} · {vendorCount} vendor{vendorCount !== 1 ? "s" : ""}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </main>
   );
