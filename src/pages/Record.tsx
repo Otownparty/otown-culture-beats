@@ -14,6 +14,8 @@ import {
   Clock,
   XCircle,
   Trash2,
+  History,
+  ArrowLeft,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
@@ -28,6 +30,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
+const CURRENT_EDITION = "Otown Party 12.0 - Iseyin Edition";
+const PAST_EDITIONS: { value: string; label: string; date: string }[] = [
+  {
+    value: "Otown Party 11.0 - Glow in the 90s",
+    label: "Otown Party 11.0",
+    date: "Glow in the 90s · May 2026",
+  },
+];
 
 type TicketStats = {
   ticketType: string;
