@@ -644,7 +644,7 @@ const Record = () => {
                   </div>
                 </div>
                 <div className="overflow-x-auto">
-                  {buyers.length === 0 ? (
+                  {editionBuyers.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground text-sm">
                       No tickets purchased yet.
                     </div>
