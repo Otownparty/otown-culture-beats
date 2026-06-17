@@ -377,20 +377,43 @@ const Record = () => {
     );
   };
 
+  // Derive stats filtered by selected edition
+  const editionTickets = rawTickets.filter(
+    (t) => (t.edition || CURRENT_EDITION) === selectedEdition
+  );
+  const stats: TicketStats[] = TICKET_TYPES.map((type) => {
+    const sub = editionTickets.filter((t) => t.ticket_type === type);
+    return {
+      ticketType: type,
+      bought: sub.length,
+      scanned: sub.filter((t) => t.used).length,
+    };
+  });
   const totalBought = stats.reduce((sum, s) => sum + s.bought, 0);
   const totalScanned = stats.reduce((sum, s) => sum + s.scanned, 0);
 
-  const filteredTicketPurchases = ticketPurchases.filter((t) =>
-    [t.name, t.email, t.reference, t.ticket_type].some((field) =>
-      field?.toLowerCase().includes(ticketSearch.toLowerCase())
-    )
-  );
+  const editionBuyers = buyers.filter((b) => b.edition === selectedEdition);
 
-  const filteredVendors = vendors.filter((v) =>
-    [v.brand_name, v.email, v.reference, v.business_category, v.sub_category, v.instagram].some((field) =>
-      field?.toLowerCase().includes(vendorSearch.toLowerCase())
-    )
-  );
+  const filteredTicketPurchases = ticketPurchases
+    .filter((t) => (t.edition || CURRENT_EDITION) === selectedEdition)
+    .filter((t) =>
+      [t.name, t.email, t.reference, t.ticket_type].some((field) =>
+        field?.toLowerCase().includes(ticketSearch.toLowerCase())
+      )
+    );
+
+  const filteredVendors = vendors
+    .filter((v) => (v.edition || CURRENT_EDITION) === selectedEdition)
+    .filter((v) =>
+      [v.brand_name, v.email, v.reference, v.business_category, v.sub_category, v.instagram].some((field) =>
+        field?.toLowerCase().includes(vendorSearch.toLowerCase())
+      )
+    );
+
+  const isViewingHistory = selectedEdition !== CURRENT_EDITION;
+  const currentEditionLabel =
+    PAST_EDITIONS.find((e) => e.value === selectedEdition)?.label ||
+    selectedEdition;
 
   if (!authChecked) {
     return (
