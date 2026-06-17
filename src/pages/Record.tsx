@@ -247,7 +247,7 @@ const Record = () => {
   };
 
   const copyEmails = () => {
-    const emails = buyers.map((b) => b.email).join(", ");
+    const emails = editionBuyers.map((b) => b.email).join(", ");
     navigator.clipboard.writeText(emails).then(() => {
       setCopied(true);
       toast.success("All emails copied to clipboard!");
