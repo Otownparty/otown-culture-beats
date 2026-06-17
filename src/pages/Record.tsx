@@ -59,6 +59,7 @@ type BuyerRecord = {
   ticketType: string;
   quantity: number;
   claimedAt: string;
+  edition: string;
 };
 
 interface TicketPurchaseRecord {
@@ -73,6 +74,29 @@ interface TicketPurchaseRecord {
   status: string;
   paid_at: string | null;
   created_at: string;
+  edition: string;
+}
+
+interface VendorRecord {
+  id: string;
+  reference: string;
+  brand_name: string;
+  brand_description: string;
+  instagram: string;
+  city: string;
+  phone: string;
+  email: string;
+  previous_vendor: string;
+  business_category: string;
+  sub_category: string;
+  amount: number;
+  status: string;
+  paid_at: string | null;
+  created_at: string;
+  scanned: boolean;
+  scanned_at: string | null;
+  scanned_by: string | null;
+  edition: string;
 }
 
 interface VendorRecord {
