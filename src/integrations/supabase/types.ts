@@ -20,6 +20,7 @@ export type Database = {
           buyer_name: string | null
           claimed_at: string | null
           created_at: string
+          edition: string
           id: string
           quantity: number
           reference: string
@@ -34,6 +35,7 @@ export type Database = {
           buyer_name?: string | null
           claimed_at?: string | null
           created_at?: string
+          edition?: string
           id?: string
           quantity: number
           reference: string
@@ -48,6 +50,7 @@ export type Database = {
           buyer_name?: string | null
           claimed_at?: string | null
           created_at?: string
+          edition?: string
           id?: string
           quantity?: number
           reference?: string
@@ -63,6 +66,7 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          edition: string
           email: string
           id: string
           name: string
@@ -77,6 +81,7 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          edition?: string
           email: string
           id?: string
           name: string
@@ -91,6 +96,7 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          edition?: string
           email?: string
           id?: string
           name?: string
@@ -184,6 +190,7 @@ export type Database = {
           business_category: string
           city: string | null
           created_at: string
+          edition: string
           email: string
           id: string
           instagram: string | null
@@ -206,6 +213,7 @@ export type Database = {
           business_category: string
           city?: string | null
           created_at?: string
+          edition?: string
           email: string
           id?: string
           instagram?: string | null
@@ -228,6 +236,7 @@ export type Database = {
           business_category?: string
           city?: string | null
           created_at?: string
+          edition?: string
           email?: string
           id?: string
           instagram?: string | null

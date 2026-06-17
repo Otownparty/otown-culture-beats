@@ -14,6 +14,8 @@ import {
   Clock,
   XCircle,
   Trash2,
+  History,
+  ArrowLeft,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
@@ -28,6 +30,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
+const CURRENT_EDITION = "Otown Party 12.0 - Iseyin Edition";
+const PAST_EDITIONS: { value: string; label: string; date: string }[] = [
+  {
+    value: "Otown Party 11.0 - Glow in the 90s",
+    label: "Otown Party 11.0",
+    date: "Glow in the 90s · May 2026",
+  },
+];
 
 type TicketStats = {
   ticketType: string;
@@ -41,6 +59,7 @@ type BuyerRecord = {
   ticketType: string;
   quantity: number;
   claimedAt: string;
+  edition: string;
 };
 
 interface TicketPurchaseRecord {
@@ -55,6 +74,29 @@ interface TicketPurchaseRecord {
   status: string;
   paid_at: string | null;
   created_at: string;
+  edition: string;
+}
+
+interface VendorRecord {
+  id: string;
+  reference: string;
+  brand_name: string;
+  brand_description: string;
+  instagram: string;
+  city: string;
+  phone: string;
+  email: string;
+  previous_vendor: string;
+  business_category: string;
+  sub_category: string;
+  amount: number;
+  status: string;
+  paid_at: string | null;
+  created_at: string;
+  scanned: boolean;
+  scanned_at: string | null;
+  scanned_by: string | null;
+  edition: string;
 }
 
 interface VendorRecord {
@@ -80,19 +122,29 @@ interface VendorRecord {
 
 const TICKET_TYPES = ["Early Bird", "Regular", "VIP Experience"];
 
+type RawTicket = {
+  ticket_type: string;
+  used: boolean;
+  edition: string | null;
+};
+
 const Record = () => {
   const navigate = useNavigate();
   const [authChecked, setAuthChecked] = useState(false);
 
   // Original ticket stats state
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<TicketStats[]>([]);
+  const [rawTickets, setRawTickets] = useState<RawTicket[]>([]);
   const [buyers, setBuyers] = useState<BuyerRecord[]>([]);
   const [copied, setCopied] = useState(false);
   const [copiedVendors, setCopiedVendors] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [confirmClear, setConfirmClear] = useState<null | "tickets" | "vendors">(null);
   const [clearing, setClearing] = useState(false);
+
+  // Edition selector + history
+  const [selectedEdition, setSelectedEdition] = useState<string>(CURRENT_EDITION);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // New tabbed records state
   const [activeTab, setActiveTab] = useState("overview");
@@ -122,39 +174,18 @@ const Record = () => {
 
   const fetchTicketStats = async () => {
     try {
-      // Fetch all tickets
       const { data: tickets, error: ticketsErr } = await supabase
         .from("tickets")
-        .select("ticket_type, used, buyer_name, buyer_email, quantity, payment_reference")
+        .select("ticket_type, used, edition")
         .order("ticket_type");
 
       if (ticketsErr) throw ticketsErr;
-
-      // Build stats per ticket type
-      const statsMap: Record<string, { bought: number; scanned: number }> = {};
-      TICKET_TYPES.forEach((t) => {
-        statsMap[t] = { bought: 0, scanned: 0 };
-      });
-
-      tickets?.forEach((ticket) => {
-        const type = ticket.ticket_type;
-        if (!statsMap[type]) statsMap[type] = { bought: 0, scanned: 0 };
-        statsMap[type].bought += 1;
-        if (ticket.used) statsMap[type].scanned += 1;
-      });
-
-      const statsArr = TICKET_TYPES.map((t) => ({
-        ticketType: t,
-        bought: statsMap[t]?.bought || 0,
-        scanned: statsMap[t]?.scanned || 0,
-      }));
-
-      setStats(statsArr);
+      setRawTickets((tickets as RawTicket[]) || []);
 
       // Fetch buyer records from payment_intents
       const { data: intents, error: intentsErr } = await supabase
         .from("payment_intents")
-        .select("buyer_name, buyer_email, ticket_type, quantity, claimed_at")
+        .select("buyer_name, buyer_email, ticket_type, quantity, claimed_at, edition")
         .eq("status", "claimed")
         .order("claimed_at", { ascending: false });
 
@@ -165,6 +196,7 @@ const Record = () => {
         email: i.buyer_email || "—",
         ticketType: i.ticket_type,
         quantity: i.quantity,
+        edition: i.edition || CURRENT_EDITION,
         claimedAt: i.claimed_at
           ? new Date(i.claimed_at).toLocaleDateString("en-NG", {
               day: "2-digit",
@@ -182,6 +214,7 @@ const Record = () => {
       toast.error((err as Error).message);
     }
   };
+
 
   const fetchTicketPurchases = async () => {
     setLoadingTickets(true);
@@ -214,7 +247,7 @@ const Record = () => {
   };
 
   const copyEmails = () => {
-    const emails = buyers.map((b) => b.email).join(", ");
+    const emails = editionBuyers.map((b) => b.email).join(", ");
     navigator.clipboard.writeText(emails).then(() => {
       setCopied(true);
       toast.success("All emails copied to clipboard!");
@@ -344,20 +377,43 @@ const Record = () => {
     );
   };
 
+  // Derive stats filtered by selected edition
+  const editionTickets = rawTickets.filter(
+    (t) => (t.edition || CURRENT_EDITION) === selectedEdition
+  );
+  const stats: TicketStats[] = TICKET_TYPES.map((type) => {
+    const sub = editionTickets.filter((t) => t.ticket_type === type);
+    return {
+      ticketType: type,
+      bought: sub.length,
+      scanned: sub.filter((t) => t.used).length,
+    };
+  });
   const totalBought = stats.reduce((sum, s) => sum + s.bought, 0);
   const totalScanned = stats.reduce((sum, s) => sum + s.scanned, 0);
 
-  const filteredTicketPurchases = ticketPurchases.filter((t) =>
-    [t.name, t.email, t.reference, t.ticket_type].some((field) =>
-      field?.toLowerCase().includes(ticketSearch.toLowerCase())
-    )
-  );
+  const editionBuyers = buyers.filter((b) => b.edition === selectedEdition);
 
-  const filteredVendors = vendors.filter((v) =>
-    [v.brand_name, v.email, v.reference, v.business_category, v.sub_category, v.instagram].some((field) =>
-      field?.toLowerCase().includes(vendorSearch.toLowerCase())
-    )
-  );
+  const filteredTicketPurchases = ticketPurchases
+    .filter((t) => (t.edition || CURRENT_EDITION) === selectedEdition)
+    .filter((t) =>
+      [t.name, t.email, t.reference, t.ticket_type].some((field) =>
+        field?.toLowerCase().includes(ticketSearch.toLowerCase())
+      )
+    );
+
+  const filteredVendors = vendors
+    .filter((v) => (v.edition || CURRENT_EDITION) === selectedEdition)
+    .filter((v) =>
+      [v.brand_name, v.email, v.reference, v.business_category, v.sub_category, v.instagram].some((field) =>
+        field?.toLowerCase().includes(vendorSearch.toLowerCase())
+      )
+    );
+
+  const isViewingHistory = selectedEdition !== CURRENT_EDITION;
+  const currentEditionLabel =
+    PAST_EDITIONS.find((e) => e.value === selectedEdition)?.label ||
+    selectedEdition;
 
   if (!authChecked) {
     return (
@@ -371,13 +427,13 @@ const Record = () => {
     <main className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-1">
-              Otown Party 11.0
+              {isViewingHistory ? `History · ${currentEditionLabel}` : "Otown Party 12.0 · Current Edition"}
             </p>
             <h1 className="font-display font-bold text-2xl text-foreground">
-              Ticket Records
+              {isViewingHistory ? "Past Edition Records" : "Ticket Records"}
             </h1>
             {lastUpdated && (
               <p className="text-xs text-muted-foreground mt-1">
@@ -385,7 +441,14 @@ const Record = () => {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => setHistoryOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 text-primary hover:bg-primary/10 text-xs font-semibold transition"
+            >
+              <History size={12} />
+              History
+            </button>
             <button
               onClick={fetchAllData}
               disabled={loading}
@@ -402,6 +465,22 @@ const Record = () => {
             </button>
           </div>
         </div>
+
+        {isViewingHistory && (
+          <div className="mb-6 flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-primary/10 border border-primary/30">
+            <div className="text-sm">
+              <span className="text-muted-foreground">Viewing past edition:</span>{" "}
+              <span className="font-semibold text-primary">{selectedEdition}</span>
+            </div>
+            <button
+              onClick={() => setSelectedEdition(CURRENT_EDITION)}
+              className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold"
+            >
+              <ArrowLeft size={12} /> Back to current edition
+            </button>
+          </div>
+        )}
+
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
@@ -562,7 +641,7 @@ const Record = () => {
                       Buyer Records
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {buyers.length} ticket{buyers.length !== 1 ? "s" : ""} purchased
+                      {editionBuyers.length} ticket{editionBuyers.length !== 1 ? "s" : ""} purchased
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -588,7 +667,7 @@ const Record = () => {
                   </div>
                 </div>
                 <div className="overflow-x-auto">
-                  {buyers.length === 0 ? (
+                  {editionBuyers.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground text-sm">
                       No tickets purchased yet.
                     </div>
@@ -614,7 +693,7 @@ const Record = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {buyers.map((b, i) => (
+                        {editionBuyers.map((b, i) => (
                           <tr
                             key={i}
                             className={`border-b border-border last:border-0 ${
@@ -836,6 +915,69 @@ const Record = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* History Dialog */}
+        <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="font-display">Event History</DialogTitle>
+              <DialogDescription>
+                Tap a past edition to view its ticket and vendor records.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2 mt-2">
+              <button
+                onClick={() => {
+                  setSelectedEdition(CURRENT_EDITION);
+                  setHistoryOpen(false);
+                }}
+                className={`w-full text-left px-4 py-3 rounded-xl border transition ${
+                  selectedEdition === CURRENT_EDITION
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+                  Current
+                </p>
+                <p className="font-display font-bold text-foreground">Otown Party 12.0</p>
+                <p className="text-xs text-muted-foreground">Iseyin Edition · June 2026</p>
+              </button>
+              {PAST_EDITIONS.map((ed) => {
+                const ticketCount = rawTickets.filter(
+                  (t) => (t.edition || CURRENT_EDITION) === ed.value
+                ).length;
+                const vendorCount = vendors.filter(
+                  (v) => (v.edition || CURRENT_EDITION) === ed.value
+                ).length;
+                return (
+                  <button
+                    key={ed.value}
+                    onClick={() => {
+                      setSelectedEdition(ed.value);
+                      setHistoryOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-3 rounded-xl border transition ${
+                      selectedEdition === ed.value
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                      Past Edition
+                    </p>
+                    <p className="font-display font-bold text-foreground">{ed.label}</p>
+                    <p className="text-xs text-muted-foreground">{ed.date}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      {ticketCount} ticket{ticketCount !== 1 ? "s" : ""} · {vendorCount} vendor{vendorCount !== 1 ? "s" : ""}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </main>
   );
