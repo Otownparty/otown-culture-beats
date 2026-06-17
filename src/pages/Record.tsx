@@ -427,13 +427,13 @@ const Record = () => {
     <main className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-1">
-              Otown Party 11.0
+              {isViewingHistory ? `History · ${currentEditionLabel}` : "Otown Party 12.0 · Current Edition"}
             </p>
             <h1 className="font-display font-bold text-2xl text-foreground">
-              Ticket Records
+              {isViewingHistory ? "Past Edition Records" : "Ticket Records"}
             </h1>
             {lastUpdated && (
               <p className="text-xs text-muted-foreground mt-1">
@@ -441,7 +441,14 @@ const Record = () => {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => setHistoryOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 text-primary hover:bg-primary/10 text-xs font-semibold transition"
+            >
+              <History size={12} />
+              History
+            </button>
             <button
               onClick={fetchAllData}
               disabled={loading}
@@ -458,6 +465,22 @@ const Record = () => {
             </button>
           </div>
         </div>
+
+        {isViewingHistory && (
+          <div className="mb-6 flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-primary/10 border border-primary/30">
+            <div className="text-sm">
+              <span className="text-muted-foreground">Viewing past edition:</span>{" "}
+              <span className="font-semibold text-primary">{selectedEdition}</span>
+            </div>
+            <button
+              onClick={() => setSelectedEdition(CURRENT_EDITION)}
+              className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold"
+            >
+              <ArrowLeft size={12} /> Back to current edition
+            </button>
+          </div>
+        )}
+
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
