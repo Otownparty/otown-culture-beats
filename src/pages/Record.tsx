@@ -670,7 +670,7 @@ const Record = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {buyers.map((b, i) => (
+                        {editionBuyers.map((b, i) => (
                           <tr
                             key={i}
                             className={`border-b border-border last:border-0 ${
