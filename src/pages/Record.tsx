@@ -122,19 +122,29 @@ interface VendorRecord {
 
 const TICKET_TYPES = ["Early Bird", "Regular", "VIP Experience"];
 
+type RawTicket = {
+  ticket_type: string;
+  used: boolean;
+  edition: string | null;
+};
+
 const Record = () => {
   const navigate = useNavigate();
   const [authChecked, setAuthChecked] = useState(false);
 
   // Original ticket stats state
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<TicketStats[]>([]);
+  const [rawTickets, setRawTickets] = useState<RawTicket[]>([]);
   const [buyers, setBuyers] = useState<BuyerRecord[]>([]);
   const [copied, setCopied] = useState(false);
   const [copiedVendors, setCopiedVendors] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [confirmClear, setConfirmClear] = useState<null | "tickets" | "vendors">(null);
   const [clearing, setClearing] = useState(false);
+
+  // Edition selector + history
+  const [selectedEdition, setSelectedEdition] = useState<string>(CURRENT_EDITION);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // New tabbed records state
   const [activeTab, setActiveTab] = useState("overview");
@@ -164,39 +174,18 @@ const Record = () => {
 
   const fetchTicketStats = async () => {
     try {
-      // Fetch all tickets
       const { data: tickets, error: ticketsErr } = await supabase
         .from("tickets")
-        .select("ticket_type, used, buyer_name, buyer_email, quantity, payment_reference")
+        .select("ticket_type, used, edition")
         .order("ticket_type");
 
       if (ticketsErr) throw ticketsErr;
-
-      // Build stats per ticket type
-      const statsMap: Record<string, { bought: number; scanned: number }> = {};
-      TICKET_TYPES.forEach((t) => {
-        statsMap[t] = { bought: 0, scanned: 0 };
-      });
-
-      tickets?.forEach((ticket) => {
-        const type = ticket.ticket_type;
-        if (!statsMap[type]) statsMap[type] = { bought: 0, scanned: 0 };
-        statsMap[type].bought += 1;
-        if (ticket.used) statsMap[type].scanned += 1;
-      });
-
-      const statsArr = TICKET_TYPES.map((t) => ({
-        ticketType: t,
-        bought: statsMap[t]?.bought || 0,
-        scanned: statsMap[t]?.scanned || 0,
-      }));
-
-      setStats(statsArr);
+      setRawTickets((tickets as RawTicket[]) || []);
 
       // Fetch buyer records from payment_intents
       const { data: intents, error: intentsErr } = await supabase
         .from("payment_intents")
-        .select("buyer_name, buyer_email, ticket_type, quantity, claimed_at")
+        .select("buyer_name, buyer_email, ticket_type, quantity, claimed_at, edition")
         .eq("status", "claimed")
         .order("claimed_at", { ascending: false });
 
@@ -207,6 +196,7 @@ const Record = () => {
         email: i.buyer_email || "—",
         ticketType: i.ticket_type,
         quantity: i.quantity,
+        edition: i.edition || CURRENT_EDITION,
         claimedAt: i.claimed_at
           ? new Date(i.claimed_at).toLocaleDateString("en-NG", {
               day: "2-digit",
@@ -224,6 +214,7 @@ const Record = () => {
       toast.error((err as Error).message);
     }
   };
+
 
   const fetchTicketPurchases = async () => {
     setLoadingTickets(true);
