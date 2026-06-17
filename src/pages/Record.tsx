@@ -618,7 +618,7 @@ const Record = () => {
                       Buyer Records
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {buyers.length} ticket{buyers.length !== 1 ? "s" : ""} purchased
+                      {editionBuyers.length} ticket{editionBuyers.length !== 1 ? "s" : ""} purchased
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
