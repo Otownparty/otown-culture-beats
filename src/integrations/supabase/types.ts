@@ -16,8 +16,10 @@ export type Database = {
     Tables: {
       payment_intents: {
         Row: {
+          attendee_type: string | null
           buyer_email: string | null
           buyer_name: string | null
+          buyer_phone: string | null
           claimed_at: string | null
           created_at: string
           edition: string
@@ -31,8 +33,10 @@ export type Database = {
           verified_at: string | null
         }
         Insert: {
+          attendee_type?: string | null
           buyer_email?: string | null
           buyer_name?: string | null
+          buyer_phone?: string | null
           claimed_at?: string | null
           created_at?: string
           edition?: string
@@ -46,8 +50,10 @@ export type Database = {
           verified_at?: string | null
         }
         Update: {
+          attendee_type?: string | null
           buyer_email?: string | null
           buyer_name?: string | null
+          buyer_phone?: string | null
           claimed_at?: string | null
           created_at?: string
           edition?: string

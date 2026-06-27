@@ -63,7 +63,14 @@ const Tickets = () => {
     try {
       await loadPaystackScript();
       const { data, error } = await supabase.functions.invoke("initialize-payment", {
-        body: { ticketType: ticketName, quantity },
+        body: {
+          ticketType: ticketName,
+          quantity,
+          buyerName: buyerName.trim(),
+          buyerEmail: buyerEmail.trim(),
+          buyerPhone: buyerPhone.trim(),
+          attendeeType,
+        },
       });
       if (error || !data?.reference) throw new Error(error?.message || "Failed to start payment");
 

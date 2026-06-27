@@ -1,4 +1,4 @@
-// Initialize a Paystack payment intent. Stores intent in DB and returns reference + public key.
+// Initialize a Paystack payment intent. Stores intent (with buyer info) in DB and returns reference + public key.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -13,11 +13,13 @@ const TICKET_PRICES: Record<string, number> = {
   "VIP Experience": 15000_00,
 };
 
+const emailRegex = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { ticketType, quantity } = await req.json();
+    const { ticketType, quantity, buyerName, buyerEmail, buyerPhone, attendeeType } = await req.json();
 
     if (!ticketType || typeof ticketType !== "string" || !TICKET_PRICES[ticketType]) {
       return new Response(JSON.stringify({ error: "Invalid ticket type" }), {
@@ -27,6 +29,22 @@ Deno.serve(async (req) => {
     const qty = Number(quantity);
     if (!Number.isInteger(qty) || qty < 1 || qty > 10) {
       return new Response(JSON.stringify({ error: "Quantity must be 1-10" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const cleanName = typeof buyerName === "string" ? buyerName.trim().slice(0, 100) : "";
+    const cleanEmail = typeof buyerEmail === "string" ? buyerEmail.trim().toLowerCase().slice(0, 255) : "";
+    const cleanPhone = typeof buyerPhone === "string" ? buyerPhone.trim().slice(0, 30) : "";
+    const cleanAttendee = typeof attendeeType === "string" ? attendeeType.trim().slice(0, 30) : "";
+
+    if (cleanName.length < 2) {
+      return new Response(JSON.stringify({ error: "Valid buyer name required" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!emailRegex(cleanEmail)) {
+      return new Response(JSON.stringify({ error: "Valid buyer email required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -41,8 +59,16 @@ Deno.serve(async (req) => {
     );
 
     const { error } = await supabase.from("payment_intents").insert({
-      reference, ticket_type: ticketType, unit_price: unitPrice,
-      quantity: qty, total_amount: totalAmount, status: "pending",
+      reference,
+      ticket_type: ticketType,
+      unit_price: unitPrice,
+      quantity: qty,
+      total_amount: totalAmount,
+      status: "pending",
+      buyer_name: cleanName,
+      buyer_email: cleanEmail,
+      buyer_phone: cleanPhone || null,
+      attendee_type: cleanAttendee || null,
     });
     if (error) throw error;
 
