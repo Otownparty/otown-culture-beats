@@ -15,7 +15,7 @@ const tickets = [
 ];
 
 // Set this to true to close online sales and show venue-only message
-const ONLINE_SALES_CLOSED = false;
+const ONLINE_SALES_CLOSED = true;
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
@@ -104,7 +104,6 @@ const Tickets = () => {
               `/success?fullname=${encodeURIComponent(finalName)}&email=${encodeURIComponent(finalEmail)}`
             );
           };
-          // Fire claim in background, but always show congratulatory page.
           supabase.functions
             .invoke("claim-tickets", { body: { reference: ref, name: finalName, email: finalEmail } })
             .then(({ data, error }) => {
@@ -149,20 +148,21 @@ const Tickets = () => {
             <ScrollReveal>
               <div className="relative overflow-hidden rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/10 via-pink-400/5 to-transparent p-6 mb-10">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-400/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center shrink-0">
                     <Zap className="text-primary" size={22} />
                   </div>
                   <div>
                     <p className="text-primary text-[10px] font-bold uppercase tracking-[0.25em] mb-1">
-                      Edition Wrapped
+                      Online Sales Closed
                     </p>
                     <h2 className="font-display font-bold text-xl text-foreground mb-1">
-                      Moment ended, Movement Continues. 🌀
+                      Tickets now available at the venue only 🎟️
                     </h2>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Glow in the 90s — Chapter II is officially a wrap. Thank you to every raver who showed up and showed out.{" "}
-                      <span className="text-foreground font-semibold">Ticket sales are closed for now</span> — the next chapter is loading. Stay tuned for Otown Party 12.0.
+                      Online ticket sales are closed.{" "}
+                      <span className="text-foreground font-semibold">Walk in and pay at the door</span> — tickets are available on the night. See you there. 🌀
                     </p>
                   </div>
                 </div>
@@ -227,7 +227,7 @@ const Tickets = () => {
                               : "bg-foreground/90 text-background hover:brightness-110"
                         }`}
                       >
-                        {isLoading ? <Loader2 className="animate-spin inline" size={16} /> : `Buy ${qty} for ₦${total.toLocaleString()}`}
+                        {isLoading ? <Loader2 className="animate-spin inline" size={16} /> : isDisabled ? "Available at the Venue" : `Buy ${qty} for ₦${total.toLocaleString()}`}
                       </button>
                     </div>
                   </ScrollReveal>
