@@ -175,7 +175,18 @@ const Tickets = () => {
                   </h2>
 
                   <p className="max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Online ticket sales are not open yet. When the next drop goes live, this is where the movement begins.{
+                    Online ticket sales are not open yet. When the next drop goes live, this is where the movement begins. Stay locked in — the next chapter of the rave is loading.
+                  </p>
+
+                  <div className="flex items-center gap-2 text-primary/90 text-sm font-semibold tracking-wide">
+                    <Sparkles size={16} className="animate-pulse" />
+                    <span>Follow @otownparty for the drop alert</span>
+                    <Sparkles size={16} className="animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          )}
 
           <div className="grid lg:grid-cols-2 gap-12 mb-20">
             <div className="space-y-6">
