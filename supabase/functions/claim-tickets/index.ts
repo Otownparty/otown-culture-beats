@@ -193,7 +193,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: fromAddress,
         to: [cleanEmail],
-        subject: `Your Otown Party 12.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
+        subject: `Your Otown Party 13.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
         html: emailHtml,
       }),
     });

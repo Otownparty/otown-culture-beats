@@ -13,7 +13,7 @@ import edition6 from "@/assets/edition-6.jpg";
 import edition7 from "@/assets/edition-7.jpg";
 import edition8 from "@/assets/edition-8.jpg";
 import edition9 from "@/assets/edition-9.jpg";
-import edition11Asset from "@/assets/edition-11.jpg.asset.json";
+import edition13Asset from "@/assets/edition-13.jpg.asset.json";
 import edition12Asset from "@/assets/edition-12.png.asset.json";
 import edition10 from "@/assets/edition-10.jpg";
 
