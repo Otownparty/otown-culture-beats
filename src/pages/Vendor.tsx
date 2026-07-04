@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { useNavigate } from "react-router-dom";
+import { nextEdition } from "@/data/editions";
 
 // PaystackPop is declared globally in src/types/paystack.d.ts
 
@@ -297,13 +298,13 @@ const Vendor = () => {
           {/* Header */}
           <div className="text-center mb-10">
             <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-3">
-              Otown Party 13.0 · August 1, 2026
+              Otown Party {nextEdition.num}.0 · {nextEdition.shortDate}
             </p>
             <h1 className="font-display font-bold text-3xl sm:text-4xl text-foreground mb-2">
               Vendor Registration
             </h1>
             <p className="text-muted-foreground text-sm">
-              Durbar Stadium, Oyo · Saturday, August 1st, 2026
+              {nextEdition.venue} · {nextEdition.date}
             </p>
           </div>
 
