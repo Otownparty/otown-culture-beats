@@ -38,8 +38,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-const CURRENT_EDITION = "Otown Party 12.0 - Iseyin Edition";
+const CURRENT_EDITION = "Otown Party 13.0 - Faaji Extra";
 const PAST_EDITIONS: { value: string; label: string; date: string }[] = [
+  {
+    value: "Otown Party 12.0 - Iseyin Edition",
+    label: "Otown Party 12.0",
+    date: "Iseyin Edition · June 2026",
+  },
   {
     value: "Otown Party 11.0 - Glow in the 90s",
     label: "Otown Party 11.0",

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Images, Flame } from "lucide-react";
+import { ArrowRight, Calendar, Images, Flame, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CountdownTimer from "@/components/CountdownTimer";
 
 import ScrollReveal from "@/components/ScrollReveal";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -58,24 +59,24 @@ const Index = () => {
               Let's Rave
             </p>
             <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-muted-foreground">
-              Iseyin Edition · Wrapped · Otown Party 13.0 Loading
+              Otown Party 13.0 · Faaji Extra · 1st August 2026
             </p>
-            <div className="w-full flex justify-center py-6">
-              <div className="bg-card border border-border rounded-xl px-8 py-6 text-center max-w-md">
-                <p className="text-primary text-xs font-bold uppercase tracking-widest mb-2">Coming Soon</p>
-                <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">Otown Party 13.0</p>
-                <p className="text-sm text-muted-foreground mt-2">Date · Venue · Theme — TBA</p>
+            <div className="w-full flex flex-col items-center gap-4 py-4">
+              <CountdownTimer />
+              <div className="flex flex-wrap gap-4 justify-center text-xs sm:text-sm text-muted-foreground">
+                <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> Sat 1st Aug · 6PM–4AM</span>
+                <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Durbar Stadium, Oyo</span>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-              <button
-                disabled
-                className="px-8 py-3.5 rounded-lg bg-muted text-muted-foreground font-semibold text-sm cursor-not-allowed"
+              <Link
+                to="/tickets"
+                className="px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition-all"
               >
-                Tickets Coming Soon
-              </button>
+                Get Tickets Now
+              </Link>
               <Link to="/gallery" className="px-8 py-3.5 rounded-lg border border-foreground/30 text-foreground font-semibold text-sm hover:border-primary hover:text-primary transition-all">
-                View Iseyin Moments
+                View Past Moments
               </Link>
             </div>
           </div>
