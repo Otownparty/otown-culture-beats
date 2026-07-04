@@ -15,7 +15,7 @@ const tickets = [
 ];
 
 // Set this to true to close online sales and show venue-only message
-const ONLINE_SALES_CLOSED = true;
+const ONLINE_SALES_CLOSED = false;
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
@@ -146,8 +146,8 @@ const Tickets = () => {
         <div className="container mx-auto max-w-6xl px-4">
           <ScrollReveal>
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">Tickets & Contact</p>
-            <h1 className="text-4xl sm:text-5xl font-display font-bold text-foreground mb-4">Join the Movement – Get Your Tickets</h1>
-            <p className="text-muted-foreground max-w-2xl mb-8">Secure your place at the most anticipated rave event of 2026. Tickets are limited.</p>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-foreground mb-4">Otown Party 13.0 · Faaji Extra</h1>
+            <p className="text-muted-foreground max-w-2xl mb-8">Sat 1st August 2026 · 6PM–4AM · Durbar Stadium, Oyo. Secure your place — tickets are limited.</p>
           </ScrollReveal>
 
           {/* Coming soon banner */}
