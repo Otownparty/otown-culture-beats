@@ -13,6 +13,7 @@ import edition6 from "@/assets/edition-6.jpg";
 import edition7 from "@/assets/edition-7.jpg";
 import edition8 from "@/assets/edition-8.jpg";
 import edition9 from "@/assets/edition-9.jpg";
+import edition11Asset from "@/assets/edition-11.jpg.asset.json";
 import edition13Asset from "@/assets/edition-13.jpg.asset.json";
 import edition12Asset from "@/assets/edition-12.png.asset.json";
 import edition10 from "@/assets/edition-10.jpg";
@@ -44,25 +45,28 @@ const Events = () => {
             <p className="text-muted-foreground max-w-2xl mb-16 leading-relaxed">Ten iconic chapters. Each one a statement. Together, they tell the story of a movement.</p>
           </ScrollReveal>
 
-          {/* Spotlight — Coming Soon */}
+          {/* Spotlight — Next Edition */}
           <ScrollReveal>
-            <div className="bg-card border border-border rounded-2xl overflow-hidden mb-20 border-l-4 border-l-primary">
-              <div className="p-8 md:p-12 text-center">
+            <div className="bg-card border border-border rounded-2xl overflow-hidden mb-20 border-l-4 border-l-primary grid md:grid-cols-2">
+              <div className="aspect-[4/5] md:aspect-auto overflow-hidden">
+                <img src={edition13Asset.url} alt="Otown Party 13.0 — Faaji Extra" className="w-full h-full object-cover" />
+              </div>
+              <div className="p-8 md:p-12">
                 <span className="inline-block bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-                  Coming Soon
+                  Next Edition · Tickets Live
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Otown Party 13.0</h2>
-                <p className="text-muted-foreground mb-6 leading-relaxed max-w-xl mx-auto">The next chapter is loading. Date, venue and theme — to be announced. Stay tuned across our socials for the drop.</p>
-                <div className="flex flex-wrap gap-4 justify-center mb-8 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> Date TBA</span>
-                  <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Venue TBA</span>
+                <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-3">Otown Party 13.0 — Faaji Extra</h2>
+                <p className="text-muted-foreground mb-6 leading-relaxed">The rave returns to Oyo with more energy, more culture, more Faaji. One night. Extra everything.</p>
+                <div className="flex flex-wrap gap-4 mb-8 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1.5"><Calendar size={14} className="text-primary" /> Sat 1st August 2026 · 6PM–4AM</span>
+                  <span className="flex items-center gap-1.5"><MapPin size={14} className="text-primary" /> Durbar Stadium, Oyo</span>
                 </div>
-                <button
-                  disabled
-                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-muted text-muted-foreground font-semibold text-sm cursor-not-allowed"
+                <Link
+                  to="/tickets"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition"
                 >
-                  Tickets Coming Soon
-                </button>
+                  Get Tickets Now
+                </Link>
               </div>
             </div>
           </ScrollReveal>
