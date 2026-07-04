@@ -33,6 +33,7 @@ const CONSUMABLE_OPTIONS: CategoryOption[] = [
   { key: "popcorn_parfait", label: "Popcorn and Parfait", price: 50000, spots: 1 },
   { key: "pepper_soup", label: "Pepper Soup", price: 40000, spots: 1 },
   { key: "suya", label: "Suya", price: 30000, spots: 1 },
+  { key: "snail_peppered_chicken", label: "Snail & Peppered Chicken", price: 40000, spots: 1 },
   { key: "shisha", label: "Shisha", price: 50000, spots: 2 },
 ];
 
@@ -296,13 +297,13 @@ const Vendor = () => {
           {/* Header */}
           <div className="text-center mb-10">
             <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-3">
-              Otown Party 11.0 · May 30, 2026
+              Otown Party 13.0 · August 1, 2026
             </p>
             <h1 className="font-display font-bold text-3xl sm:text-4xl text-foreground mb-2">
               Vendor Registration
             </h1>
             <p className="text-muted-foreground text-sm">
-              Durbar Stadium, Oyo · Saturday, May 30th, 2026
+              Durbar Stadium, Oyo · Saturday, August 1st, 2026
             </p>
           </div>
 
