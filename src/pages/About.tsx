@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import aboutImg from "@/assets/about-party.jpg";
-
+import { editions } from "@/data/editions";
 const values = [
   { num: "01", title: "Culture First", desc: "Every decision honours African culture — in sound, style, and space." },
   { num: "02", title: "Community", desc: "Building belonging where every raver feels seen and celebrated." },
@@ -16,7 +16,6 @@ const values = [
   { num: "10", title: "Emergency Response", desc: "First aid support and emergency response measures will be available on-site at all times." },
   { num: "11", title: "Safe Space for All", desc: "O'town Party promotes respect, inclusivity, and positive vibes. Everyone deserves to feel safe and enjoy the moment." },
 ];
-
 const About = () => {
   return (
     <>
@@ -27,7 +26,6 @@ const About = () => {
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">About</p>
             <h1 className="text-4xl sm:text-6xl font-display font-bold text-foreground mb-16">The Movement</h1>
           </ScrollReveal>
-
           {/* Origin */}
           <div className="grid md:grid-cols-2 gap-12 mb-20 items-center">
             <ScrollReveal>
@@ -48,17 +46,15 @@ const About = () => {
               </div>
             </ScrollReveal>
           </div>
-
           {/* Milestone */}
           <ScrollReveal>
             <div className="bg-card border border-border border-l-4 border-l-primary rounded-xl p-8 mb-20">
-              <h3 className="text-xl font-display font-bold text-foreground mb-2">10 Successful Editions and Growing</h3>
+              <h3 className="text-xl font-display font-bold text-foreground mb-2">{editions.length} Successful Editions and Growing</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Reaching 10 editions is not just a number — it is proof that African urban culture is a force that unites, inspires, and endures. Each edition has been a chapter in a story that continues to unfold.
+                Reaching {editions.length} editions is not just a number — it is proof that African urban culture is a force that unites, inspires, and endures. Each edition has been a chapter in a story that continues to unfold.
               </p>
             </div>
           </ScrollReveal>
-
           {/* Values */}
           <ScrollReveal>
             <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-8">Our Values</h2>
@@ -80,5 +76,4 @@ const About = () => {
     </>
   );
 };
-
 export default About;
