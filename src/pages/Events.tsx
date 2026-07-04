@@ -1,6 +1,5 @@
-
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Calendar } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -22,14 +21,14 @@ const editions = [
   { num: 12, date: "Sat 27th June 2026", title: "Iseyin Edition", desc: "The movement moved to Iseyin — one night of rave, culture and connection under the stars at Silver ZB Resort.", img: edition12Asset.url },
   { num: 11, date: "Sat 30th May 2026", title: "Glow in the 90s — Chapter II", desc: "The Anniversary Edition — a neon-soaked 90s throwback that lit up Oyo Durbar Stadium.", img: edition11Asset.url },
   { num: 10, date: "Sat 21st March 2026", title: "Denim After Dark", desc: "A Decade of Raving — the 10th edition at Oyo Durbar Stadium.", img: edition10 },
-  { num: 9, date: "Tue 30th Dec 2025", title: "POTY", desc: "Party of the Year returned — closing out 2025 at LaSamba Resort, Oyo.", img: edition9 },
-  { num: 8, date: "Sat 25th Oct 2025", title: "Haunted Groove Halloween", desc: "The scariest night of the year — Haunted Groove at LaSamba Resort celebrates African culture.", img: edition8 },
+  { num: 9, date: "Tue 30th Dec 2025", title: "POTY", desc: "Party of the Year returned — closing out 2025 at Labamba Resort, Oyo.", img: edition9 },
+  { num: 8, date: "Sat 25th Oct 2025", title: "Haunted Groove Halloween", desc: "The scariest night of the year — Haunted Groove at Labamba Resort celebrates African culture.", img: edition8 },
   { num: 7, date: "Sat 31st May 2025", title: "Owambe Edition", desc: "1 Year Anniversary — the Owambe Edition celebrated African culture in full colour.", img: edition7 },
-  { num: 6, date: "Sat 15th Feb 2025", title: "XOXO Edition", desc: "The ultimate year-ender — Party of the Year at LaSamba Resort.", img: edition6 },
-  { num: 5, date: "Sat 21st Dec 2024", title: "Party of the Year", desc: "A spine-chilling Halloween celebration at LaSamba Resort.", img: edition5 },
-  { num: 4, date: "Sat 26th Oct 2024", title: "Halloween: Terror By Night", desc: "The flyest wave hit LaSamba Resort.", img: edition4 },
-  { num: 3, date: "Sat 14th Sept 2024", title: "Y2K Edition", desc: "A retro-futuristic throwback — the flyest wave hit LaSamba Resort.", img: edition3 },
-  { num: 2, date: "Sat 22nd June 2024", title: "Frenzy Edition", desc: "The energy tripled — the Frenzy Edition took LaSamba Resort by storm.", img: edition2 },
+  { num: 6, date: "Sat 15th Feb 2025", title: "XOXO Edition", desc: "The ultimate year-ender — Party of the Year at Labamba Resort.", img: edition6 },
+  { num: 5, date: "Sat 21st Dec 2024", title: "Party of the Year", desc: "A spine-chilling Halloween celebration at Labamba Resort.", img: edition5 },
+  { num: 4, date: "Sat 26th Oct 2024", title: "Halloween: Terror By Night", desc: "The flyest wave hit Labamba Resort.", img: edition4 },
+  { num: 3, date: "Sat 14th Sept 2024", title: "Y2K Edition", desc: "A retro-futuristic throwback — the flyest wave hit Labamba Resort.", img: edition3 },
+  { num: 2, date: "Sat 22nd June 2024", title: "Frenzy Edition", desc: "The energy tripled — the Frenzy Edition took Labamba Resort by storm.", img: edition2 },
   { num: 1, date: "Sat 27th April 2024", title: "The Genesis", desc: "Where it all began — music, games, dance, drink, and connect at the very first Otown Party.", img: edition1 },
 ];
 
@@ -42,7 +41,7 @@ const Events = () => {
           <ScrollReveal>
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">Events & Lineup</p>
             <h1 className="text-4xl sm:text-6xl font-display font-bold text-foreground mb-4">Our Editions & Lineup</h1>
-            <p className="text-muted-foreground max-w-2xl mb-16 leading-relaxed">Ten iconic chapters. Each one a statement. Together, they tell the story of a movement.</p>
+            <p className="text-muted-foreground max-w-2xl mb-16 leading-relaxed">{editions.length} iconic chapters. Each one a statement. Together, they tell the story of a movement.</p>
           </ScrollReveal>
 
           {/* Spotlight — Next Edition */}
@@ -73,7 +72,7 @@ const Events = () => {
 
           {/* Past Editions */}
           <ScrollReveal>
-            <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-8">12 Legendary Editions</h2>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-8">{editions.length} Legendary Editions</h2>
           </ScrollReveal>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -88,9 +87,6 @@ const Events = () => {
                       <span className="text-xs text-primary font-semibold uppercase tracking-wider">Edition {ed.num} · {ed.date}</span>
                       <h3 className="font-display font-bold text-lg text-foreground mt-1 mb-2">{ed.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3">{ed.desc}</p>
-                      <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                        View Moments <ArrowRight size={14} />
-                      </span>
                     </div>
                   </div>
                 </ScrollReveal>
