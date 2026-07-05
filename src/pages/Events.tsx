@@ -13,9 +13,9 @@ import edition7 from "@/assets/edition-7.jpg";
 import edition8 from "@/assets/edition-8.jpg";
 import edition9 from "@/assets/edition-9.jpg";
 import edition10 from "@/assets/edition-10.jpg";
-import edition11Asset from "@/assets/edition-11.jpg.asset.json";
-import edition13Asset from "@/assets/edition-13.jpg.asset.json";
-import edition12Asset from "@/assets/edition-12.png.asset.json";
+import edition11 from "@/assets/edition-11.jpg";
+import edition12 from "@/assets/edition-12.png";
+import edition13 from "@/assets/edition-13.jpg";
 
 export interface Edition {
   num: number;
@@ -33,8 +33,8 @@ export interface Edition {
  * via src/data/editions.ts) so nothing else needs editing.
  */
 export const editions: Edition[] = [
-  { num: 12, date: "Sat 27th June 2026", title: "Iseyin Edition", desc: "The movement moved to Iseyin — one night of rave, culture and connection under the stars at Silver ZB Resort.", img: edition12Asset.url },
-  { num: 11, date: "Sat 30th May 2026", title: "Glow in the 90s — Chapter II", desc: "The Anniversary Edition — a neon-soaked 90s throwback that lit up Oyo Durbar Stadium.", img: edition11Asset.url },
+  { num: 12, date: "Sat 27th June 2026", title: "Iseyin Edition", desc: "The movement moved to Iseyin — one night of rave, culture and connection under the stars at Silver ZB Resort.", img: edition12 },
+  { num: 11, date: "Sat 30th May 2026", title: "Glow in the 90s — Chapter II", desc: "The Anniversary Edition — a neon-soaked 90s throwback that lit up Oyo Durbar Stadium.", img: edition11 },
   { num: 10, date: "Sat 21st March 2026", title: "Denim After Dark", desc: "A Decade of Raving — the 10th edition at Oyo Durbar Stadium.", img: edition10 },
   { num: 9, date: "Tue 30th Dec 2025", title: "POTY", desc: "Party of the Year returned — closing out 2025 at Labamba Resort, Oyo.", img: edition9 },
   { num: 8, date: "Sat 25th Oct 2025", title: "Haunted Groove Halloween", desc: "The scariest night of the year — Haunted Groove at Labamba Resort celebrates African culture.", img: edition8 },
@@ -76,7 +76,7 @@ export const nextEdition: NextEdition = {
   shortDate: "August 1, 2026",
   time: "6PM–4AM",
   venue: "Durbar Stadium, Oyo",
-  img: edition13Asset.url,
+  img: edition13,
 };
 
 const Events = () => {
