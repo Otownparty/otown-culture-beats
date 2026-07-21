@@ -39,12 +39,12 @@ const Success = () => {
 
             {/* Body */}
             <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-              You've successfully joined the guest list for the{" "}
-              <span className="text-foreground font-semibold">Glow in the 90s edition.</span>
+              You've successfully joined the guest list for{" "}
+              <span className="text-foreground font-semibold">Otown Party 13.0 · Faaji Extra.</span>
             </p>
 
             <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-              Prepare for a night of curated Afro-RnB, old-school rhythms, and an atmosphere built for the refined. We are busy setting the vibe at Otown Party to ensure this becomes a core memory.
+              Saturday, 1st August 2026 · 6PM–4AM · Durbar Stadium, Oyo. Prepare for a night of raw energy, unmatched sound, and the culture at its loudest. We're setting the vibe to make this a core memory.
             </p>
 
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
