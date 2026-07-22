@@ -205,7 +205,48 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Only OTP-* references belong to ticket sales (skip vendor refs etc.)
+    // Handle VENDOR-* references: mark vendor paid + trigger QR email
+    if (reference.startsWith("VENDOR-")) {
+      // Verify with Paystack first
+      const psRes = await fetch(
+        `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+        { headers: { Authorization: `Bearer ${paystackSecret}` } }
+      );
+      const psData = await psRes.json();
+      if (!psRes.ok || psData?.data?.status !== "success") {
+        return new Response(JSON.stringify({
+          error: "vendor payment not successful on Paystack",
+          paystackStatus: psData?.data?.status,
+        }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const { data: vendor, error: vErr } = await supabase
+        .from("vendor_applications").select("*").eq("reference", reference).maybeSingle();
+      if (vErr) throw vErr;
+      if (!vendor) {
+        return new Response(JSON.stringify({ error: "vendor not found", reference }), {
+          status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (vendor.status !== "paid") {
+        await supabase.from("vendor_applications")
+          .update({ status: "paid", paid_at: new Date().toISOString() })
+          .eq("reference", reference);
+      }
+
+      // Fire QR email via existing function (idempotent-ish; safe to re-invoke)
+      const qrRes = await supabase.functions.invoke("send-vendor-qr", {
+        body: { reference },
+      });
+      if (qrRes.error) console.error("send-vendor-qr invoke failed:", qrRes.error);
+
+      return new Response(JSON.stringify({
+        ok: true, vendor: true, reference, emailInvoked: !qrRes.error,
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Only OTP-* references belong to ticket sales beyond this point
     if (!reference.startsWith("OTP-")) {
       return new Response(JSON.stringify({ ok: true, skipped: "non-ticket reference" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
