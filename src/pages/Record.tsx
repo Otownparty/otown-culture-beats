@@ -16,6 +16,9 @@ import {
   Trash2,
   History,
   ArrowLeft,
+  Mail,
+  Send,
+
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
