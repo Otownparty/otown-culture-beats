@@ -531,6 +531,13 @@ See you on the dancefloor.
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <button
+              onClick={openReminder}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:brightness-110 transition"
+            >
+              <Mail size={12} />
+              Email Buyers
+            </button>
+            <button
               onClick={() => setHistoryOpen(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 text-primary hover:bg-primary/10 text-xs font-semibold transition"
             >
