@@ -150,9 +150,41 @@ const Record = () => {
   const [confirmClear, setConfirmClear] = useState<null | "tickets" | "vendors">(null);
   const [clearing, setClearing] = useState(false);
 
+  // Party reminder email state
+  const DEFAULT_REMINDER_SUBJECT = "🔥 It's THIS Saturday — Otown Party 13.0 Faaji Extra";
+  const DEFAULT_REMINDER_MESSAGE = `Hey Raver,
+
+It's finally here — this Saturday, we take over Durbar Stadium, Oyo for Otown Party 13.0: Faaji Extra. 🚀
+
+📅 Saturday, 1st August 2026
+🕕 6PM – 4AM
+📍 Durbar Stadium, Oyo
+
+Here's how to lock in an unforgettable night:
+
+• Come with the QR code that was sent to this email — screenshot or printed, both work.
+• Arrive early to skip the queue and catch the opening vibe.
+• Dress the part — Faaji Extra is a whole mood. Come in your freshest.
+• Bring a valid ID and stay hydrated between drinks.
+• Move in a squad. The energy is always bigger with your people.
+
+Doors don't stop till 4AM. Sound system loaded. DJ lineup ready. Only one thing missing — you. 🌀
+
+See you on the dancefloor.
+
+— The Otown Party Team`;
+
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const [reminderSubject, setReminderSubject] = useState(DEFAULT_REMINDER_SUBJECT);
+  const [reminderMessage, setReminderMessage] = useState(DEFAULT_REMINDER_MESSAGE);
+  const [reminderSending, setReminderSending] = useState(false);
+  const [reminderCount, setReminderCount] = useState<number | null>(null);
+  const [reminderResult, setReminderResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+
   // Edition selector + history
   const [selectedEdition, setSelectedEdition] = useState<string>(CURRENT_EDITION);
   const [historyOpen, setHistoryOpen] = useState(false);
+
 
   // New tabbed records state
   const [activeTab, setActiveTab] = useState("overview");
