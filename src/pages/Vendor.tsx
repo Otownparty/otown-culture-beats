@@ -35,6 +35,7 @@ const CONSUMABLE_OPTIONS: CategoryOption[] = [
   { key: "pepper_soup", label: "Pepper Soup", price: 40000, spots: 1 },
   { key: "suya", label: "Suya", price: 30000, spots: 1 },
   { key: "snail_peppered_chicken", label: "Snail", price: 40000, spots: 1 },
+  { key: "coffee", label: "Coffee", price: 40000, spots: 1 },
   { key: "shisha", label: "Shisha", price: 50000, spots: 2 },
 ];
 

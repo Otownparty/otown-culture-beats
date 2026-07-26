@@ -16,6 +16,9 @@ import {
   Trash2,
   History,
   ArrowLeft,
+  Mail,
+  Send,
+
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
@@ -147,9 +150,41 @@ const Record = () => {
   const [confirmClear, setConfirmClear] = useState<null | "tickets" | "vendors">(null);
   const [clearing, setClearing] = useState(false);
 
+  // Party reminder email state
+  const DEFAULT_REMINDER_SUBJECT = "🔥 It's THIS Saturday — Otown Party 13.0 Faaji Extra";
+  const DEFAULT_REMINDER_MESSAGE = `Hey Raver,
+
+It's finally here — this Saturday, we take over Durbar Stadium, Oyo for Otown Party 13.0: Faaji Extra. 🚀
+
+📅 Saturday, 1st August 2026
+🕕 6PM – 4AM
+📍 Durbar Stadium, Oyo
+
+Here's how to lock in an unforgettable night:
+
+• Come with the QR code that was sent to this email — screenshot or printed, both work.
+• Arrive early to skip the queue and catch the opening vibe.
+• Dress the part — Faaji Extra is a whole mood. Come in your freshest.
+• Bring a valid ID and stay hydrated between drinks.
+• Move in a squad. The energy is always bigger with your people.
+
+Doors don't stop till 4AM. Sound system loaded. DJ lineup ready. Only one thing missing — you. 🌀
+
+See you on the dancefloor.
+
+— The Otown Party Team`;
+
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const [reminderSubject, setReminderSubject] = useState(DEFAULT_REMINDER_SUBJECT);
+  const [reminderMessage, setReminderMessage] = useState(DEFAULT_REMINDER_MESSAGE);
+  const [reminderSending, setReminderSending] = useState(false);
+  const [reminderCount, setReminderCount] = useState<number | null>(null);
+  const [reminderResult, setReminderResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+
   // Edition selector + history
   const [selectedEdition, setSelectedEdition] = useState<string>(CURRENT_EDITION);
   const [historyOpen, setHistoryOpen] = useState(false);
+
 
   // New tabbed records state
   const [activeTab, setActiveTab] = useState("overview");
@@ -312,6 +347,54 @@ const Record = () => {
     }
   };
 
+  const loadReminderPreview = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("send-party-reminder", {
+        body: { dryRun: true, edition: selectedEdition },
+      });
+      if (error) throw error;
+      setReminderCount((data as any)?.count ?? 0);
+    } catch (err) {
+      console.error("preview failed", err);
+      setReminderCount(null);
+      toast.error("Could not load recipient count");
+    }
+  };
+
+  const openReminder = async () => {
+    setReminderResult(null);
+    setReminderCount(null);
+    setReminderOpen(true);
+    await loadReminderPreview();
+  };
+
+  const sendReminder = async () => {
+    if (!reminderSubject.trim() || !reminderMessage.trim()) {
+      return toast.error("Subject and message are required");
+    }
+    setReminderSending(true);
+    setReminderResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-party-reminder", {
+        body: {
+          subject: reminderSubject,
+          message: reminderMessage,
+          edition: selectedEdition,
+        },
+      });
+      if (error) throw error;
+      const res = data as { sent: number; failed: number; total: number };
+      setReminderResult(res);
+      toast.success(`Sent ${res.sent} of ${res.total} reminder emails${res.failed ? ` (${res.failed} failed)` : ""}`);
+    } catch (err) {
+      toast.error((err as Error).message || "Failed to send reminder");
+    } finally {
+      setReminderSending(false);
+    }
+  };
+
+
+
   const exportCSV = (type: "tickets" | "vendors") => {
     const data = type === "tickets" ? filteredTicketPurchases : filteredVendors;
     if (data.length === 0) return toast.error("No data to export");
@@ -447,6 +530,13 @@ const Record = () => {
             )}
           </div>
           <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={openReminder}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:brightness-110 transition"
+            >
+              <Mail size={12} />
+              Email Buyers
+            </button>
             <button
               onClick={() => setHistoryOpen(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/40 text-primary hover:bg-primary/10 text-xs font-semibold transition"
@@ -983,8 +1073,103 @@ const Record = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Reminder Email Dialog */}
+        <Dialog open={reminderOpen} onOpenChange={(o) => !reminderSending && setReminderOpen(o)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="font-display flex items-center gap-2">
+                <Mail size={18} className="text-primary" />
+                Email All Ticket Buyers
+              </DialogTitle>
+              <DialogDescription>
+                Sending to unique ticket-buyer emails for{" "}
+                <span className="text-primary font-semibold">{selectedEdition}</span>
+                {reminderCount !== null && (
+                  <> · <span className="text-foreground font-semibold">{reminderCount}</span> recipient{reminderCount !== 1 ? "s" : ""}</>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-2">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  value={reminderSubject}
+                  onChange={(e) => setReminderSubject(e.target.value)}
+                  maxLength={200}
+                  disabled={reminderSending}
+                  className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-60"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Message
+                </label>
+                <textarea
+                  value={reminderMessage}
+                  onChange={(e) => setReminderMessage(e.target.value)}
+                  maxLength={8000}
+                  rows={12}
+                  disabled={reminderSending}
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y disabled:opacity-60"
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Blank lines create paragraphs. The Otown Party header and footer are added automatically.
+                </p>
+              </div>
+
+              {reminderResult && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+                  ✅ Sent <span className="font-semibold text-primary">{reminderResult.sent}</span> of{" "}
+                  <span className="font-semibold">{reminderResult.total}</span>
+                  {reminderResult.failed > 0 && (
+                    <> · <span className="text-red-500 font-semibold">{reminderResult.failed} failed</span></>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
+              <button
+                onClick={() => {
+                  setReminderSubject(DEFAULT_REMINDER_SUBJECT);
+                  setReminderMessage(DEFAULT_REMINDER_MESSAGE);
+                }}
+                disabled={reminderSending}
+                className="text-xs text-muted-foreground hover:text-primary transition disabled:opacity-50"
+              >
+                Reset to default
+              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setReminderOpen(false)}
+                  disabled={reminderSending}
+                  className="px-4 py-2 rounded-lg border border-border text-sm font-semibold hover:bg-muted transition disabled:opacity-50"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={sendReminder}
+                  disabled={reminderSending || reminderCount === 0}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:brightness-110 transition disabled:opacity-50"
+                >
+                  {reminderSending ? (
+                    <><Loader2 size={14} className="animate-spin" /> Sending...</>
+                  ) : (
+                    <><Send size={14} /> Send to {reminderCount ?? "…"} buyer{reminderCount === 1 ? "" : "s"}</>
+                  )}
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </main>
+
   );
 };
 
