@@ -1073,8 +1073,103 @@ See you on the dancefloor.
           </DialogContent>
         </Dialog>
 
+        {/* Reminder Email Dialog */}
+        <Dialog open={reminderOpen} onOpenChange={(o) => !reminderSending && setReminderOpen(o)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="font-display flex items-center gap-2">
+                <Mail size={18} className="text-primary" />
+                Email All Ticket Buyers
+              </DialogTitle>
+              <DialogDescription>
+                Sending to unique ticket-buyer emails for{" "}
+                <span className="text-primary font-semibold">{selectedEdition}</span>
+                {reminderCount !== null && (
+                  <> · <span className="text-foreground font-semibold">{reminderCount}</span> recipient{reminderCount !== 1 ? "s" : ""}</>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-2">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  value={reminderSubject}
+                  onChange={(e) => setReminderSubject(e.target.value)}
+                  maxLength={200}
+                  disabled={reminderSending}
+                  className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-60"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Message
+                </label>
+                <textarea
+                  value={reminderMessage}
+                  onChange={(e) => setReminderMessage(e.target.value)}
+                  maxLength={8000}
+                  rows={12}
+                  disabled={reminderSending}
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y disabled:opacity-60"
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Blank lines create paragraphs. The Otown Party header and footer are added automatically.
+                </p>
+              </div>
+
+              {reminderResult && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+                  ✅ Sent <span className="font-semibold text-primary">{reminderResult.sent}</span> of{" "}
+                  <span className="font-semibold">{reminderResult.total}</span>
+                  {reminderResult.failed > 0 && (
+                    <> · <span className="text-red-500 font-semibold">{reminderResult.failed} failed</span></>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
+              <button
+                onClick={() => {
+                  setReminderSubject(DEFAULT_REMINDER_SUBJECT);
+                  setReminderMessage(DEFAULT_REMINDER_MESSAGE);
+                }}
+                disabled={reminderSending}
+                className="text-xs text-muted-foreground hover:text-primary transition disabled:opacity-50"
+              >
+                Reset to default
+              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setReminderOpen(false)}
+                  disabled={reminderSending}
+                  className="px-4 py-2 rounded-lg border border-border text-sm font-semibold hover:bg-muted transition disabled:opacity-50"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={sendReminder}
+                  disabled={reminderSending || reminderCount === 0}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:brightness-110 transition disabled:opacity-50"
+                >
+                  {reminderSending ? (
+                    <><Loader2 size={14} className="animate-spin" /> Sending...</>
+                  ) : (
+                    <><Send size={14} /> Send to {reminderCount ?? "…"} buyer{reminderCount === 1 ? "" : "s"}</>
+                  )}
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </main>
+
   );
 };
 
