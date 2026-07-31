@@ -18,6 +18,18 @@ async function hmacSign(secret: string, payload: string): Promise<string> {
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+async function qrAttachment(payload: string) {
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=20&data=${encodeURIComponent(payload)}`;
+  const response = await fetch(qrUrl);
+  if (!response.ok) throw new Error(`QR image generation failed (${response.status})`);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return { filename: "otown-party-vendor-pass.png", content: btoa(binary) };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -69,6 +81,7 @@ Deno.serve(async (req) => {
     const fullPayload = JSON.stringify({ ...payloadObj, sig });
 
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(fullPayload)}`;
+    const attachment = await qrAttachment(fullPayload);
 
     const emailHtml = `
       <div style="font-family:Arial,sans-serif; max-width:600px; margin:0 auto; padding:24px; color:#0a0a0a;">
@@ -105,6 +118,7 @@ Deno.serve(async (req) => {
         to: [vendor.email],
         subject: `Your Otown Party 11.0 Vendor Pass 🎉`,
         html: emailHtml,
+        attachments: [attachment],
       }),
     });
 

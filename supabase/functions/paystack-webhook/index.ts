@@ -47,6 +47,18 @@ function timingSafeEqual(a: string, b: string): boolean {
   return r === 0;
 }
 
+async function qrAttachment(payload: string, filename: string) {
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=20&data=${encodeURIComponent(payload)}`;
+  const response = await fetch(qrUrl);
+  if (!response.ok) throw new Error(`QR image generation failed (${response.status})`);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return { filename, content: btoa(binary) };
+}
+
 async function issueTicketsAndEmail(opts: {
   supabase: ReturnType<typeof createClient>;
   intent: any;
@@ -140,6 +152,10 @@ async function issueTicketsAndEmail(opts: {
       <p style="margin-top:24px; font-size:12px; color:#999;">If you didn't make this purchase, reply to this email immediately.</p>
     </div>`;
 
+  const attachments = await Promise.all(qrPayloads.map(({ payload, ticketIndex }) =>
+    qrAttachment(payload, `otown-party-ticket-${ticketIndex}.png`)
+  ));
+
   const resendRes = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
@@ -148,6 +164,7 @@ async function issueTicketsAndEmail(opts: {
       to: [cleanEmail],
       subject: `Your Otown Party 13.0 Ticket${quantity > 1 ? "s" : ""} 🎉`,
       html: emailHtml,
+      attachments,
     }),
   });
 
