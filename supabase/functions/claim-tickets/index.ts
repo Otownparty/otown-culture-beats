@@ -66,16 +66,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Already claimed — return success so user sees congratulatory page
-    if (intent.status === "claimed") {
-      return new Response(JSON.stringify({
-        success: true,
-        emailSent: false,
-        alreadyClaimed: true,
-        error: "Tickets already claimed for this payment",
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-
     // *** KEY FIX: if still pending, verify with Paystack directly ***
     if (intent.status === "pending") {
       console.log("Status is pending — verifying with Paystack:", reference);
@@ -105,17 +95,35 @@ Deno.serve(async (req) => {
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
-    const edition = "Otown Party 13.0 - Faaji Extra";
+    const edition = intent.edition || "Otown Party 13.0 - Faaji Extra";
     const unitPrice = intent.unit_price;
     const ticketType = intent.ticket_type;
     const quantity = intent.quantity;
 
-    // Generate tickets
-    const ticketRows: any[] = [];
     const qrPayloads: { ticketId: string; payload: string; ticketIndex: number }[] = [];
 
-    for (let i = 1; i <= quantity; i++) {
-      const ticketId = crypto.randomUUID();
+    // Reuse previously issued tickets when retrying a failed/missing email.
+    const { data: existingTickets, error: existingErr } = await supabase
+      .from("tickets")
+      .select("id, ticket_index, qr_signature")
+      .eq("payment_reference", reference)
+      .order("ticket_index");
+    if (existingErr) throw existingErr;
+
+    if (existingTickets?.length && existingTickets.length !== quantity) {
+      throw new Error(`Ticket issuance incomplete: expected ${quantity}, found ${existingTickets.length}`);
+    }
+
+    const ticketRows: any[] = [];
+    const sourceTickets = existingTickets?.length
+      ? existingTickets
+      : Array.from({ length: quantity }, (_, index) => ({
+          id: crypto.randomUUID(), ticket_index: index + 1, qr_signature: "",
+        }));
+
+    for (const ticket of sourceTickets) {
+      const ticketId = ticket.id;
+      const i = ticket.ticket_index;
       const payloadObj = {
         tid: ticketId,
         n: cleanName,
@@ -128,32 +136,29 @@ Deno.serve(async (req) => {
         r: reference,
       };
       const payloadJson = JSON.stringify(payloadObj);
-      const sig = await hmacSign(signingSecret, payloadJson);
+      const sig = ticket.qr_signature || await hmacSign(signingSecret, payloadJson);
       const fullPayload = JSON.stringify({ ...payloadObj, sig });
 
-      ticketRows.push({
-        id: ticketId,
-        payment_reference: reference,
-        ticket_type: ticketType,
-        amount_paid: unitPrice,
-        quantity, ticket_index: i,
-        buyer_name: cleanName,
-        buyer_email: cleanEmail,
-        edition,
-        qr_signature: sig,
-      });
+      if (!existingTickets?.length) {
+        ticketRows.push({
+          id: ticketId,
+          payment_reference: reference,
+          ticket_type: ticketType,
+          amount_paid: unitPrice,
+          quantity, ticket_index: i,
+          buyer_name: cleanName,
+          buyer_email: cleanEmail,
+          edition,
+          qr_signature: sig,
+        });
+      }
       qrPayloads.push({ ticketId, payload: fullPayload, ticketIndex: i });
     }
 
-    const { error: insertErr } = await supabase.from("tickets").insert(ticketRows);
-    if (insertErr) throw insertErr;
-
-    await supabase.from("payment_intents").update({
-      status: "claimed",
-      buyer_name: cleanName,
-      buyer_email: cleanEmail,
-      claimed_at: new Date().toISOString(),
-    }).eq("reference", reference);
+    if (ticketRows.length) {
+      const { error: insertErr } = await supabase.from("tickets").insert(ticketRows);
+      if (insertErr) throw insertErr;
+    }
 
     // Build email with QR codes
     const ticketHtml = qrPayloads.map(({ payload, ticketIndex }) => {
@@ -209,6 +214,16 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     console.log("Resend OK for:", cleanEmail);
+
+    // Finalize only after the email provider accepted the QR email. This keeps
+    // failed sends retryable without generating a second set of tickets.
+    const { error: claimErr } = await supabase.from("payment_intents").update({
+      status: "claimed",
+      buyer_name: cleanName,
+      buyer_email: cleanEmail,
+      claimed_at: intent.claimed_at || new Date().toISOString(),
+    }).eq("reference", reference);
+    if (claimErr) throw claimErr;
 
     return new Response(JSON.stringify({
       success: true, emailSent: true, reference, quantity,

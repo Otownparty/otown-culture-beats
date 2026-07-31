@@ -65,42 +65,55 @@ async function issueTicketsAndEmail(opts: {
   const quantity = intent.quantity;
   const reference = intent.reference;
 
-  const ticketRows: any[] = [];
   const qrPayloads: { payload: string; ticketIndex: number }[] = [];
+  const { data: existingTickets, error: existingErr } = await supabase
+    .from("tickets")
+    .select("id, ticket_index, qr_signature")
+    .eq("payment_reference", reference)
+    .order("ticket_index");
+  if (existingErr) throw existingErr;
+  if (existingTickets?.length && existingTickets.length !== quantity) {
+    throw new Error(`Ticket issuance incomplete: expected ${quantity}, found ${existingTickets.length}`);
+  }
 
-  for (let i = 1; i <= quantity; i++) {
-    const ticketId = crypto.randomUUID();
+  const ticketRows: any[] = [];
+  const sourceTickets = existingTickets?.length
+    ? existingTickets
+    : Array.from({ length: quantity }, (_, index) => ({
+        id: crypto.randomUUID(), ticket_index: index + 1, qr_signature: "",
+      }));
+
+  for (const ticket of sourceTickets) {
+    const ticketId = ticket.id;
+    const i = ticket.ticket_index;
     const payloadObj = {
       tid: ticketId, n: cleanName, e: cleanEmail, t: ticketType,
       a: unitPrice, q: quantity, i, ed: edition, r: reference,
     };
     const payloadJson = JSON.stringify(payloadObj);
-    const sig = await hmacSign(signingSecret, payloadJson);
+    const sig = ticket.qr_signature || await hmacSign(signingSecret, payloadJson);
     const fullPayload = JSON.stringify({ ...payloadObj, sig });
 
-    ticketRows.push({
-      id: ticketId,
-      payment_reference: reference,
-      ticket_type: ticketType,
-      amount_paid: unitPrice,
-      quantity, ticket_index: i,
-      buyer_name: cleanName,
-      buyer_email: cleanEmail,
-      edition,
-      qr_signature: sig,
-    });
+    if (!existingTickets?.length) {
+      ticketRows.push({
+        id: ticketId,
+        payment_reference: reference,
+        ticket_type: ticketType,
+        amount_paid: unitPrice,
+        quantity, ticket_index: i,
+        buyer_name: cleanName,
+        buyer_email: cleanEmail,
+        edition,
+        qr_signature: sig,
+      });
+    }
     qrPayloads.push({ payload: fullPayload, ticketIndex: i });
   }
 
-  const { error: insertErr } = await supabase.from("tickets").insert(ticketRows);
-  if (insertErr) throw insertErr;
-
-  await supabase.from("payment_intents").update({
-    status: "claimed",
-    buyer_name: cleanName,
-    buyer_email: cleanEmail,
-    claimed_at: new Date().toISOString(),
-  }).eq("reference", reference);
+  if (ticketRows.length) {
+    const { error: insertErr } = await supabase.from("tickets").insert(ticketRows);
+    if (insertErr) throw insertErr;
+  }
 
   const ticketHtml = qrPayloads.map(({ payload, ticketIndex }) => {
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(payload)}`;
@@ -144,6 +157,14 @@ async function issueTicketsAndEmail(opts: {
     return { emailSent: false, emailError: `Resend ${resendRes.status}: ${errText}` };
   }
   console.log("Resend OK for:", cleanEmail);
+
+  const { error: claimErr } = await supabase.from("payment_intents").update({
+    status: "claimed",
+    buyer_name: cleanName,
+    buyer_email: cleanEmail,
+    claimed_at: intent.claimed_at || new Date().toISOString(),
+  }).eq("reference", reference);
+  if (claimErr) throw claimErr;
   return { emailSent: true };
 }
 
@@ -259,12 +280,6 @@ Deno.serve(async (req) => {
     if (!intent) {
       return new Response(JSON.stringify({ error: "payment intent not found", reference }), {
         status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    if (intent.status === "claimed") {
-      return new Response(JSON.stringify({ ok: true, alreadyClaimed: true, reference }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
