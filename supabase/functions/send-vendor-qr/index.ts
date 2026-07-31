@@ -18,6 +18,18 @@ async function hmacSign(secret: string, payload: string): Promise<string> {
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+async function qrAttachment(payload: string) {
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=20&data=${encodeURIComponent(payload)}`;
+  const response = await fetch(qrUrl);
+  if (!response.ok) throw new Error(`QR image generation failed (${response.status})`);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return { filename: "otown-party-vendor-pass.png", content: btoa(binary) };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -52,7 +64,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const edition = "Otown Party 11.0 - Glow in the 90s";
+    const edition = vendor.edition || "Otown Party 13.0 - Faaji Extra";
     const payloadObj = {
       vid: vendor.id,
       n: vendor.brand_name,
@@ -69,11 +81,12 @@ Deno.serve(async (req) => {
     const fullPayload = JSON.stringify({ ...payloadObj, sig });
 
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=${encodeURIComponent(fullPayload)}`;
+    const attachment = await qrAttachment(fullPayload);
 
     const emailHtml = `
       <div style="font-family:Arial,sans-serif; max-width:600px; margin:0 auto; padding:24px; color:#0a0a0a;">
-        <h1 style="color:#f5a623; margin:0 0 4px;">Otown Party 11.0</h1>
-        <p style="margin:0 0 24px; color:#666;">Glow in the 90s — May 30, 2026 · Oyo Durbar Stadium</p>
+        <h1 style="color:#f5a623; margin:0 0 4px;">Otown Party 13.0</h1>
+        <p style="margin:0 0 24px; color:#666;">Faaji Extra — Sat 1st August 2026 · 6PM–4AM · Durbar Stadium, Oyo</p>
         <p>Hi ${String(vendor.brand_name).replace(/[<>]/g, "")},</p>
         <p>Your vendor application and payment have been confirmed. Below is your unique vendor QR code — please present it at the ticket stand on event day for your access and setup.</p>
         <div style="border:1px solid #eee; border-radius:12px; padding:20px; margin:16px 0; text-align:center; background:#fafafa;">
@@ -103,8 +116,9 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: fromAddress,
         to: [vendor.email],
-        subject: `Your Otown Party 11.0 Vendor Pass 🎉`,
+        subject: `Your Otown Party 13.0 Vendor Pass 🎉`,
         html: emailHtml,
+        attachments: [attachment],
       }),
     });
 
