@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { reference, name, email } = await req.json();
+    const { reference, name, email, force } = await req.json();
 
     if (!reference || typeof reference !== "string") {
       return new Response(JSON.stringify({ error: "Reference required" }), {
