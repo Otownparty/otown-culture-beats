@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { reference, name, email } = await req.json();
+    const { reference, name, email, force } = await req.json();
 
     if (!reference || typeof reference !== "string") {
       return new Response(JSON.stringify({ error: "Reference required" }), {
@@ -78,7 +78,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    // *** KEY FIX: if still pending, verify with Paystack directly ***
+    // Already fully claimed (usually the Paystack webhook already issued + emailed
+    // the QR codes). Don't send a second copy of the same ticket email.
+    if (intent.status === "claimed" && !force) {
+      console.log("Already claimed, skipping duplicate email for:", reference);
+      return new Response(JSON.stringify({
+        success: true, emailSent: true, alreadyClaimed: true,
+        reference, quantity: intent.quantity,
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+
     if (intent.status === "pending") {
       console.log("Status is pending — verifying with Paystack:", reference);
       const psRes = await fetch(
