@@ -349,10 +349,23 @@ See you on the dancefloor.
     }
   };
 
+  const parseManualEmails = (raw: string) =>
+    raw
+      .split(/[\s,;]+/)
+      .map((e) => e.trim().toLowerCase())
+      .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+
+  const reminderPayload = (extra: Record<string, unknown> = {}) => ({
+    edition: selectedEdition,
+    audience: reminderAudience,
+    recipients: parseManualEmails(manualEmails),
+    ...extra,
+  });
+
   const loadReminderPreview = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("send-party-reminder", {
-        body: { dryRun: true, edition: selectedEdition },
+        body: reminderPayload({ dryRun: true }),
       });
       if (error) throw error;
       setReminderCount((data as any)?.count ?? 0);
@@ -370,19 +383,29 @@ See you on the dancefloor.
     await loadReminderPreview();
   };
 
+  useEffect(() => {
+    if (!reminderOpen) return;
+    setReminderCount(null);
+    const t = setTimeout(() => { loadReminderPreview(); }, 400);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reminderAudience, manualEmails, selectedEdition, reminderOpen]);
+
   const sendReminder = async () => {
     if (!reminderSubject.trim() || !reminderMessage.trim()) {
       return toast.error("Subject and message are required");
+    }
+    if (reminderAudience === "manual" && parseManualEmails(manualEmails).length === 0) {
+      return toast.error("Add at least one valid email address");
     }
     setReminderSending(true);
     setReminderResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("send-party-reminder", {
-        body: {
+        body: reminderPayload({
           subject: reminderSubject,
           message: reminderMessage,
-          edition: selectedEdition,
-        },
+        }),
       });
       if (error) throw error;
       const res = data as { sent: number; failed: number; total: number };
