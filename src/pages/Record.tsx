@@ -1107,8 +1107,9 @@ See you on the dancefloor.
                 Email All Ticket Buyers
               </DialogTitle>
               <DialogDescription>
-                Sending to unique ticket-buyer emails for{" "}
-                <span className="text-primary font-semibold">{selectedEdition}</span>
+                {reminderAudience === "edition" && <>Sending to ticket buyers for <span className="text-primary font-semibold">{selectedEdition}</span></>}
+                {reminderAudience === "all" && <>Sending to <span className="text-primary font-semibold">every ticket buyer since the first edition</span></>}
+                {reminderAudience === "manual" && <>Sending only to the <span className="text-primary font-semibold">addresses you type below</span></>}
                 {reminderCount !== null && (
                   <> · <span className="text-foreground font-semibold">{reminderCount}</span> recipient{reminderCount !== 1 ? "s" : ""}</>
                 )}
@@ -1116,6 +1117,49 @@ See you on the dancefloor.
             </DialogHeader>
 
             <div className="space-y-4 mt-2">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Recipients
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {([
+                    { key: "edition", label: "This edition" },
+                    { key: "all", label: "All recipients (since edition 1)" },
+                    { key: "manual", label: "Manual addresses" },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setReminderAudience(opt.key)}
+                      disabled={reminderSending}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition disabled:opacity-50 ${
+                        reminderAudience === opt.key
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border text-muted-foreground hover:text-primary hover:border-primary/50"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Extra / manual email addresses
+                </label>
+                <textarea
+                  value={manualEmails}
+                  onChange={(e) => setManualEmails(e.target.value)}
+                  rows={2}
+                  disabled={reminderSending}
+                  placeholder="name@example.com, another@example.com"
+                  className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y disabled:opacity-60"
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Separate with commas, spaces or new lines. These are always included (and are the only recipients in “Manual addresses” mode).
+                </p>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                   Subject
