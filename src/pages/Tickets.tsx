@@ -150,7 +150,7 @@ const Tickets = () => {
             <p className="text-muted-foreground max-w-2xl mb-8">Sat 1st August 2026 · 6PM–4AM · Durbar Stadium, Oyo. Secure your place — tickets are limited.</p>
           </ScrollReveal>
 
-          {/* Coming soon banner */}
+          {/* Venue sales banner */}
           {ONLINE_SALES_CLOSED && (
             <ScrollReveal>
               <div className="relative overflow-hidden rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/10 via-pink-400/10 to-sky-400/5 p-6 sm:p-8 mb-10">
@@ -166,22 +166,28 @@ const Tickets = () => {
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                     </span>
                     <p className="text-primary text-[10px] font-bold uppercase tracking-[0.25em]">
-                      Next Edition Loading
+                      Tonight We Rave
                     </p>
                   </div>
 
                   <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground leading-tight">
-                    Coming Soon<span className="text-primary">.</span>
+                    Come prepared to faaja at Faaji extra<span className="text-primary">.</span>
                   </h2>
 
                   <p className="max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Online ticket sales are not open yet. When the next drop goes live, this is where the movement begins. Stay locked in — the next chapter of the rave is loading.
+                    Online sales are locked. Tickets are now sold at the venue. Pull up early, grab your wristband, and step into the madness.
                   </p>
 
-                  <div className="flex items-center gap-2 text-primary/90 text-sm font-semibold tracking-wide">
-                    <Sparkles size={16} className="animate-pulse" />
-                    <span>Follow @otownparty for the drop alert</span>
-                    <Sparkles size={16} className="animate-pulse" />
+                  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-primary/90 text-sm font-semibold tracking-wide">
+                    <span className="flex items-center gap-2">
+                      <Sparkles size={16} className="animate-pulse" />
+                      <span>Durbar Stadium, Oyo</span>
+                    </span>
+                    <span className="hidden sm:inline text-border">|</span>
+                    <span className="flex items-center gap-2">
+                      <span>Gates open 6PM</span>
+                      <Sparkles size={16} className="animate-pulse" />
+                    </span>
                   </div>
                 </div>
               </div>
