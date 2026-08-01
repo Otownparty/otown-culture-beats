@@ -26,27 +26,37 @@ function textToHtml(body: string): string {
   return paragraphs.join("");
 }
 
-const defaultSubject = `🔥 It's THIS Saturday — Otown Party 13.0 Faaji Extra`;
+const defaultSubject = `🚨 TONIGHT: Otown Party 13.0 — Faaji Extra. Here's your gate guide`;
 
 const defaultBody = `Hey Raver,
 
-It's finally here — this Saturday, we take over ${EVENT_VENUE} for Otown Party 13.0: Faaji Extra. 🚀
+Today is the day. 🔥 Otown Party 13.0: Faaji Extra takes over ${EVENT_VENUE} TONIGHT.
 
-📅 ${EVENT_DATE}
-🕕 ${EVENT_TIME}
+📅 Today — ${EVENT_DATE}
+🕕 Gates open 6PM · Music till 4AM
 📍 ${EVENT_VENUE}
 
-Here's how to lock in an unforgettable night:
+HOW TO GET IN — READ THIS BEFORE YOU LEAVE HOME
 
-• Come with the QR code that was sent to this email — screenshot or printed, both work.
-• Arrive early to skip the queue and catch the opening vibe.
-• Dress the part — Faaji Extra is a whole mood. Come in your freshest.
-• Bring a valid ID and stay hydrated between drinks.
-• Move in a squad. The energy is always bigger with your people.
+1. Find your QR code. It was emailed to this exact address when you bought your ticket. Search your inbox for "Otown Party" — check Spam/Promotions too.
+2. Save it offline. Screenshot the QR code or download the attached PNG to your gallery. Network at the venue can be slow — don't rely on opening an email at the gate.
+3. Turn your screen brightness UP. A dim or cracked screen slows the scanner down. A clean printed copy works perfectly too.
+4. At the gate, go to the TICKET SCAN STAND. Hold your QR code flat and steady about 20–30cm from the scanner. Our staff scans it, it turns green, and you're in.
+5. One scan per ticket. Each QR is unique and works ONCE. If you bought multiple tickets, each guest needs their own QR — don't share or post it online, whoever scans it first gets the entry.
+6. Bring a valid ID that matches the name on your ticket, in case we need to verify.
+7. Any issue at the gate? Don't queue twice — step aside to the support desk beside the scan stand with your payment reference and we'll sort you out in seconds.
 
-Doors don't stop till 4AM. Sound system loaded. DJ lineup ready. Only one thing missing — you. 🌀
+TO MAKE TONIGHT LEGENDARY
 
-See you on the dancefloor.
+• Arrive early — 6PM to 8PM is the smoothest entry window, and the opening set is worth it.
+• Dress the part. Faaji Extra is a whole mood — come in your freshest fit.
+• Move with your squad. The energy is always bigger with your people.
+• Stay hydrated, pace the drinks, and look out for each other.
+• Vendors, food, drinks and shisha are all on ground — come with cash and transfer ready.
+
+Sound system loaded. DJ lineup ready. Lights set. Only one thing missing — you. 🌀
+
+See you on the dancefloor tonight.
 
 — The Otown Party Team`;
 
@@ -97,27 +107,52 @@ Deno.serve(async (req) => {
       ? body.edition.trim()
       : CURRENT_EDITION;
     const dryRun = body?.dryRun === true;
+    // "all" => every buyer since the first edition; "manual" => explicit list only.
+    const audience: "edition" | "all" | "manual" =
+      body?.audience === "all" || body?.audience === "manual" ? body.audience : "edition";
+    const manualRecipients: string[] = Array.isArray(body?.recipients)
+      ? body.recipients.map((e: unknown) => String(e).trim().toLowerCase()).filter(Boolean)
+      : [];
 
     // Collect unique recipient emails from every source of truth we have.
     const emails = new Set<string>();
 
-    const { data: intents } = await supabase
-      .from("payment_intents")
-      .select("buyer_email, edition, status")
-      .in("status", ["claimed", "verified"]);
-    for (const r of intents || []) {
-      if (r.buyer_email && (r.edition || CURRENT_EDITION) === edition) {
-        emails.add(String(r.buyer_email).trim().toLowerCase());
-      }
-    }
+    if (audience === "manual") {
+      for (const e of manualRecipients) emails.add(e);
+    } else {
+      const matches = (rowEdition: string | null) =>
+        audience === "all" || (rowEdition || CURRENT_EDITION) === edition;
 
-    const { data: tks } = await supabase
-      .from("tickets")
-      .select("buyer_email, edition");
-    for (const r of tks || []) {
-      if (r.buyer_email && (r.edition || CURRENT_EDITION) === edition) {
-        emails.add(String(r.buyer_email).trim().toLowerCase());
+      const { data: intents } = await supabase
+        .from("payment_intents")
+        .select("buyer_email, edition, status")
+        .in("status", ["claimed", "verified"]);
+      for (const r of intents || []) {
+        if (r.buyer_email && matches(r.edition)) {
+          emails.add(String(r.buyer_email).trim().toLowerCase());
+        }
       }
+
+      const { data: tks } = await supabase
+        .from("tickets")
+        .select("buyer_email, edition");
+      for (const r of tks || []) {
+        if (r.buyer_email && matches(r.edition)) {
+          emails.add(String(r.buyer_email).trim().toLowerCase());
+        }
+      }
+
+      const { data: purchases } = await supabase
+        .from("ticket_purchases")
+        .select("email, edition, status");
+      for (const r of purchases || []) {
+        if (r.email && matches(r.edition)) {
+          emails.add(String(r.email).trim().toLowerCase());
+        }
+      }
+
+      // Always include any extra manual addresses the sender typed.
+      for (const e of manualRecipients) emails.add(e);
     }
 
     const recipientList = Array.from(emails).filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
