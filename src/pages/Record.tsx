@@ -151,26 +151,36 @@ const Record = () => {
   const [clearing, setClearing] = useState(false);
 
   // Party reminder email state
-  const DEFAULT_REMINDER_SUBJECT = "🔥 It's THIS Saturday — Otown Party 13.0 Faaji Extra";
+  const DEFAULT_REMINDER_SUBJECT = "🚨 TONIGHT: Otown Party 13.0 — Faaji Extra. Here's your gate guide";
   const DEFAULT_REMINDER_MESSAGE = `Hey Raver,
 
-It's finally here — this Saturday, we take over Durbar Stadium, Oyo for Otown Party 13.0: Faaji Extra. 🚀
+Today is the day. 🔥 Otown Party 13.0: Faaji Extra takes over Durbar Stadium, Oyo TONIGHT.
 
-📅 Saturday, 1st August 2026
-🕕 6PM – 4AM
+📅 Today — Saturday, 1st August 2026
+🕕 Gates open 6PM · Music till 4AM
 📍 Durbar Stadium, Oyo
 
-Here's how to lock in an unforgettable night:
+HOW TO GET IN — READ THIS BEFORE YOU LEAVE HOME
 
-• Come with the QR code that was sent to this email — screenshot or printed, both work.
-• Arrive early to skip the queue and catch the opening vibe.
-• Dress the part — Faaji Extra is a whole mood. Come in your freshest.
-• Bring a valid ID and stay hydrated between drinks.
-• Move in a squad. The energy is always bigger with your people.
+1. Find your QR code. It was emailed to this exact address when you bought your ticket (subject line mentions your Otown Party ticket). Search your inbox for "Otown Party" — check Spam/Promotions too.
+2. Save it offline. Screenshot the QR code or download the attached PNG to your gallery. Network at the venue can be slow — don't rely on opening an email at the gate.
+3. Turn your screen brightness UP. A dim or cracked screen slows the scanner down. A clean printed copy works perfectly too.
+4. At the gate, go to the TICKET SCAN STAND. Hold your QR code flat and steady about 20–30cm from the scanner. Our staff scans it, it turns green, and you're in.
+5. One scan per ticket. Each QR is unique and works ONCE. If you bought multiple tickets, each guest needs their own QR — don't share or post it online, whoever scans it first gets the entry.
+6. Bring a valid ID that matches the name on your ticket, in case we need to verify.
+7. Any issue at the gate? Don't queue twice — step aside to the support desk beside the scan stand with your payment reference and we'll sort you out in seconds.
 
-Doors don't stop till 4AM. Sound system loaded. DJ lineup ready. Only one thing missing — you. 🌀
+TO MAKE TONIGHT LEGENDARY
 
-See you on the dancefloor.
+• Arrive early — 6PM to 8PM is the smoothest entry window, and the opening set is worth it.
+• Dress the part. Faaji Extra is a whole mood — come in your freshest fit.
+• Move with your squad. The energy is always bigger with your people.
+• Stay hydrated, pace the drinks, and look out for each other.
+• Vendors, food, drinks and shisha are all on ground — come with cash and transfer ready.
+
+Sound system loaded. DJ lineup ready. Lights set. Only one thing missing — you. 🌀
+
+See you on the dancefloor tonight.
 
 — The Otown Party Team`;
 
