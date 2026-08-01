@@ -97,27 +97,52 @@ Deno.serve(async (req) => {
       ? body.edition.trim()
       : CURRENT_EDITION;
     const dryRun = body?.dryRun === true;
+    // "all" => every buyer since the first edition; "manual" => explicit list only.
+    const audience: "edition" | "all" | "manual" =
+      body?.audience === "all" || body?.audience === "manual" ? body.audience : "edition";
+    const manualRecipients: string[] = Array.isArray(body?.recipients)
+      ? body.recipients.map((e: unknown) => String(e).trim().toLowerCase()).filter(Boolean)
+      : [];
 
     // Collect unique recipient emails from every source of truth we have.
     const emails = new Set<string>();
 
-    const { data: intents } = await supabase
-      .from("payment_intents")
-      .select("buyer_email, edition, status")
-      .in("status", ["claimed", "verified"]);
-    for (const r of intents || []) {
-      if (r.buyer_email && (r.edition || CURRENT_EDITION) === edition) {
-        emails.add(String(r.buyer_email).trim().toLowerCase());
-      }
-    }
+    if (audience === "manual") {
+      for (const e of manualRecipients) emails.add(e);
+    } else {
+      const matches = (rowEdition: string | null) =>
+        audience === "all" || (rowEdition || CURRENT_EDITION) === edition;
 
-    const { data: tks } = await supabase
-      .from("tickets")
-      .select("buyer_email, edition");
-    for (const r of tks || []) {
-      if (r.buyer_email && (r.edition || CURRENT_EDITION) === edition) {
-        emails.add(String(r.buyer_email).trim().toLowerCase());
+      const { data: intents } = await supabase
+        .from("payment_intents")
+        .select("buyer_email, edition, status")
+        .in("status", ["claimed", "verified"]);
+      for (const r of intents || []) {
+        if (r.buyer_email && matches(r.edition)) {
+          emails.add(String(r.buyer_email).trim().toLowerCase());
+        }
       }
+
+      const { data: tks } = await supabase
+        .from("tickets")
+        .select("buyer_email, edition");
+      for (const r of tks || []) {
+        if (r.buyer_email && matches(r.edition)) {
+          emails.add(String(r.buyer_email).trim().toLowerCase());
+        }
+      }
+
+      const { data: purchases } = await supabase
+        .from("ticket_purchases")
+        .select("email, edition, status");
+      for (const r of purchases || []) {
+        if (r.email && matches(r.edition)) {
+          emails.add(String(r.email).trim().toLowerCase());
+        }
+      }
+
+      // Always include any extra manual addresses the sender typed.
+      for (const e of manualRecipients) emails.add(e);
     }
 
     const recipientList = Array.from(emails).filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
