@@ -15,7 +15,7 @@ const tickets = [
 ];
 
 // Set this to true to close online sales and show venue-only message
-const ONLINE_SALES_CLOSED = false;
+const ONLINE_SALES_CLOSED = true;
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
