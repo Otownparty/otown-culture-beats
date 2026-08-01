@@ -180,6 +180,8 @@ See you on the dancefloor.
   const [reminderSending, setReminderSending] = useState(false);
   const [reminderCount, setReminderCount] = useState<number | null>(null);
   const [reminderResult, setReminderResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const [reminderAudience, setReminderAudience] = useState<"edition" | "all" | "manual">("edition");
+  const [manualEmails, setManualEmails] = useState("");
 
   // Edition selector + history
   const [selectedEdition, setSelectedEdition] = useState<string>(CURRENT_EDITION);
