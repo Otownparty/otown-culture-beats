@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import { lastEditionPhotos } from "@/data/lastEditionPhotos";
+import { previousEditionPhotos } from "@/data/previousEditionPhotos";
 
 // ── Archive photos (gallery-1.jpg … gallery-38.jpg) ──────────────────────────
 import g1 from "@/assets/gallery-1.jpg";
@@ -88,6 +89,9 @@ const photos: Photo[] = [
   { src: g36, alt: "Squad goals at the sign", era: "archive" },
   { src: g37, alt: "Female DJ in the zone", era: "archive" },
   { src: g38, alt: "MC commanding the crowd", era: "archive" },
+
+  // ── Previous editions moved out of "Last Edition" (All Editions only) ──────
+  ...previousEditionPhotos.map((p) => ({ ...p, era: "archive" })),
 
   // ── Last Edition (Cloudinary-hosted; shows in both All Editions and Last Edition) ──
   ...lastEditionPhotos.map((p) => ({ ...p, era: "last" })),
