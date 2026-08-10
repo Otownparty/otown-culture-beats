@@ -9,13 +9,13 @@ import { toast } from "@/components/ui/sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const tickets = [
-  { name: "Early Bird", badge: "Sold Out", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true, soldOut: true },
+  { name: "Early Bird", badge: "Best Value", price: 4000, features: ["Full event access"], accent: "primary" as const, featured: true, soldOut: false },
   { name: "Regular", price: 5000, features: ["Full event access"], accent: "foreground" as const, featured: false, soldOut: false },
   { name: "VIP Experience", price: 15000, features: ["Full stage access", "Premium visibility", "Priority entry", "Access to merch"], accent: "pink" as const, featured: false, soldOut: false },
 ];
 
 // Set this to true to close online sales and show venue-only message
-const ONLINE_SALES_CLOSED = true;
+const ONLINE_SALES_CLOSED = false;
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
@@ -146,8 +146,8 @@ const Tickets = () => {
         <div className="container mx-auto max-w-6xl px-4">
           <ScrollReveal>
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-2">Tickets & Contact</p>
-            <h1 className="text-4xl sm:text-5xl font-display font-bold text-foreground mb-4">Otown Party 13.0 · Faaji Extra</h1>
-            <p className="text-muted-foreground max-w-2xl mb-8">Sat 1st August 2026 · 6PM–4AM · Durbar Stadium, Oyo. Secure your place — tickets are limited.</p>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-foreground mb-4">Otown Party 14.0 · Ede Edition</h1>
+            <p className="text-muted-foreground max-w-2xl mb-8">Sat 5th September 2026 · 6PM–4AM · Ideal Hotels and Bar, Agbale Area, Ede, Osun State. Secure your place — tickets are limited.</p>
           </ScrollReveal>
 
           {/* Venue sales banner */}
@@ -171,7 +171,7 @@ const Tickets = () => {
                   </div>
 
                   <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground leading-tight">
-                    Come prepared to faaja at Faaji extra<span className="text-primary">.</span>
+                    Come prepared to rave in Ede<span className="text-primary">.</span>
                   </h2>
 
                   <p className="max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -181,7 +181,7 @@ const Tickets = () => {
                   <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-primary/90 text-sm font-semibold tracking-wide">
                     <span className="flex items-center gap-2">
                       <Sparkles size={16} className="animate-pulse" />
-                      <span>Durbar Stadium, Oyo</span>
+                      <span>Ideal Hotels and Bar, Ede</span>
                     </span>
                     <span className="hidden sm:inline text-border">|</span>
                     <span className="flex items-center gap-2">
