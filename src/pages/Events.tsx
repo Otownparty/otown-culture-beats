@@ -16,6 +16,7 @@ import edition10 from "@/assets/edition-10.jpg";
 import edition11 from "@/assets/edition-11.jpg";
 import edition12 from "@/assets/edition-12.png";
 import edition13 from "@/assets/edition-13.jpg";
+import edition14 from "@/assets/edition-14.jpg";
 
 export interface Edition {
   num: number;
@@ -69,14 +70,14 @@ export interface NextEdition {
  * edition's details.
  */
 export const nextEdition: NextEdition = {
-  num: 13,
-  title: "Faaji Extra",
-  desc: "The rave returns to Oyo with more energy, more culture, more Faaji. One night. Extra everything.",
-  date: "Sat 1st August 2026",
-  shortDate: "August 1, 2026",
+  num: 14,
+  title: "Ede Edition",
+  desc: "The movement crosses into Osun State. Otown Party lands in Ede for one night of rave, culture and connection.",
+  date: "Sat 5th September 2026",
+  shortDate: "September 5, 2026",
   time: "6PM–4AM",
-  venue: "Durbar Stadium, Oyo",
-  img: edition13,
+  venue: "Ideal Hotels and Bar, Agbale Area, Ede, Osun State",
+  img: edition14,
 };
 
 const Events = () => {
