@@ -16,6 +16,7 @@ import edition10 from "@/assets/edition-10.jpg";
 import edition11 from "@/assets/edition-11.jpg";
 import edition12 from "@/assets/edition-12.png";
 import edition13 from "@/assets/edition-13.jpg";
+import edition14 from "@/assets/edition-14.jpg";
 
 export interface Edition {
   num: number;
@@ -33,6 +34,7 @@ export interface Edition {
  * via src/data/editions.ts) so nothing else needs editing.
  */
 export const editions: Edition[] = [
+  { num: 13, date: "Sat 1st August 2026", title: "Faaji Extra", desc: "Faaji Extra took over Durbar Stadium, Oyo — one night of extra everything: sound, culture and pure rave energy.", img: edition13 },
   { num: 12, date: "Sat 27th June 2026", title: "Iseyin Edition", desc: "The movement moved to Iseyin — one night of rave, culture and connection under the stars at Silver ZB Resort.", img: edition12 },
   { num: 11, date: "Sat 30th May 2026", title: "Glow in the 90s — Chapter II", desc: "The Anniversary Edition — a neon-soaked 90s throwback that lit up Oyo Durbar Stadium.", img: edition11 },
   { num: 10, date: "Sat 21st March 2026", title: "Denim After Dark", desc: "A Decade of Raving — the 10th edition at Oyo Durbar Stadium.", img: edition10 },
@@ -69,14 +71,14 @@ export interface NextEdition {
  * edition's details.
  */
 export const nextEdition: NextEdition = {
-  num: 13,
-  title: "Faaji Extra",
-  desc: "The rave returns to Oyo with more energy, more culture, more Faaji. One night. Extra everything.",
-  date: "Sat 1st August 2026",
-  shortDate: "August 1, 2026",
+  num: 14,
+  title: "Ede Edition",
+  desc: "The movement crosses into Osun State. Otown Party lands in Ede for one night of rave, culture and connection.",
+  date: "Sat 5th September 2026",
+  shortDate: "September 5, 2026",
   time: "6PM–4AM",
-  venue: "Durbar Stadium, Oyo",
-  img: edition13,
+  venue: "Ideal Hotels and Bar, Agbale Area, Ede, Osun State",
+  img: edition14,
 };
 
 const Events = () => {

@@ -40,11 +40,11 @@ const Success = () => {
             {/* Body */}
             <p className="text-muted-foreground text-sm leading-relaxed mb-4">
               You've successfully joined the guest list for{" "}
-              <span className="text-foreground font-semibold">Otown Party 13.0 · Faaji Extra.</span>
+              <span className="text-foreground font-semibold">Otown Party 14.0 · Ede Edition.</span>
             </p>
 
             <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-              Saturday, 1st August 2026 · 6PM–4AM · Durbar Stadium, Oyo. Prepare for a night of raw energy, unmatched sound, and the culture at its loudest. We're setting the vibe to make this a core memory.
+              Saturday, 5th September 2026 · 6PM–4AM · Ideal Hotels and Bar, Agbale Area, Ede, Osun State. Prepare for a night of raw energy, unmatched sound, and the culture at its loudest. We're setting the vibe to make this a core memory.
             </p>
 
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
