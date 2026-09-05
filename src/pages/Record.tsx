@@ -213,9 +213,19 @@ See you on the dancefloor tonight.
   const [loadingVendors, setLoadingVendors] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) {
         navigate("/staff?next=/record", { replace: true });
+        return;
+      }
+      // Only admins may view records. Gate-scanner accounts go to the scanner.
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.session.user.id);
+      const isAdmin = (roles ?? []).some((r) => r.role === "admin");
+      if (!isAdmin) {
+        navigate("/scan", { replace: true });
         return;
       }
       setAuthChecked(true);
