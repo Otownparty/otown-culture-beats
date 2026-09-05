@@ -15,7 +15,7 @@ const tickets = [
 ];
 
 // Set this to true to close online sales and show venue-only message
-const ONLINE_SALES_CLOSED = false;
+const ONLINE_SALES_CLOSED = true;
 
 const loadPaystackScript = () => new Promise<void>((resolve, reject) => {
   if (window.PaystackPop) return resolve();
@@ -175,20 +175,24 @@ const Tickets = () => {
                   </h2>
 
                   <p className="max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Online sales are locked. Tickets are now sold at the venue. Pull up early, grab your wristband, and step into the madness.
+                    Online sales are locked — the rave is too close! Tickets are now sold at the venue only. Pull up early, grab your wristband, and step into the madness.
                   </p>
 
                   <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-primary/90 text-sm font-semibold tracking-wide">
                     <span className="flex items-center gap-2">
                       <Sparkles size={16} className="animate-pulse" />
-                      <span>Ideal Hotels and Bar, Ede</span>
+                      <span>Ideal Hotels and Bar, Agbale Area, Ede</span>
                     </span>
                     <span className="hidden sm:inline text-border">|</span>
                     <span className="flex items-center gap-2">
-                      <span>Gates open 6PM</span>
+                      <span>Gates open 6PM · Show runs till 4AM</span>
                       <Sparkles size={16} className="animate-pulse" />
                     </span>
                   </div>
+
+                  <p className="text-xs text-muted-foreground/80 max-w-md">
+                    Come with your QR code if you already bought online. No QR? No problem — buy at the gate and get scanned in.
+                  </p>
                 </div>
               </div>
             </ScrollReveal>
